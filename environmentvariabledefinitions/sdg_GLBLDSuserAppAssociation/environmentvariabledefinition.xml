@@ -1,0 +1,18 @@
+<environmentvariabledefinition schemaname="sdg_GLBLDSuserAppAssociation">
+  <apiid>/providers/microsoft.powerapps/apis/shared_sharepointonline</apiid>
+  <description default="Global DS - Application Association by User Registration">
+    <label description="Global DS - Application Association by User Registration" languagecode="1033" />
+  </description>
+  <displayname default="GLBL-DS-userAppAssociation">
+    <label description="GLBL-DS-userAppAssociation" languagecode="1033" />
+  </displayname>
+  <introducedversion>1.0.0.0</introducedversion>
+  <iscustomizable>1</iscustomizable>
+  <isrequired>0</isrequired>
+  <parameterkey>table</parameterkey>
+  <parentdefinitionid>
+    <schemaname>sdg_OBOFStorageLocationURL</schemaname>
+  </parentdefinitionid>
+  <secretstore>0</secretstore>
+  <type>100000004</type>
+</environmentvariabledefinition>

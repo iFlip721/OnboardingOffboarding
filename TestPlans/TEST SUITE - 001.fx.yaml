@@ -1,0 +1,88 @@
+testSuite:
+  testSuiteName: TEST SUITE - 001
+  testSuiteDescription: ''
+  persona: Travis Sykes
+  appLogicalName: sdg_onboardingoffboarding_25978
+  appId: 'f3034a20-5614-4ec5-84a8-f60578fbc965'
+  onTestCaseStart: |
+    = 
+    Navigate(REGISTER);
+  onTestCaseComplete: |
+    = 
+  onTestSuiteComplete: |
+    = 
+  networkRequestMocks: 
+  testCases:
+  - testCaseName: LOADING
+    testCaseDescription: ''
+    testSteps: |
+      = 
+      Assert(loader.Visible, "Verify loader is visible");
+  - testCaseName: COLLECTION
+    testCaseDescription: ''
+    testSteps: |
+      = 
+      Assert(!IsEmpty(stateChoices), "Verify State Choices collection is not empty");
+      Assert(!IsEmpty(PayPlanGrades), "Verify PayPlayGrades Collection isnot empty");
+      Assert(!IsEmpty(appSettings), "Verify AppSettings Collection is not empty");
+      Assert(!IsEmpty(memberOf), "Verify MemberOf Collection is not empty");
+      Assert(!IsEmpty(positionSeries), "Verify PositionSeries Colleciton is not empty");
+      Assert(!IsEmpty(col_organizations), "Verify Organizations collection is not empty");
+      Assert(!IsEmpty(_responseIWAMQueryEmail), "Verify IWAM Query Email response is not empty");
+      Assert(!IsEmpty(_responseIWAMQueryOrganization), "Verify IWAM Query Organization respons eis not empty");
+      Assert(!IsEmpty(col_IWAMSupervisor), "Verify IWAM Supervisor collection is not empty");
+      Assert(!IsBlank(First(col_IWAMUserInfo).DCMA_EMAIL), "Verify IWAM User Info: DCMA_EMAIL");
+      Assert(!IsBlank(First(col_IWAMUserInfo).DCMA_EMPLOYEE_TYPE), "Verify IWAM User Info: DCMA_EMPLOYEE_TYPE");
+      Assert(!IsBlank(First(col_IWAMUserInfo).DCMA_JOB_SERIES), "Verify IWAM User Info: DCMA_JOB_SERIES");
+      Assert(!IsBlank(First(col_IWAMUserInfo).DCMA_ORGANIZATION_LEVEL), "Verify IWAM User Info: DCMA_ORGANIZATION_LEVEL");
+      Assert(!IsBlank(First(col_IWAMUserInfo).DCMA_SITE_ID), "Verify IWAM User Info: DCMA_SITE_ID");
+      Assert(!IsBlank(First(col_IWAMUserInfo).DIRECT_SUPERVISOR), "Verify IWAM User Info: DIRECT_SUPERVISOR");
+      Assert(!IsBlank(First(col_IWAMUserInfo).USERID), "Verify IWAM User Info: USERID");
+      Assert(!IsBlank(First(col_IWAMUserInfo).USR_FIRST_NAME), "Verify IWAM User Info: USR_FIRST_NAME");
+      Assert(!IsBlank(First(col_IWAMUserInfo).USR_LAST_NAME), "Verify IWAM User Info: USR_LAST_NAME");
+      Assert(!IsBlank(First(col_IWAMUserInfo).USR_FULLNAME), "Verify IWAM User Info: USR_FULLNAME");
+      Assert(!IsEmpty(currentUser), "Verify CurrentUser is not blank");
+  - testCaseName: REGISTER - UI
+    testCaseDescription: ''
+    testSteps: |
+      = 
+      SetProperty('combobox_Service'.SelectedItems, Table());
+      SetProperty('combobox_Service'.SelectedItems, Table({'Value':"Civilian"}));
+      Assert(combobox_MilitaryServiceBranch.DisplayMode = DisplayMode.Disabled, "Verify military branch is disabled when civilian service type is slected.");
+      SetProperty('combobox_Service'.SelectedItems, Table({'Value':"Military"}));
+      Assert(combobox_MilitaryServiceBranch.DisplayMode = DisplayMode.Edit, "Verify military branch is enabled when military service type is slected.");
+      SetProperty('combobox_Service'.SelectedItems, Table({'Value':"Contractor"}));
+      Assert(combobox_MilitaryServiceBranch.DisplayMode = DisplayMode.Disabled, "Verify military branch is disabled when contractor service type is slected.");
+      SetProperty('combobox_Service'.SelectedItems, Table(First(currentUser).service));
+      Assert(IsBlank(combobox_PayPlanGrade.Selected), "Verify PayPlanGrade is blank after changing ServiceType");
+      SetProperty(combobox_PayPlanGrade.SelectedItems, {v: First(currentUser).payPlan_Grade});
+      Select(button_RegisterAccount);
+  - testCaseName: REGISTER - Field Values
+    testCaseDescription: ''
+    testSteps: |
+      = 
+      Assert(!IsBlank(combobox_Organization.Selected), "Verify Organization field auto populates. User conducting test must already be registered for this test to pass.");
+      Assert(!IsBlank(combobox_Supervisor.Selected), "Verify Supervisor field auto populates. User conducting test must already be registered for this test to pass.");
+      Assert(!IsBlank(combobox_JobSeries.Selected), "Verify JobSeries field auto populates. User conducting test must already be registered for this test to pass.");
+      Assert(!IsBlank(combobox_Service.Selected), "Verify Service field auto populates. User conducting test must already be registered for this test to pass.");
+      Assert(!IsBlank(input_OrganizationCode.Text), "Verify OrganizationCode field auto populates. User conducting test must already be registered for this test to pass.");
+      Assert(!IsBlank(combobox_PayPlanGrade.Selected), "Verify PayPlanGrade field auto populates. User conducting test must already be registered for this test to pass.");
+      Assert(First(currentUser).isEmployee, "Verify user has minimum security role Member.");
+testSettings:
+  filePath: 
+  browserConfigurations:
+  - browser: Chromium
+    device: 
+    screenWidth: 0
+    screenHeight: 0
+  locale: en
+  recordVideo: true
+  headless: true
+  enablePowerFxOverlay: false
+  timeout: 30000
+environmentVariables:
+  filePath: 
+  users:
+  - personaName: Travis Sykes
+    emailKey: travis.a.sykes.civ@mail.mil
+    passwordKey:

@@ -1,0 +1,18 @@
+<environmentvariabledefinition schemaname="sdg_GLBLDSappRegistration">
+  <apiid>/providers/microsoft.powerapps/apis/shared_sharepointonline</apiid>
+  <description default="Global DS - Application Registration">
+    <label description="Global DS - Application Registration" languagecode="1033" />
+  </description>
+  <displayname default="GLBL-DS-appRegistration">
+    <label description="GLBL-DS-appRegistration" languagecode="1033" />
+  </displayname>
+  <introducedversion>1.0.0.0</introducedversion>
+  <iscustomizable>1</iscustomizable>
+  <isrequired>0</isrequired>
+  <parameterkey>table</parameterkey>
+  <parentdefinitionid>
+    <schemaname>sdg_OBOFStorageLocationURL</schemaname>
+  </parentdefinitionid>
+  <secretstore>0</secretstore>
+  <type>100000004</type>
+</environmentvariabledefinition>

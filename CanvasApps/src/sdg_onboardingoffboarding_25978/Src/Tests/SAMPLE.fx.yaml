@@ -1,0 +1,200 @@
+"'72bf5a64-662c-4719-ac49-b59537461af8' As TestSuite":
+    Description: =""
+    DisplayName: ="SAMPLE"
+
+    "'bd240b72-ede2-4f88-a770-8e190aeb9d06' As TestCase":
+        Description: =""
+        DisplayName: ="CREATE CHECKLIST"
+
+        Step1 As TestStep:
+            Description: ="Select 'button_RegisterAccount_3'"
+            Screen: =MAIN_OBOF
+            Value: =Select(button_RegisterAccount_3)
+
+        Step2 As TestStep:
+            Description: ="Select 'btn_NewChecklist'"
+            Screen: =MAIN_OBOF
+            Value: =Select(btn_NewChecklist)
+
+        Step3 As TestStep:
+            Description: |-
+                ="Set 'combobox_OutprocessingStatus_3'.SelectedItems to Table({'Value':""Retirement""})"
+            Screen: =MAIN_OBOF
+            Value: |-
+                =SetProperty(combobox_OutprocessingStatus_3.SelectedItems, Table({Value:"Retirement"}))
+
+        Step4 As TestStep:
+            Description: ="Select 'combobox_OutprocessingStatus_3'"
+            Screen: =MAIN_OBOF
+            Value: =Select(combobox_OutprocessingStatus_3)
+
+        Step5 As TestStep:
+            Description: ="Select 'button_NewChecklist_Continue'"
+            Screen: =MAIN_OBOF
+            Value: =Select(button_NewChecklist_Continue)
+
+        Step6 As TestStep:
+            Description: ="Select 'btn_NewComment'"
+            Screen: =MAIN_OBOF
+            Value: =Select(btn_NewComment)
+
+        Step7 As TestStep:
+            Description: ="Set 'input_NewComment'.Text to ""Here is automated comment from test case."""
+            Screen: =MAIN_OBOF
+            Value: =SetProperty(input_NewComment.Text, "Here is automated comment from test case.")
+
+        Step8 As TestStep:
+            Description: |-
+                ="Set 'combobox_NewComment_Notify'.SelectedItems to Table({'Id':""fe7310dc-0742-4e2f-a918-e9e6316c8b03"",'AccountEnabled':true,'BusinessPhones':Table({'Value':""(804) 295-2998""}),'City':""Staunton"",'CompanyName':""DCMA"",'Country':""USA"",'Department':""DCMA IT Dir"",'DisplayName':""Shaver, Linda M CIV DCMA IT DIR (USA)"",'GivenName':""Linda"",'JobTitle':""Software Developer"",'Mail':""linda.m.shaver3.civ@mail.mil"",'MailNickname':""linda.m.shaver3.civ"",'mobilePhone':""(804) 295-2998"",'OfficeLocation':""Ft Gregg-Adams"",'PostalCode':""24401"",'Surname':""Shaver"",'TelephoneNumber':""(804) 295-2998"",'UserPrincipalName':""linda.m.shaver3.civ@mail.mil""})"
+            Screen: =MAIN_OBOF
+            Value: |-
+                =SetProperty(combobox_NewComment_Notify.SelectedItems, Table({Id:"fe7310dc-0742-4e2f-a918-e9e6316c8b03",AccountEnabled:true,BusinessPhones:Table({Value:"(804) 295-2998"}),City:"Staunton",CompanyName:"DCMA",Country:"USA",Department:"DCMA IT Dir",DisplayName:"Shaver, Linda M CIV DCMA IT DIR (USA)",GivenName:"Linda",JobTitle:"Software Developer",Mail:"linda.m.shaver3.civ@mail.mil",MailNickname:"linda.m.shaver3.civ",mobilePhone:"(804) 295-2998",OfficeLocation:"Ft Gregg-Adams",PostalCode:"24401",Surname:"Shaver",TelephoneNumber:"(804) 295-2998",UserPrincipalName:"linda.m.shaver3.civ@mail.mil"}))
+
+        Step9 As TestStep:
+            Description: ="Select 'combobox_NewComment_Notify'"
+            Screen: =MAIN_OBOF
+            Value: =Select(combobox_NewComment_Notify)
+
+        Step10 As TestStep:
+            Description: ="Select 'button_NewComment_Submit'"
+            Screen: =MAIN_OBOF
+            Value: =Select(button_NewComment_Submit)
+
+        Step11 As TestStep:
+            Description: ="Select 'btn_RefreshChecklists'"
+            Screen: =MAIN_OBOF
+            Value: =Select(btn_RefreshChecklists)
+
+    "'a88b6755-cbd3-4896-9d5d-8ab91de1f1c2' As TestCase":
+        Description: =""
+        DisplayName: ="Case"
+
+        Step1 As TestStep:
+            Description: ="Select 'button_RegisterAccount_3'"
+            Screen: =MAIN_OBOF
+            Value: =Select(button_RegisterAccount_3)
+
+        Step2 As TestStep:
+            Description: ="Select 'btn_NewChecklist'"
+            Screen: =MAIN_OBOF
+            Value: =Select(btn_NewChecklist)
+
+        Step3 As TestStep:
+            Description: ="Set 'toggle_DelegationNewChecklist'.Value to true"
+            Screen: =MAIN_OBOF
+            Value: =SetProperty(toggle_DelegationNewChecklist.Value, true)
+
+        Step4 As TestStep:
+            Description: ="Select 'toggle_DelegationNewChecklist'"
+            Screen: =MAIN_OBOF
+            Value: =Select(toggle_DelegationNewChecklist)
+
+        Step5 As TestStep:
+            Description: |-
+                ="Set 'combobox_Organization_3'.SelectedItems to Table({'ENTITY_CODE':""P2"",'LVL':4,'ORG Code':""P2-IS"",'ORG_ID':7550,'ORG_NAME':""DIGITAL SERVICE CENTER SOFTWARE GROUP"",'ORG_TYPE':""O"",'Parent ORG Code':""P2-I"",'Parent ORG ID':972,'REPORT_PARENT_ID':972})"
+            Screen: =MAIN_OBOF
+            Value: |-
+                =SetProperty(combobox_Organization_3.SelectedItems, Table({ENTITY_CODE:"P2",LVL:4,'ORG Code':"P2-IS",ORG_ID:7550,ORG_NAME:"DIGITAL SERVICE CENTER SOFTWARE GROUP",ORG_TYPE:"O",'Parent ORG Code':"P2-I",'Parent ORG ID':972,REPORT_PARENT_ID:972}))
+
+        Step6 As TestStep:
+            Description: ="Select 'combobox_Organization_3'"
+            Screen: =MAIN_OBOF
+            Value: =Select(combobox_Organization_3)
+
+        Step7 As TestStep:
+            Description: |-
+                ="Set 'combobox_OutprocessingStatus_3'.SelectedItems to Table({'Value':""Retirement""})"
+            Screen: =MAIN_OBOF
+            Value: |-
+                =SetProperty(combobox_OutprocessingStatus_3.SelectedItems, Table({Value:"Retirement"}))
+
+        Step8 As TestStep:
+            Description: ="Select 'combobox_OutprocessingStatus_3'"
+            Screen: =MAIN_OBOF
+            Value: =Select(combobox_OutprocessingStatus_3)
+
+        Step9 As TestStep:
+            Description: ="Select 'button_NewChecklist_Continue'"
+            Screen: =MAIN_OBOF
+            Value: =Select(button_NewChecklist_Continue)
+
+        Step10 As TestStep:
+            Description: ="Select 'Icon2_2'"
+            Screen: =MAIN_OBOF
+            Value: =Select(Icon2_2)
+
+        Step11 As TestStep:
+            Description: |-
+                ="Set 'combobox_Designee_3'.SelectedItems to Table({'Id':""35573b91-3205-4a0a-9e69-771b4d67260f"",'AccountEnabled':true,'BusinessPhones':Table({'Value':""(804) 661-3938""}),'City':""Fort Lee"",'CompanyName':""DCMA"",'Country':""USA"",'Department':""DCMA HQ"",'DisplayName':""Sykes, Travis A CIV DCMA HQ (USA)"",'GivenName':""Travis"",'JobTitle':""Senior Application Developer"",'Mail':""travis.a.sykes.civ@mail.mil"",'MailNickname':""travis.a.sykes.civ"",'mobilePhone':Blank(),'OfficeLocation':""Ft Gregg-Adams"",'PostalCode':""23801"",'Surname':""Sykes"",'TelephoneNumber':Blank(),'UserPrincipalName':""travis.a.sykes.civ@mail.mil""})"
+            Screen: =MAIN_OBOF
+            Value: |-
+                =SetProperty(combobox_Designee_3.SelectedItems, Table({Id:"35573b91-3205-4a0a-9e69-771b4d67260f",AccountEnabled:true,BusinessPhones:Table({Value:"(804) 661-3938"}),City:"Fort Lee",CompanyName:"DCMA",Country:"USA",Department:"DCMA HQ",DisplayName:"Sykes, Travis A CIV DCMA HQ (USA)",GivenName:"Travis",JobTitle:"Senior Application Developer",Mail:"travis.a.sykes.civ@mail.mil",MailNickname:"travis.a.sykes.civ",mobilePhone:Blank(),OfficeLocation:"Ft Gregg-Adams",PostalCode:"23801",Surname:"Sykes",TelephoneNumber:Blank(),UserPrincipalName:"travis.a.sykes.civ@mail.mil"}))
+
+        Step12 As TestStep:
+            Description: ="Select 'combobox_Designee_3'"
+            Screen: =MAIN_OBOF
+            Value: =Select(combobox_Designee_3)
+
+        Step13 As TestStep:
+            Description: |-
+                ="Set 'combobox_Service_3'.SelectedItems to Table({'Value':""Military""})"
+            Screen: =MAIN_OBOF
+            Value: |-
+                =SetProperty(combobox_Service_3.SelectedItems, Table({Value:"Military"}))
+
+        Step14 As TestStep:
+            Description: ="Select 'combobox_Service_3'"
+            Screen: =MAIN_OBOF
+            Value: =Select(combobox_Service_3)
+
+        Step15 As TestStep:
+            Description: |-
+                ="Set 'combobox_Service_3'.SelectedItems to Table({'Value':""Civilian""})"
+            Screen: =MAIN_OBOF
+            Value: |-
+                =SetProperty(combobox_Service_3.SelectedItems, Table({Value:"Civilian"}))
+
+        Step16 As TestStep:
+            Description: ="Select 'combobox_Service_3'"
+            Screen: =MAIN_OBOF
+            Value: =Select(combobox_Service_3)
+
+        Step17 As TestStep:
+            Description: |-
+                ="Set 'combobox_PayPlanGrade_3'.SelectedItems to Table({'Service':""Civilian"",'v':""GS-03"",'p':""GS"",'g':3})"
+            Screen: =MAIN_OBOF
+            Value: |-
+                =SetProperty(combobox_PayPlanGrade_3.SelectedItems, Table({Service:"Civilian",v:"GS-03",p:"GS",g:3}))
+
+        Step18 As TestStep:
+            Description: ="Select 'combobox_PayPlanGrade_3'"
+            Screen: =MAIN_OBOF
+            Value: =Select(combobox_PayPlanGrade_3)
+
+        Step19 As TestStep:
+            Description: ="Select 'button_NewChecklist_Continue'"
+            Screen: =MAIN_OBOF
+            Value: =Select(button_NewChecklist_Continue)
+
+        Step20 As TestStep:
+            Description: ="Select 'Icon2_2'"
+            Screen: =MAIN_OBOF
+            Value: =Select(Icon2_2)
+
+        Step21 As TestStep:
+            Description: |-
+                ="Set 'combobox_EmployeeName_3'.SelectedItems to Table({'Id':""fe7310dc-0742-4e2f-a918-e9e6316c8b03"",'AccountEnabled':true,'BusinessPhones':Table({'Value':""(804) 295-2998""}),'City':""Staunton"",'CompanyName':""DCMA"",'Country':""USA"",'Department':""DCMA IT Dir"",'DisplayName':""Shaver, Linda M CIV DCMA IT DIR (USA)"",'GivenName':""Linda"",'JobTitle':""Software Developer"",'Mail':""linda.m.shaver3.civ@mail.mil"",'MailNickname':""linda.m.shaver3.civ"",'mobilePhone':""(804) 295-2998"",'OfficeLocation':""Ft Gregg-Adams"",'PostalCode':""24401"",'Surname':""Shaver"",'TelephoneNumber':""(804) 295-2998"",'UserPrincipalName':""linda.m.shaver3.civ@mail.mil""})"
+            Screen: =MAIN_OBOF
+            Value: |-
+                =SetProperty(combobox_EmployeeName_3.SelectedItems, Table({Id:"fe7310dc-0742-4e2f-a918-e9e6316c8b03",AccountEnabled:true,BusinessPhones:Table({Value:"(804) 295-2998"}),City:"Staunton",CompanyName:"DCMA",Country:"USA",Department:"DCMA IT Dir",DisplayName:"Shaver, Linda M CIV DCMA IT DIR (USA)",GivenName:"Linda",JobTitle:"Software Developer",Mail:"linda.m.shaver3.civ@mail.mil",MailNickname:"linda.m.shaver3.civ",mobilePhone:"(804) 295-2998",OfficeLocation:"Ft Gregg-Adams",PostalCode:"24401",Surname:"Shaver",TelephoneNumber:"(804) 295-2998",UserPrincipalName:"linda.m.shaver3.civ@mail.mil"}))
+
+        Step22 As TestStep:
+            Description: ="Select 'combobox_EmployeeName_3'"
+            Screen: =MAIN_OBOF
+            Value: =Select(combobox_EmployeeName_3)
+
+        Step23 As TestStep:
+            Description: ="Select 'button_NewChecklist_Continue'"
+            Screen: =MAIN_OBOF
+            Value: =Select(button_NewChecklist_Continue)
+

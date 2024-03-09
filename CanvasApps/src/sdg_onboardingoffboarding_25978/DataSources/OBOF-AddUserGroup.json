@@ -1,0 +1,10 @@
+[
+  {
+    "ApiId": "/providers/microsoft.powerapps/apis/shared_logicflows",
+    "FlowNameId": "654e7f00-1836-49c3-b11d-03fc972c0e11",
+    "Name": "OBOF-AddUserGroup",
+    "ServiceKind": "ConnectedWadl",
+    "Type": "ServiceInfo",
+    "WorkflowEntityId": "71467f39-0bb7-ee11-a569-001dd8105346"
+  }
+]

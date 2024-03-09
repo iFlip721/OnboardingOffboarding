@@ -1,0 +1,18 @@
+<environmentvariabledefinition schemaname="sdg_OBOFDSappSettings">
+  <apiid>/providers/microsoft.powerapps/apis/shared_sharepointonline</apiid>
+  <description default="OBOF Application Settings / Content Delivery">
+    <label description="OBOF Application Settings / Content Delivery" languagecode="1033" />
+  </description>
+  <displayname default="OBOF-DS-appSettings">
+    <label description="OBOF-DS-appSettings" languagecode="1033" />
+  </displayname>
+  <introducedversion>1.0.0.0</introducedversion>
+  <iscustomizable>1</iscustomizable>
+  <isrequired>0</isrequired>
+  <parameterkey>table</parameterkey>
+  <parentdefinitionid>
+    <schemaname>sdg_OBOFStorageLocationURL</schemaname>
+  </parentdefinitionid>
+  <secretstore>0</secretstore>
+  <type>100000004</type>
+</environmentvariabledefinition>

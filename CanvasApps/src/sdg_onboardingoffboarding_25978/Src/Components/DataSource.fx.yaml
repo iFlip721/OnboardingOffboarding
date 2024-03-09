@@ -1,0 +1,1722 @@
+DataSource As CanvasComponent:
+    AttachChangerGearServiceRequest(ActionItem As Number, ChangeGearServiceRequestNumber As String):
+        ActionItem:
+            Default: =100
+        ChangeGearServiceRequestNumber:
+            Default: ="Text"
+        ThisProperty:
+            Default: |-
+                =With(
+                    {
+                        selectedTask: LookUp(col_checklistTasks, ID = ActionItem)
+                        
+                    },
+                    
+                    If(
+                        IsEmpty(
+                            Errors(col_checklistTasks,
+                                Patch(col_checklistTasks, selectedTask,
+                                    {
+                                        isServiceRequestCompleted: true,
+                                        serviceRequestNumber: Upper(ChangeGearServiceRequestNumber)
+                                    }
+                                )
+                            )
+                        ),
+                        Notify("ChangeGear Service Request Patch", NotificationType.Success),
+                        Notify("ChangeGear Service Request Patch", NotificationType.Error)
+                    )
+                )
+    BuildChecklistTasks(Delay As Boolean, ChecklistID As Number):
+        Delay:
+            Default: =true
+        ChecklistID:
+            Default: =100
+        ThisProperty:
+            Default: |
+                =Set(isBuildChecklistTasksRunning, true);
+                With(
+                    {
+                        checklist: LookUp('OBOF-DS-checklistOutProcessing', ID = ChecklistID)
+                    },
+                
+                    ClearCollect(col_ParsedJSON,
+                        DropColumns(
+                            AddColumns(
+                                Table(ParseJSON(checklist.checklistJSON)),
+                                "ID", Value(Value.ID),
+                                "actionItem", Value(Value.actionItem),
+                                "groupValue", Text(Value.groupValue),
+                                "service", DropColumns(AddColumns(RenameColumns(Table(Value.service), "Value", "V"), "Value", Text(V.Value)), "V"),
+                                "isSupervisorACB", If(Value(Value.isSupervisorACB) = 1, true, false),
+                                "isDesigneeACB", If(Value(Value.isDesigneeACB) = 1, true, false),
+                                "isEmployeeACB", If(Value(Value.isEmployeeACB) = 1, true, false),
+                                "isMSOACB", If(Value(Value.isMSOACB) = 1, true, false),
+                                "isNAACB", If(Value(Value.isNAACB) = 1, true, false),
+                                "isClearingOffice", If(Value(Value.isClearingOffice) = 1, true, false),
+                                "uid", Text(Value.uid),
+                                "autoNotify", If(Value(Value.autoNotify) = 1, true, false),
+                                "extendAttributes", If(Value(Value.extendAttributes) = 1, true, false),
+                                "dueInDays", Value(Value.dueInDays),
+                                "dueInDaysEval", {
+                                        dueDate: With({taskDD: checklist.departureDate},
+                                                    DateValue(If(Weekday(DateAdd(taskDD, (Value(Value.dueInDays) + (RoundDown((Value(Value.dueInDays) / 5) * 2, 0)))*-1, TimeUnit.Days)) = 7,
+                                                        DateAdd(taskDD, (Value(Value.dueInDays) + (RoundDown((Value(Value.dueInDays) / 5) * 2, 0)))*-1 - 1, TimeUnit.Days),
+                                                        If(Weekday(DateAdd(taskDD, (Value(Value.dueInDays)+ (RoundDown((Value(Value.dueInDays) / 5) * 2, 0)))*-1, TimeUnit.Days)) = 1,
+                                                            DateAdd(taskDD, (Value(Value.dueInDays) + (RoundDown((Value(Value.dueInDays) / 5) * 2, 0)))*-1 + 1, TimeUnit.Days),
+                                                                DateAdd(taskDD, (Value(Value.dueInDays) + (RoundDown((Value(Value.dueInDays) / 5) * 2, 0)))*-1, TimeUnit.Days))))), 
+                                        daysRemaining: With({taskDDMod: If(Weekday(DateAdd(DateValue(Text(checklist.departureDate)), (Value(Value.dueInDays) + (RoundDown((Value(Value.dueInDays) / 5) * 2, 0)))*-1, TimeUnit.Days)) = 7,
+                                                    DateAdd(DateValue(Text(checklist.departureDate)), (Value(Value.dueInDays) + (RoundDown((Value(Value.dueInDays) / 5) * 2, 0)))*-1 - 1, TimeUnit.Days),
+                                                    If(Weekday(DateAdd(DateValue(Text(checklist.departureDate)), (Value(Value.dueInDays) + (RoundDown((Value(Value.dueInDays) / 5) * 2, 0)))*-1, TimeUnit.Days)) = 1,
+                                                        DateAdd(DateValue(Text(checklist.departureDate)), (Value(Value.dueInDays) + (RoundDown((Value(Value.dueInDays) / 5) * 2, 0)))*-1 + 1, TimeUnit.Days),
+                                                            DateAdd(DateValue(Text(checklist.departureDate)), (Value(Value.dueInDays) + (RoundDown((Value(Value.dueInDays) / 5) * 2, 0)))*-1, TimeUnit.Days)))},
+                                                Value(1 + ((DateDiff(Today(),taskDDMod,TimeUnit.Days)) * 5 - ((Weekday(Today()) - Weekday(taskDDMod))*2)) / 7 - Switch(Weekday(taskDDMod),7,1,0) - Switch(Weekday(Today()),1,1,0)))
+                                    },
+                                "mandatoryClearingOfficeACB", If(Value(Value.mandatoryClearingOfficeACB) = 1, true, false),
+                                "notificationDetails", {
+                                    isNotified: If(Value(Value.notificationDetails.isNotified) = 1, true, false),
+                                    email: Text(Value.notificationDetails.email),
+                                    timestamp: DateValue(Text(Value.notificationDetails.timestamp))
+                                },
+                                "createServiceRequest", If(Value(Value.createServiceRequest) = 1, true, false),
+                                "isServiceRequestCompleted", If(Value(Value.isServiceRequestCompleted) = 1, true, false),
+                                "serviceRequestNumber", Text(Value.serviceRequestNumber),
+                                "urlServiceRequest", Text(Value.urlServiceRequest),
+                                "signatureClearingOffice", {
+                                        date: DateTimeValue(Text(Value.signatureClearingOffice.date)), 
+                                        isComplete: Value(Value.signatureClearingOffice.isComplete), 
+                                        signature: Text(Value.signatureClearingOffice.signature), 
+                                        uid: Text(Value.signatureClearingOffice.uid)
+                                    },
+                                "signatureEmployee", {
+                                        date: DateTimeValue(Text(Value.signatureEmployee.date)), 
+                                        isComplete: Value(Value.signatureEmployee.isComplete), 
+                                        signature: Text(Value.signatureEmployee.signature), 
+                                        uid: Text(Value.signatureEmployee.uid)
+                                    },
+                                "signatureMSO", {
+                                        date: DateTimeValue(Text(Value.signatureMSO.date)), 
+                                        isComplete: Value(Value.signatureMSO.isComplete), 
+                                        signature: Text(Value.signatureMSO.signature), 
+                                        uid: Text(Value.signatureMSO.uid)
+                                    },
+                                "signatureDesignee", {
+                                        date: DateTimeValue(Text(Value.signatureDesignee.date)), 
+                                        isComplete: Value(Value.signatureDesignee.isComplete), 
+                                        signature: Text(Value.signatureDesignee.signature), 
+                                        uid: Text(Value.signatureDesignee.uid)
+                                    },
+                                "signatureSupervisor", {
+                                        date: DateTimeValue(Text(Value.signatureSupervisor.date)), 
+                                        isComplete: Value(Value.signatureSupervisor.isComplete), 
+                                        signature: Text(Value.signatureSupervisor.signature), 
+                                        uid: Text(Value.signatureSupervisor.uid)
+                                    },
+                                "signatureSupervisorDesignee", {
+                                        date: DateTimeValue(Text(Value.signatureSupervisorDesignee.date)), 
+                                        isComplete: Value(Value.signatureSupervisorDesignee.isComplete), 
+                                        signature: Text(Value.signatureSupervisorDesignee.signature), 
+                                        uid: Text(Value.signatureSupervisorDesignee.uid)
+                                    },
+                                "signatureNAACB", {
+                                        date: DateTimeValue(Text(Value.signatureNAACB.date)), 
+                                        isComplete: Value(Value.signatureNAACB.isComplete), 
+                                        signature: Text(Value.signatureNAACB.signature), 
+                                        uid: Text(Value.signatureNAACB.uid)
+                                    },
+                                "built", Now(),
+                                "extendAttributesJSON", ForAll(Table(Value.extendAttributesJSON), {ID: Value(Value.ID), description: Text(Value.description), response: Text(Value.response), responded: If(Value(Value.responded) = 1, true, false)}),
+                                "transactLog", ForAll(Table(Value.transactLog), {ID: Value(Value.ID), log: Text(Value.log), timestamp: DateTimeValue(Text(Value.timestamp))})
+                                ),
+                            "Value"
+                        )
+                    );
+                    //"transactLog", ForAll(Table(Value.transactLog), {ID: Value(Value.ID), log: Text(Value.log), timestamp: DateValue(Text(Value.timestamp))})
+                
+                    // SET PRIMARY KEY AS [ID]
+                    RenameColumns(Ungroup(col_ParsedJSON.extendAttributesJSON, "extendAttributesJSON"),"ID","ID");
+                    // SET PRIMARY KEY AS [ID]
+                    RenameColumns(Ungroup(col_ParsedJSON.transactLog, "transactLog"),"ID","ID");
+                    
+                    ClearCollect(col_checklistTasks,
+                        RenameColumns(
+                            AddColumns(
+                                AddColumns(col_ParsedJSON,
+                                    "taskCompletionTelemetry", Table(
+                                        If(isClearingOffice, {Value: signatureClearingOffice.isComplete, t: "signatureClearingOffice"}, {Value: -1, t: "signatureClearingOffice"}),
+                                        If(isEmployeeACB, {Value: signatureEmployee.isComplete, t: "signatureEmployee"}, {Value: -1, t: "signatureEmployee"}),
+                                        If(isMSOACB, {Value: signatureMSO.isComplete, t: "signatureMSO"}, {Value: -1, t: "signatureMSO"}),
+                                        If(isDesigneeACB && !isSupervisorACB, {Value: signatureDesignee.isComplete, t: "signatureDesignee"}, {Value: -1, t: "signatureDesignee"}),
+                                        If(isSupervisorACB && !isDesigneeACB, {Value: signatureSupervisor.isComplete, t: "signatureSupervisor"}, {Value: -1, t: "signatureSupervisor"}),
+                                        If(isSupervisorACB && isDesigneeACB, {Value: signatureSupervisorDesignee.isComplete, t: "signatureSupervisorDesignee"}, {Value: -1, t: "signatureSupervisorDesignee"})
+                                    )
+                                ),
+                                "isCompleted", If(IsEmpty(Filter(col_ParsedJSON, 0 in taskCompletionTelemetry.Value)), true, false)
+                            ),
+                            "ID","ID"
+                        )
+                    )
+                );
+                
+                // RESET ALL NEW CHECKLIST FIELDS WITHIN FORM
+                Clear(col_ParsedJSON);
+                Reset(toggle_DelegationNewChecklist);
+                Reset(checkbox_DelegationAcknowledge);
+                Reset(combobox_EmployeeName_3);
+                Reset(combobox_Designee_3);
+                Reset(combobox_Service_3);
+                Reset(combobox_MilitaryServiceBranch_3);
+                Reset(combobox_PayPlanGrade_3);
+                Reset(combobox_Organization_3);
+                Reset(input_OrganizationCode_3);
+                Reset(input_OfficeLocation_3);
+                Reset(combobox_State_3);
+                Reset(input_City_3);
+                Reset(combobox_OutprocessingStatus_3);
+                Reset(datepicker_DepartureDate_3);
+                Reset(input_NewEmployerName_3);
+                Reset(input_NewEmployerAddress_3);
+                Set(chkRecord, Blank());
+                Set(sendNotificationSupervisorDesigneeScope, Blank());
+                Set(runSendNotificationSupervisorDesignee, false);
+                Set(runBuildChecklistTasks, false);
+                If(!Delay,
+                    Set(isBuildChecklistTasksRunning, false);
+                );
+    DelegationNewChecklist():
+        ThisProperty:
+            Default: |-
+                =Notify($"Function DelegationNewChecklist is deprecated", NotificationType.Warning);
+                /*
+                // IF DELEGATED
+                If(toggle_DelegationNewChecklist,
+                    //If(IsBlank((LookUp('OBOF-DS-userDelegation', uid = combobox_EmployeeName_3.Selected.Id))),
+                        Patch('OBOF-DS-userDelegation',
+                            If(IsBlank((LookUp('OBOF-DS-userDelegation', uid = combobox_EmployeeName_3.Selected.Id))),
+                                Defaults('OBOF-DS-userDelegation'),
+                                LookUp('OBOF-DS-userDelegation', uid = combobox_EmployeeName_3.Selected.Id)
+                            ),
+                            //Defaults('OBOF-DS-userDelegation'),
+                            {
+                                uid: combobox_EmployeeName_3.Selected.Id,
+                                displayName: combobox_EmployeeName_3.Selected.DisplayName,
+                                givenName: combobox_EmployeeName_3.Selected.GivenName,
+                                surname: combobox_EmployeeName_3.Selected.Surname,
+                                payPlan_Grade: combobox_PayPlanGrade_3.Selected.v,
+                                grade: Value(combobox_PayPlanGrade_3.Selected.g),
+                                payPlan: combobox_PayPlanGrade_3.Selected.p,
+                                service: combobox_Service_3,
+                                militaryServiceBranch: combobox_MilitaryServiceBranch_3,
+                                mail: combobox_EmployeeName_3.Selected.Mail,
+                                accountEnabled: combobox_EmployeeName_3.Selected.AccountEnabled,
+                                jobTitle:combobox_EmployeeName_3.Selected.JobTitle,
+                                streetAddress: Blank(),
+                                city:combobox_EmployeeName_3.Selected.City,
+                                postalCode: combobox_EmployeeName_3.Selected.PostalCode,
+                                companyName: combobox_EmployeeName_3.Selected.CompanyName,
+                                department: combobox_EmployeeName_3.Selected.Department,
+                                organization: combobox_Organization_3.Selected,
+                                organizationCode: input_OrganizationCode_3.Text,
+                                isEmployee: true,
+                                officeLocation: combobox_EmployeeName_3.Selected.OfficeLocation,
+                                supervisor: {
+                                    '@odata.type':"#Microsoft.Azure.Connectors.SharePoint.SPListExpandedUser",
+                                    Claims: Concatenate("i:0#.f|membership|", combobox_Supervisor_3.Selected.Mail),
+                                    Department: combobox_Supervisor_3.Selected.Department,
+                                    DisplayName: combobox_Supervisor_3.Selected.DisplayName,
+                                    Email: combobox_Supervisor_3.Selected.Mail,
+                                    JobTitle: combobox_Supervisor_3.Selected.JobTitle,
+                                    Picture: ""
+                                },
+                                supervisorUid: combobox_Supervisor_3.Selected.Id,
+                                supervisorDisplayName: combobox_Supervisor_3.Selected.DisplayName,
+                                supervisorGivenName: combobox_Supervisor_3.Selected.GivenName,
+                                supervisorSurname: combobox_Supervisor_3.Selected.Surname,
+                                supervisorEmail: combobox_Supervisor_3.Selected.Mail,
+                                supervisorPhone: combobox_Supervisor_3.Selected.TelephoneNumber,
+                                delegationUid: combobox_Designee_3.Selected.Id
+                            }
+                        )
+                    //)
+                );
+                
+                Reset(toggle_DelegationNewChecklist);
+                Reset(checkbox_DelegationAcknowledge);
+                Reset(combobox_EmployeeName_3);
+                Reset(combobox_Designee_3);
+                Reset(combobox_Service_3);
+                Reset(combobox_MilitaryServiceBranch_3);
+                Reset(combobox_PayPlanGrade_3);
+                Reset(combobox_Organization_3);
+                Reset(input_OrganizationCode_3);
+                Reset(input_OfficeLocation_3);
+                Reset(combobox_State_3);
+                Reset(input_City_3);
+                Reset(combobox_OutprocessingStatus_3);
+                Reset(datepicker_DepartureDate_3_1);
+                //Select(refreshChecklists);
+                Set(isNewChecklistVisible, false);
+                //Select(buildChecklistTasks);
+                */
+    DeletChecklist(ChecklistID As Number):
+        ChecklistID:
+            Default: =100
+        ThisProperty:
+            Default: |-
+                =Remove('OBOF-DS-checklistOutProcessing',
+                    LookUp('OBOF-DS-checklistOutProcessing', ID = ChecklistID)
+                );
+    EraseSignatureTask(SignatureType As String, ActionItem As Number):
+        SignatureType:
+            Default: ="Text"
+        ActionItem:
+            Default: =100
+        ThisProperty:
+            Default: |-
+                =With(
+                    {
+                        selectedTask: LookUp(col_checklistTasks, ActionItem = ID)
+                    },
+                    If(!IsBlank(selectedTask),
+                        /*If(
+                            IsEmpty(
+                                Errors(col_checklistTasks,*/
+                                    Patch(col_checklistTasks,
+                                        selectedTask,
+                                        Switch(signatureType,
+                                            "signatureDesignee", {
+                                                taskCompletionTelemetry: [
+                                                    {Value: 0, t: "signatureDesignee"},
+                                                    {Value: LookUp(selectedTask.taskCompletionTelemetry, t = "signatureSupervisor").Value, t: "signatureSupervisor"},
+                                                    {Value: LookUp(selectedTask.taskCompletionTelemetry, t = "signatureSupervisorDesignee").Value, t: "signatureSupervisorDesignee"},
+                                                    {Value: LookUp(selectedTask.taskCompletionTelemetry, t = "signatureEmployee").Value, t: "signatureEmployee"},
+                                                    {Value: LookUp(selectedTask.taskCompletionTelemetry, t = "signatureMSO").Value, t: "signatureMSO"},
+                                                    {Value: LookUp(selectedTask.taskCompletionTelemetry, t = "signatureClearingOffice").Value, t: "signatureClearingOffice"},
+                                                    {Value: LookUp(selectedTask.taskCompletionTelemetry, t = "signatureNAACB").Value, t: "signatureNAACB"}
+                                                ],
+                                                signatureDesignee: {
+                                                    date: DateValue(Date(1970, 1, 1)), isComplete: 0, signature: Text(""), uid: Text("")}
+                                                },
+                                            "signatureSupervisor", {
+                                                taskCompletionTelemetry: [
+                                                    {Value: LookUp(selectedTask.taskCompletionTelemetry, t = "signatureDesignee").Value, t: "signatureDesignee"},
+                                                    {Value: 0, t: "signatureSupervisor"},
+                                                    {Value: LookUp(selectedTask.taskCompletionTelemetry, t = "signatureSupervisorDesignee").Value, t: "signatureSupervisorDesignee"},
+                                                    {Value: LookUp(selectedTask.taskCompletionTelemetry, t = "signatureEmployee").Value, t: "signatureEmployee"},
+                                                    {Value: LookUp(selectedTask.taskCompletionTelemetry, t = "signatureMSO").Value, t: "signatureMSO"},
+                                                    {Value: LookUp(selectedTask.taskCompletionTelemetry, t = "signatureClearingOffice").Value, t: "signatureClearingOffice"},
+                                                    {Value: LookUp(selectedTask.taskCompletionTelemetry, t = "signatureNAACB").Value, t: "signatureNAACB"}
+                                                ],
+                                                signatureSupervisor: {
+                                                    date: DateValue(Date(1970, 1, 1)), isComplete: 0, signature: Text(""), uid: Text("")}
+                                                },
+                                            "signatureSupervisorDesignee", {
+                                                taskCompletionTelemetry: [
+                                                    {Value: LookUp(selectedTask.taskCompletionTelemetry, t = "signatureDesignee").Value, t: "signatureDesignee"},
+                                                    {Value: LookUp(selectedTask.taskCompletionTelemetry, t = "signatureSupervisor").Value, t: "signatureSupervisor"},
+                                                    {Value: 0, t: "signatureSupervisorDesignee"},
+                                                    {Value: LookUp(selectedTask.taskCompletionTelemetry, t = "signatureEmployee").Value, t: "signatureEmployee"},
+                                                    {Value: LookUp(selectedTask.taskCompletionTelemetry, t = "signatureMSO").Value, t: "signatureMSO"},
+                                                    {Value: LookUp(selectedTask.taskCompletionTelemetry, t = "signatureClearingOffice").Value, t: "signatureClearingOffice"},
+                                                    {Value: LookUp(selectedTask.taskCompletionTelemetry, t = "signatureNAACB").Value, t: "signatureNAACB"}
+                                                ],
+                                                signatureSupervisorDesignee: {
+                                                    date: DateValue(Date(1970, 1, 1)), isComplete: 0, signature: Text(""), uid: Text("")}
+                                                },
+                                            "signatureEmployee", {
+                                                taskCompletionTelemetry: [
+                                                    {Value: LookUp(selectedTask.taskCompletionTelemetry, t = "signatureDesignee").Value, t: "signatureDesignee"},
+                                                    {Value: LookUp(selectedTask.taskCompletionTelemetry, t = "signatureSupervisor").Value, t: "signatureSupervisor"},
+                                                    {Value: LookUp(selectedTask.taskCompletionTelemetry, t = "signatureSupervisorDesignee").Value, t: "signatureSupervisorDesignee"},
+                                                    {Value: 0, t: "signatureEmployee"},
+                                                    {Value: LookUp(selectedTask.taskCompletionTelemetry, t = "signatureMSO").Value, t: "signatureMSO"},
+                                                    {Value: LookUp(selectedTask.taskCompletionTelemetry, t = "signatureClearingOffice").Value, t: "signatureClearingOffice"},
+                                                    {Value: LookUp(selectedTask.taskCompletionTelemetry, t = "signatureNAACB").Value, t: "signatureNAACB"}
+                                                ],
+                                                signatureEmployee: {
+                                                    date: DateValue(Date(1970, 1, 1)), isComplete: 0, signature: Text(""), uid: Text("")}
+                                                },
+                                            "signatureMSO", {
+                                                taskCompletionTelemetry: [
+                                                    {Value: LookUp(selectedTask.taskCompletionTelemetry, t = "signatureDesignee").Value, t: "signatureDesignee"},
+                                                    {Value: LookUp(selectedTask.taskCompletionTelemetry, t = "signatureSupervisor").Value, t: "signatureSupervisor"},
+                                                    {Value: LookUp(selectedTask.taskCompletionTelemetry, t = "signatureSupervisorDesignee").Value, t: "signatureSupervisorDesignee"},
+                                                    {Value: LookUp(selectedTask.taskCompletionTelemetry, t = "signatureEmployee").Value, t: "signatureEmployee"},
+                                                    {Value: 0, t: "signatureMSO"},
+                                                    {Value: LookUp(selectedTask.taskCompletionTelemetry, t = "signatureClearingOffice").Value, t: "signatureClearingOffice"},
+                                                    {Value: LookUp(selectedTask.taskCompletionTelemetry, t = "signatureNAACB").Value, t: "signatureNAACB"}
+                                                ],
+                                                signatureMSO: {
+                                                    date: DateValue(Date(1970, 1, 1)), isComplete: 0, signature: Text(""), uid: Text("")}
+                                                },
+                                            "signatureClearingOffice", {
+                                                taskCompletionTelemetry: [
+                                                    {Value: LookUp(selectedTask.taskCompletionTelemetry, t = "signatureDesignee").Value, t: "signatureDesignee"},
+                                                    {Value: LookUp(selectedTask.taskCompletionTelemetry, t = "signatureSupervisor").Value, t: "signatureSupervisor"},
+                                                    {Value: LookUp(selectedTask.taskCompletionTelemetry, t = "signatureSupervisorDesignee").Value, t: "signatureSupervisorDesignee"},
+                                                    {Value: LookUp(selectedTask.taskCompletionTelemetry, t = "signatureEmployee").Value, t: "signatureEmployee"},
+                                                    {Value: LookUp(selectedTask.taskCompletionTelemetry, t = "signatureMSO").Value, t: "signatureMSO"},
+                                                    {Value: 0, t: "signatureClearingOffice"},
+                                                    {Value: LookUp(selectedTask.taskCompletionTelemetry, t = "signatureNAACB").Value, t: "signatureNAACB"}
+                                                ],
+                                                signatureClearingOffice: {
+                                                    date: DateValue(Date(1970, 1, 1)), isComplete: 0, signature: Text(""), uid: Text("")}
+                                                },
+                                            "signatureNAACB", {
+                                                taskCompletionTelemetry: [
+                                                    {Value: If(selectedTask.isDesigneeACB && !selectedTask.isSupervisorACB, 0, LookUp(selectedTask.taskCompletionTelemetry, t = "signatureDesignee").Value), t: "signatureDesignee"},
+                                                    {Value: If(selectedTask.isSupervisorACB && !selectedTask.isDesigneeACB, 0, LookUp(selectedTask.taskCompletionTelemetry, t = "signatureSupervisor").Value), t: "signatureSupervisor"},
+                                                    {Value: If(selectedTask.isDesigneeACB || selectedTask.isSupervisorACB, 0, LookUp(selectedTask.taskCompletionTelemetry, t = "signatureSupervisorDesignee").Value), t: "signatureSupervisorDesignee"},
+                                                    {Value: If(selectedTask.isEmployeeACB, 0, LookUp(selectedTask.taskCompletionTelemetry, t = "signatureEmployee").Value), t: "signatureEmployee"},
+                                                    {Value: If(selectedTask.isMSOACB, 0, LookUp(selectedTask.taskCompletionTelemetry, t = "signatureMSO").Value), t: "signatureMSO"},
+                                                    {Value: If(selectedTask.isClearingOffice, 0, LookUp(selectedTask.taskCompletionTelemetry, t = "signatureClearingOffice").Value), t: "signatureClearingOffice"},
+                                                    {Value: 0, t: "signatureNAACB"},
+                                                ],
+                                                signatureDesignee: {
+                                                    date: DateValue(Date(1970, 1, 1)),
+                                                    isComplete: 0,
+                                                    signature: Text(""),
+                                                    uid: Text("")},
+                                                signatureSupervisor: {
+                                                    date: DateValue(Date(1970, 1, 1)),
+                                                    isComplete: 0,
+                                                    signature: Text(""),
+                                                    uid: Text("")},
+                                                signatureSupervisorDesignee: {
+                                                    date: DateValue(Date(1970, 1, 1)),
+                                                    isComplete: 0,
+                                                    signature: Text(""),
+                                                    uid: Text("")},
+                                                signatureEmployee: {
+                                                    date: DateValue(Date(1970, 1, 1)),
+                                                    isComplete: 0,
+                                                    signature: Text(""),
+                                                    uid: Text("")},
+                                                signatureMSO: {
+                                                    date: DateValue(Date(1970, 1, 1)),
+                                                    isComplete: 0,
+                                                    signature: Text(""),
+                                                    uid: Text("")},
+                                                signatureClearingOffice: {
+                                                    date: DateValue(Date(1970, 1, 1)),
+                                                    isComplete: 0,
+                                                    signature: Text(""),
+                                                    uid: Text("")},
+                                                signatureNAACB: {
+                                                    date: DateValue(Date(1970, 1, 1)),
+                                                    isComplete: 0,
+                                                    signature: Text(""),
+                                                    uid: Text("")}
+                                                }
+                                        )
+                                    )
+                                /*)
+                            ),
+                            
+                            // REMOVED CODE BUT LEFT AS REFERENCE
+                            //Select(updateChecklistJSON);
+                            Set(signatureType, Blank());,
+                            Notify("[col_checklistTasks] patch error", NotificationType.Error)
+                        ),
+                        Notify("[ERASE] ]Oh boy, this is super embarassing... we did not find a task UID associated with that signature. Not really sure what else to tell you right now expcet today is gonna be a great day!", NotificationType.Error)
+                        */
+                    )
+                )
+    isChecklistComplete():
+        ThisProperty:
+            Default: |-
+                =If({isCompleted: false} in col_checklistTasks.isCompleted,
+                    If(LookUp('OBOF-DS-checklistOutProcessing', ID = gallery_checklists.Selected.ID).outprocessingState.Value = "Completed", 
+                        Patch('OBOF-DS-checklistOutProcessing',
+                            LookUp('OBOF-DS-checklistOutProcessing', ID = gallery_checklists.Selected.ID),
+                            {
+                                outprocessingState: {Value: "In Progress"},
+                                outprocessingCompletedDate: Blank()
+                            }
+                        );
+                        //Select(refreshChecklists);
+                    );
+                    Notify("Chekclist Not Completed", NotificationType.Warning),
+                    If(LookUp('OBOF-DS-checklistOutProcessing', ID = gallery_checklists.Selected.ID).outprocessingState.Value <> "Completed",
+                        Patch('OBOF-DS-checklistOutProcessing',
+                            LookUp('OBOF-DS-checklistOutProcessing', ID = gallery_checklists.Selected.ID),
+                            {
+                                outprocessingState: {Value: "Completed"},
+                                outprocessingCompletedDate: Now()
+                            }
+                        );
+                        //Select(refreshChecklists);
+                    );
+                    Notify("Checklist Completed", NotificationType.Success)
+                );
+    IWAMQueryDCID(UserID As String):
+        UserID:
+            Default: ="Text"
+        ThisProperty:
+            Default: |-
+                =ClearCollect(_responseIWAMQueryDCID, 
+                    DropColumns(
+                        AddColumns(
+                            PowerBI.ExecuteDatasetQuery("208885bd-ffb9-441b-8c9a-2106d426e81a", "d190c00c-71e7-4a6a-a53e-1b1ca7aa7ec9",
+                                $"EVALUATE
+                					CALCULATETABLE(
+                						'IWAM USERS',
+                						'IWAM USERS'[USERID] = ""{UserID}""
+                					)"
+                            ).firstTableRows,
+                            "USERID", Text(ThisRecord.Value.'IWAM USERS[USERID]'),
+                            "ACTIVE", If(ThisRecord.Value.'IWAM USERS[ACTIVE]', "true", true, false),
+                            "USR_LAST_NAME", Text(ThisRecord.Value.'IWAM USERS[USR_LAST_NAME]'),
+                            "USR_MIDDLE_INITIAL", Text(ThisRecord.Value.'IWAM USERS[USR_MIDDLE_INITIAL]'),
+                            "DCMA_ORGANIZATION_LEVEL", Text(ThisRecord.Value.'IWAM USERS[DCMA_ORGANIZATION_LEVEL]'),
+                            "DCMA_EMPLOYEE_TYPE", Text(ThisRecord.Value.'IWAM USERS[DCMA_EMPLOYEE_TYPE]'),
+                            "DCMA_JOB_SERIES", Value(ThisRecord.Value.'IWAM USERS[DCMA_JOB_SERIES]'),
+                            "IS_SUPERVISOR", Text(ThisRecord.Value.'IWAM USERS[IS_SUPERVISOR]'),
+                            "DCMA_EMAIL", Text(ThisRecord.Value.'IWAM USERS[DCMA_EMAIL]'),
+                            "TELEPHONE", Text(ThisRecord.Value.'IWAM USERS[TELEPHONE]'),
+                            "USR_FULLNAME", Text(ThisRecord.Value.'IWAM USERS[USR_FULLNAME]'),
+                            "DIRECT_SUPERVISOR", Text(ThisRecord.Value.'IWAM USERS[DIRECT_SUPERVISOR]'),
+                            "DCMA_SITE_ID", Value(ThisRecord.Value.'IWAM USERS[DCMA_SITE_ID]'),
+                            "USR_FIRST_NAME", Text(ThisRecord.Value.'IWAM USERS[USR_FIRST_NAME]')
+                        ),
+                        "Value"
+                    )
+                );
+                ShowColumns(First(_responseIWAMQueryDCID),
+                    "USERID",
+                    "ACTIVE",
+                    "USR_LAST_NAME",
+                    "USR_MIDDLE_INITIAL",
+                    "DCMA_ORGANIZATION_LEVEL",
+                    "DCMA_EMPLOYEE_TYPE",
+                    "DCMA_JOB_SERIES",
+                    "IS_SUPERVISOR",
+                    "DCMA_EMAIL",
+                    "TELEPHONE",
+                    "USR_FULLNAME",
+                    "DIRECT_SUPERVISOR",
+                    "DCMA_SITE_ID",
+                    "USR_FIRST_NAME"
+                )
+    IWAMQueryEmail(Email As String):
+        Email:
+            Default: ="Text"
+        ThisProperty:
+            Default: |-
+                =ClearCollect(_responseIWAMQueryEmail, 
+                    DropColumns(
+                        AddColumns(
+                            PowerBI.ExecuteDatasetQuery("208885bd-ffb9-441b-8c9a-2106d426e81a", "d190c00c-71e7-4a6a-a53e-1b1ca7aa7ec9",
+                                $"EVALUATE
+                					CALCULATETABLE(
+                						'IWAM USERS',
+                						'IWAM USERS'[DCMA_EMAIL] = ""{Email}""
+                					)"
+                            ).firstTableRows,
+                            "USERID", Text(ThisRecord.Value.'IWAM USERS[USERID]'),
+                            "ACTIVE", If(ThisRecord.Value.'IWAM USERS[ACTIVE]', "true", true, false),
+                            "USR_LAST_NAME", Text(ThisRecord.Value.'IWAM USERS[USR_LAST_NAME]'),
+                            "USR_MIDDLE_INITIAL", Text(ThisRecord.Value.'IWAM USERS[USR_MIDDLE_INITIAL]'),
+                            "DCMA_ORGANIZATION_LEVEL", Text(ThisRecord.Value.'IWAM USERS[DCMA_ORGANIZATION_LEVEL]'),
+                            "DCMA_EMPLOYEE_TYPE", Text(ThisRecord.Value.'IWAM USERS[DCMA_EMPLOYEE_TYPE]'),
+                            "DCMA_JOB_SERIES", Value(ThisRecord.Value.'IWAM USERS[DCMA_JOB_SERIES]'),
+                            "IS_SUPERVISOR", Text(ThisRecord.Value.'IWAM USERS[IS_SUPERVISOR]'),
+                            "DCMA_EMAIL", Text(ThisRecord.Value.'IWAM USERS[DCMA_EMAIL]'),
+                            "TELEPHONE", Text(ThisRecord.Value.'IWAM USERS[TELEPHONE]'),
+                            "USR_FULLNAME", Text(ThisRecord.Value.'IWAM USERS[USR_FULLNAME]'),
+                            "DIRECT_SUPERVISOR", Text(ThisRecord.Value.'IWAM USERS[DIRECT_SUPERVISOR]'),
+                            "DCMA_SITE_ID", Value(ThisRecord.Value.'IWAM USERS[DCMA_SITE_ID]'),
+                            "USR_FIRST_NAME", Text(ThisRecord.Value.'IWAM USERS[USR_FIRST_NAME]')
+                        ),
+                        "Value"
+                    )
+                );
+                ShowColumns(_responseIWAMQueryEmail,
+                    "USERID",
+                    "ACTIVE",
+                    "USR_LAST_NAME",
+                    "USR_MIDDLE_INITIAL",
+                    "DCMA_ORGANIZATION_LEVEL",
+                    "DCMA_EMPLOYEE_TYPE",
+                    "DCMA_JOB_SERIES",
+                    "IS_SUPERVISOR",
+                    "DCMA_EMAIL",
+                    "TELEPHONE",
+                    "USR_FULLNAME",
+                    "DIRECT_SUPERVISOR",
+                    "DCMA_SITE_ID",
+                    "USR_FIRST_NAME"
+                )
+    IWAMQueryOrganization(OrganizationCodeParent As String, OrganizationCode As String, OrganizationName As String):
+        OrganizationCodeParent:
+            Default: ="Text"
+        OrganizationCode:
+            Default: ="Text"
+        OrganizationName:
+            Default: ="Text"
+        ThisProperty:
+            Default: |-
+                =Set(inputParameters, 
+                    [
+                        {ID: 1, Value: OrganizationCodeParent, OrganizationScope: "ORGANIZATIONS[Parent ORG Code]", IsUsed: If(!IsBlank(OrganizationCodeParent), true, false)},
+                        {ID: 2, Value: OrganizationCode, OrganizationScope: "ORGANIZATIONS[ORG Code]", IsUsed: If(!IsBlank(OrganizationCode), true, false)},
+                        {ID: 3, Value: OrganizationName, OrganizationScope: "ORGANIZATIONS[ORG_NAME]", IsUsed: If(!IsBlank(OrganizationName), true, false)}
+                    ]
+                );
+                
+                If(CountIf(inputParameters, IsUsed = true) > 1,
+                    Notify("IWAM Query Organization: Unexpected input parameter.", NotificationType.Error),
+                    Set(HasInput, LookUp(inputParameters, IsUsed = true).ID)
+                );
+                
+                Switch(HasInput,
+                    1, Set(p, {Value: OrganizationCodeParent, OrganizationScope: "ORGANIZATIONS[Parent ORG Code]"}),
+                    2, Set(p, {Value: OrganizationCode, OrganizationScope: "ORGANIZATIONS[ORG Code]"}),
+                    3, Set(p, {Value: OrganizationName, OrganizationScope: "ORGANIZATIONS[ORG_NAME]"}),
+                    Set(p, {Value: OrganizationName, OrganizationScope: "ORGANIZATIONS[ORG_NAME]"})
+                );
+                
+                ClearCollect(_responseIWAMQueryOrganization,
+                    DropColumns(
+                        AddColumns(
+                            PowerBI.ExecuteDatasetQuery("208885bd-ffb9-441b-8c9a-2106d426e81a", "d190c00c-71e7-4a6a-a53e-1b1ca7aa7ec9",
+                                $"EVALUATE
+                                    CALCULATETABLE(
+                                        ORGANIZATIONS,
+                                        CONTAINSSTRING({p.OrganizationScope}, ""{p.Value}"")
+                                    )
+                                ORDER BY ORGANIZATIONS[ORG_NAME]"
+                            ).firstTableRows,
+                            "ENTITY_CODE", Text(ThisRecord.Value.'ORGANIZATIONS[ENTITY_CODE]'),
+                            "LVL", Value(ThisRecord.Value.'ORGANIZATIONS[LVL]'),
+                            "ORG Code", Text(ThisRecord.Value.'ORGANIZATIONS[ORG Code]'),
+                            "ORG_ID", Value(ThisRecord.Value.'ORGANIZATIONS[ORG_ID]'),
+                            "ORG_NAME", Text(ThisRecord.Value.'ORGANIZATIONS[ORG_NAME]'),
+                            "ORG_TYPE", Text(ThisRecord.Value.'ORGANIZATIONS[ORG_TYPE]'),
+                            "Parent ORG Code", Text(ThisRecord.Value.'ORGANIZATIONS[Parent ORG Code]'),
+                            "Parent ORG ID", Value(ThisRecord.Value.'ORGANIZATIONS[Parent ORG ID]'),
+                            "REPORT_PARENT_ID", Value(ThisRecord.Value.'ORGANIZATIONS[REPORT_PARENT_ID]')
+                        ),
+                        "Value"
+                    )
+                );
+                
+                ShowColumns(_responseIWAMQueryOrganization,
+                    "ENTITY_CODE",
+                    "LVL",
+                    "ORG Code",
+                    "ORG_ID",
+                    "ORG_NAME",
+                    "ORG_TYPE",
+                    "Parent ORG Code",
+                    "Parent ORG ID",
+                    "REPORT_PARENT_ID"
+                )
+    NewChcklist():
+        ThisProperty:
+            Default: |-
+                =With(
+                    {
+                        varDateMod: If(Weekday(DateAdd(datepicker_DepartureDate_3.SelectedDate, (1 + (RoundDown((1 / 5) * 2, 0)))*-1, TimeUnit.Days)) = 7,
+                            DateAdd(datepicker_DepartureDate_3.SelectedDate, (1 + (RoundDown((1 / 5) * 2, 0)))*-1 - 1, TimeUnit.Days),
+                            If(Weekday(DateAdd(datepicker_DepartureDate_3.SelectedDate, (1 + (RoundDown((1 / 5) * 2, 0)))*-1, TimeUnit.Days)) = 1,
+                                DateAdd(datepicker_DepartureDate_3.SelectedDate, (1 + (RoundDown((1 / 5) * 2, 0)))*-1 + 1, TimeUnit.Days),
+                                    DateAdd(datepicker_DepartureDate_3.SelectedDate, (1 + (RoundDown((1 / 5) * 2, 0)))*-1, TimeUnit.Days)))
+                    },
+                
+                    /*
+                    // REMOVED THIS CODE BUT LEFT AS REFERENCE
+                    UpdateContext(
+                        {
+                            numBusinessDays: 1 + ((DateDiff(Today(),varDateMod,TimeUnit.Days)) * 5 - ((Weekday(Today()) - Weekday(varDateMod))*2)) / 7 - Switch(Weekday(varDateMod),7,1,0) - Switch(Weekday(Today()),1,1,0)
+                        }
+                    );
+                    */
+                
+                    Set(numBusinessDaysNewChecklist, 1 + ((DateDiff(Today(),varDateMod,TimeUnit.Days)) * 5 - ((Weekday(Today()) - Weekday(varDateMod))*2)) / 7 - Switch(Weekday(varDateMod),7,1,0) - Switch(Weekday(Today()),1,1,0));
+                
+                    If(
+                        // BEGIN LOGICAL TEST
+                        IsBlank(combobox_EmployeeName_3.Selected.Mail) ||
+                        IsBlank(combobox_Supervisor_3.Selected.Mail) ||
+                        IsBlank(combobox_Designee_3.Selected.Mail) ||
+                        IsBlank(combobox_Organization_3.Selected.ORG_NAME) ||
+                        IsBlank(input_OrganizationCode_3.Text) ||
+                        IsBlank(combobox_Service_3.Selected.Value) ||
+                        If(combobox_Service_3.Selected.Value = "Military" && IsBlank(combobox_MilitaryServiceBranch_3.Selected.Value), true, false) ||
+                        IsBlank(combobox_PayPlanGrade_3.Selected.v) ||
+                        IsBlank(combobox_OutprocessingStatus_3.Selected.Value) ||
+                        IsBlank(datepicker_DepartureDate_3.SelectedDate) ||
+                        If(combobox_EmployeeName_3.Selected.Id = combobox_Designee_3.Selected.Id, true, false) ||
+                        If(combobox_EmployeeName_3.Selected.Id = combobox_Supervisor_3.Selected.Id, true, false) ||
+                        If(("Transfer" in combobox_OutprocessingStatus_3.Selected.Value && IsBlank(input_NewEmployerName_3.Text) || ("Transfer" in combobox_OutprocessingStatus_3.Selected.Value && IsBlank(input_NewEmployerAddress_3.Text))), true, false),
+                        // END LOGICAL TEST
+                
+                        // BEGIN TRUE RESULT - LOGICAL TEST - POPUP ERROR IF TRUE FROM LOGICAL TEST
+                        Set(popupScope, "popup_main_newChecklistPatch");
+                        Set(isMainPopupVisible, true);
+                        false,
+                        // END TRUE RESULT - LOGICAL TEST
+                
+                        // BUILD JSON SCHEMA FOR CHECKLIST TASKS
+                        Set(isBuildChecklistTasksRunning, true);
+                        With(
+                            { 
+                                newChecklistObj: {
+                                    employeeName: combobox_EmployeeName_3.Selected,
+                                    designee: combobox_Designee_3.Selected,
+                                    supervisor: combobox_Supervisor_3.Selected,
+                                    outprocessingStatus: combobox_OutprocessingStatus_3.Selected,
+                                    departureDate: datepicker_DepartureDate_3.SelectedDate
+                                },
+                                
+                                tasksChecklistObj: JSON(
+                                    ForAll(
+                                        If(!toggle_DelegationNewChecklist.Value, // LOGIC FOR NON-DELEGATED
+                                            // NON-DELEGATED FILTER FOR TASKS ASSOCIATED WITH SERVICE
+                                            Filter(col_templateChecklistOutprocessing, active = true && First(currentUser).service.Value in Ungroup(service, "Value").Value),
+                                            // DELEGATED FILTER FOR TASKS ASSOCIATED WITH SERVICE
+                                            Filter(col_templateChecklistOutprocessing, active = true && combobox_Service_3.Selected.Value in Ungroup(service, "Value").Value)
+                                        ),
+                                        {
+                                            ID: actionItem,
+                                            actionItem: actionItem,
+                                            groupValue: groupValue,
+                                            service: service,
+                                            isSupervisorACB: isSupervisorACB,
+                                            isDesigneeACB: isDesigneeACB,
+                                            isEmployeeACB: isEmployeeACB,
+                                            isMSOACB: isMSOACB,
+                                            isNAACB: isNAACB,
+                                            isClearingOffice: isClearingOffice,
+                                            uid: uid,
+                                            autoNotify: autoNotify,
+                                            mandatoryClearingOfficeACB: mandatoryClearingOfficeACB,
+                                            notificationDetails: {isNotified: false, email: Text(""), timestamp: Date(1970, 1, 1)},
+                                            dueInDays: dueInDays,
+                                            dueInDaysEval: {
+                                                dueDate: With({taskDD: datepicker_DepartureDate_3.SelectedDate},
+                                                        DateValue(If(Weekday(DateAdd(taskDD, (dueInDays + (RoundDown((dueInDays / 5) * 2, 0)))*-1, TimeUnit.Days)) = 7,
+                                                            DateAdd(taskDD, (dueInDays + (RoundDown((dueInDays / 5) * 2, 0)))*-1 - 1, TimeUnit.Days),
+                                                            If(Weekday(DateAdd(taskDD, (dueInDays + (RoundDown((dueInDays / 5) * 2, 0)))*-1, TimeUnit.Days)) = 1,
+                                                                DateAdd(taskDD, (dueInDays + (RoundDown((dueInDays / 5) * 2, 0)))*-1 + 1, TimeUnit.Days),
+                                                                    DateAdd(taskDD, (dueInDays + (RoundDown((dueInDays / 5) * 2, 0)))*-1, TimeUnit.Days))))),
+                                                daysRemaining: With({taskDDMod: 
+                                                    If(Weekday(DateAdd(datepicker_DepartureDate_3.SelectedDate, (dueInDays + (RoundDown((dueInDays / 5) * 2, 0)))*-1, TimeUnit.Days)) = 7,
+                                                        DateAdd(datepicker_DepartureDate_3.SelectedDate, (dueInDays + (RoundDown((dueInDays / 5) * 2, 0)))*-1 - 1, TimeUnit.Days),
+                                                        If(Weekday(DateAdd(datepicker_DepartureDate_3.SelectedDate, (dueInDays + (RoundDown((dueInDays / 5) * 2, 0)))*-1, TimeUnit.Days)) = 1,
+                                                            DateAdd(datepicker_DepartureDate_3.SelectedDate, (dueInDays + (RoundDown((dueInDays / 5) * 2, 0)))*-1 + 1, TimeUnit.Days),
+                                                                DateAdd(datepicker_DepartureDate_3.SelectedDate, (dueInDays + (RoundDown((dueInDays / 5) * 2, 0)))*-1, TimeUnit.Days)))},
+                                                    Value(1 + ((DateDiff(Today(),taskDDMod,TimeUnit.Days)) * 5 - ((Weekday(Today()) - Weekday(taskDDMod))*2)) / 7 - Switch(Weekday(taskDDMod),7,1,0) - Switch(Weekday(Today()),1,1,0)))
+                                            },
+                                            createServiceRequest: createServiceRequest,
+                                            isServiceRequestCompleted: false,
+                                            serviceRequestNumber: Text(""),
+                                            urlServiceRequest: urlServiceRequest,
+                                            transactLog: [
+                                                {
+                                                    log: Text("[USER: " & First(currentUser).mail & "];[ACTION ITEM: " & actionItem & "];[FUNCTION: New Checklist];[DELEGATED: " & Upper(toggle_DelegationNewChecklist.Value) & "];New checklist task added for " & combobox_EmployeeName_3.Selected.Surname & ", " &combobox_EmployeeName_3.Selected.GivenName & " in group " & groupValue),
+                                                    timestamp: Text(Now(), "mm/dd/yyyy hh:mm:ss"),
+                                                    ID: 1
+                                                }
+                                            ],
+                                            extendAttributes: extendAttributes,
+                                            extendAttributesJSON: ForAll(Table(ParseJSON(extendAttributesJSON)), 
+                                                    {
+                                                        ID: Value(ThisRecord.Value.ID), 
+                                                        description: Text(ThisRecord.Value.description), 
+                                                        response: Text(ThisRecord.Value.response), 
+                                                        responded: Value(If(Value(ThisRecord.Value.responded) = 0, false, true))
+                                                    }
+                                                ),
+                                            taskCompletionTelemetry: Table(
+                                                    If(isClearingOffice, {Value: 0, t: "signatureClearingOffice"}, {Value: -1, t: "signatureClearingOffice"}),
+                                                    If(isEmployeeACB, {Value: 0, t: "signatureEmployee"}, {Value: -1, t: "signatureEmployee"}),
+                                                    If(isMSOACB, {Value: 0, t: "signatureMSO"}, {Value: -1, t: "signatureMSO"}),
+                                                    If(isDesigneeACB && !isSupervisorACB, {Value: 0, t: "signatureDesignee"}, {Value: -1, t: "signatureDesignee"}),
+                                                    If(isSupervisorACB && !isDesigneeACB, {Value: 0, t: "signatureSupervisor"}, {Value: -1, t: "signatureSupervisor"}),
+                                                    If(isSupervisorACB && isDesigneeACB, {Value: 0, t: "signatureSupervisorDesignee"}, {Value: -1, t: "signatureSupervisorDesignee"})
+                                                ),
+                                            signatureSupervisor: {signature: Text(""),date: Date(1970, 1, 1),isComplete: 0,uid: Text("")},
+                                            signatureDesignee: {signature: Text(""),date: Date(1970, 1, 1),isComplete: 0,uid:Text("")},
+                                            signatureEmployee: {signature: Text(""),date: Date(1970, 1, 1),isComplete: 0,uid: Text("")},
+                                            signatureSupervisorDesignee: {signature: Text(""),date: Date(1970, 1, 1),isComplete: 0,uid: Text("")},
+                                            signatureMSO: {signature: Text(""),date: Date(1970, 1, 1),isComplete: 0,uid: Text("")},
+                                            signatureClearingOffice: {signature: Text(""),date: Date(1970, 1, 1),isComplete: 0,uid: Text("")},
+                                            signatureNAACB: {signature: Text(""),date: Date(1970, 1, 1),isComplete: 0,uid: Text("")}
+                                        }
+                                    )
+                                )
+                            },
+                            // END JSON SCHEMA FOR CHECKLIST TASKS
+                
+                            // CREATE USER PROFILE IF DELEGATION IS TRUE
+                            If(toggle_DelegationNewChecklist.Value, 
+                                Patch('OBOF-DS-userDelegation',
+                                    If(IsBlank((LookUp('OBOF-DS-userDelegation', uid = combobox_EmployeeName_3.Selected.Id))),
+                                        Defaults('OBOF-DS-userDelegation'),
+                                        LookUp('OBOF-DS-userDelegation', uid = combobox_EmployeeName_3.Selected.Id)
+                                    ),
+                                    {
+                                        uid: combobox_EmployeeName_3.Selected.Id,
+                                        displayName: combobox_EmployeeName_3.Selected.DisplayName,
+                                        givenName: combobox_EmployeeName_3.Selected.GivenName,
+                                        surname: combobox_EmployeeName_3.Selected.Surname,
+                                        payPlan_Grade: combobox_PayPlanGrade_3.Selected.v,
+                                        grade: Value(combobox_PayPlanGrade_3.Selected.g),
+                                        payPlan: combobox_PayPlanGrade_3.Selected.p,
+                                        service: combobox_Service_3.Selected,
+                                        militaryServiceBranch: combobox_MilitaryServiceBranch_3.Selected,
+                                        mail: combobox_EmployeeName_3.Selected.Mail,
+                                        accountEnabled: combobox_EmployeeName_3.Selected.AccountEnabled,
+                                        jobTitle:combobox_EmployeeName_3.Selected.JobTitle,
+                                        streetAddress: Blank(), //VALUE NOT USED IN DATA
+                                        city:combobox_EmployeeName_3.Selected.City,
+                                        postalCode: combobox_EmployeeName_3.Selected.PostalCode,
+                                        companyName: combobox_EmployeeName_3.Selected.CompanyName,
+                                        department: combobox_EmployeeName_3.Selected.Department,
+                                        //organization: combobox_Organization_3.Selected,
+                                        organization_v2: combobox_Organization_3.Selected.ORG_NAME,
+                                        organizationId: combobox_Organization_3.Selected.ORG_ID,
+                                        organizationCode: input_OrganizationCode_3.Text,
+                                        isEmployee: true,
+                                        officeLocation: combobox_EmployeeName_3.Selected.OfficeLocation,
+                                        supervisor: {
+                                            '@odata.type':"#Microsoft.Azure.Connectors.SharePoint.SPListExpandedUser",
+                                            Claims: Concatenate("i:0#.f|membership|", combobox_Supervisor_3.Selected.Mail),
+                                            Department: combobox_Supervisor_3.Selected.Department,
+                                            DisplayName: combobox_Supervisor_3.Selected.DisplayName,
+                                            Email: combobox_Supervisor_3.Selected.Mail,
+                                            JobTitle: combobox_Supervisor_3.Selected.JobTitle,
+                                            Picture: ""
+                                        },
+                                        supervisorUid: combobox_Supervisor_3.Selected.Id,
+                                        supervisorDisplayName: combobox_Supervisor_3.Selected.DisplayName,
+                                        supervisorGivenName: combobox_Supervisor_3.Selected.GivenName,
+                                        supervisorSurname: combobox_Supervisor_3.Selected.Surname,
+                                        supervisorEmail: combobox_Supervisor_3.Selected.Mail,
+                                        supervisorPhone: combobox_Supervisor_3.Selected.TelephoneNumber,
+                                        delegationUid: combobox_Designee_3.Selected.Id
+                                    }
+                                );
+                                ClearCollect(delegatedUser, 'OBOF-DS-userDelegation');
+                            );
+                            // END CREATE USER PROFILE IF DELEGATION IS TRUE
+                
+                            // CREATE EMPLOYEE OUT-PROCESSING CHECKLIST
+                            Set(chkRecord,
+                                Patch('OBOF-DS-checklistOutProcessing',
+                                    Defaults('OBOF-DS-checklistOutProcessing'),
+                                    {
+                                        uidUser: newChecklistObj.employeeName.Id,
+                                        uidDesignee: newChecklistObj.designee.Id,
+                                        uidSupervisor: newChecklistObj.supervisor.Id,
+                                        checklistStatus: newChecklistObj.outprocessingStatus,
+                                        departureDate: newChecklistObj.departureDate,
+                                        outprocessingState: {Value: "In Progress"},
+                                        isDelegated: If(toggle_DelegationNewChecklist.Value && checkbox_DelegationAcknowledge.Checked, true, false),
+                                        newEmployerAgency: input_NewEmployerName_3.Text,
+                                        newEmployerAgencyAddress: input_NewEmployerAddress_3.Text,
+                                        checklistJSON: tasksChecklistObj
+                                    }
+                                )
+                            );
+                            // END CREATE EMPLOYEE OUT-PROCESSING CHECKLIST
+                        );
+                        
+                        Set(isNewChecklistVisible, false);
+                        true        
+                    );
+                    
+                )
+    RecordTransactLog(LogType As String):
+        LogType:
+            Default: ="Text"
+        ThisProperty:
+            Default: |+
+                =With(
+                    {
+                        selectedTask: LookUp(col_checklistTasks, gallery_checklistTasks.Selected.ID = ID)
+                    },
+                    With(
+                        {
+                            transactions: selectedTask.transactLog,
+                            actionItem: gallery_checklistTasks.Selected.actionItem,
+                            groupValue: gallery_checklistTasks.Selected.groupValue,
+                            isDelegated: gallery_checklists.Selected.isDelegated,
+                            currentUserName: First(currentUser).surname & ", " & First(currentUser).givenName,
+                            delegatedUserName: First(Ungroup(gallery_checklists.Selected.employee, "surname")).surname & ", " & First(Ungroup(gallery_checklists.Selected.employee, "surname")).givenName
+                        },
+                        
+                            ClearCollect(ta, transactions);
+                
+                            Switch(LogType,
+                            
+                                "addSignature", 
+                                    Set(log,
+                                        {
+                                            logObj: 
+                                                {
+                                                    logID: Value(Value(Last(ta).ID) + 1),
+                                                    logMsg: Text("[USER: " & First(currentUser).mail & "];[ACTION ITEM: " & actionItem & "];[FUNCTION: Add Signature];[DELEGATED: " & Upper(isDelegated) & "];Action Completed By: " & If(isDelegated, currentUserName & " on behalf of employee " & delegatedUserName, currentUserName) & " in group " & groupValue) & ".",
+                                                    logTimestamp: DateTimeValue(Text(Now(), DateTimeFormat.LongDateTime))
+                                                }
+                                        }
+                                    ),
+                
+                                "removeSignature", 
+                                    Set(log,
+                                        {
+                                            logObj: 
+                                                {
+                                                    logID: Value(Value(Last(ta).ID) + 1),
+                                                    logMsg: Text("[USER: " & First(currentUser).mail & "];[ACTION ITEM: " & actionItem & "];[FUNCTION: Remove Signature];[DELEGATED: " & Upper(isDelegated) & "];Action Reversed By: " & If(isDelegated, currentUserName & " on behalf of employee " & delegatedUserName, currentUserName) & " in group " & groupValue) & ".",
+                                                    logTimestamp: DateTimeValue(Text(Now(), DateTimeFormat.LongDateTime))
+                                                }
+                                        }
+                                    )
+                
+                            );
+                            
+                            Patch(ta,
+                                Defaults(ta), 
+                                {
+                                    ID: log.logObj.logID,
+                                    log: log.logObj.logMsg,
+                                    timestamp: log.logObj.logTimestamp
+                                }
+                            );
+                
+                            Patch(col_checklistTasks,
+                                selectedTask,
+                                {
+                                    transactLog: ta
+                                }
+                            );
+                            Clear(ta);
+                        );
+                    /*
+                    // REMOVE CODE BUT LEFT FOR REFERENCE
+                    Switch(transactLogScope,
+                        "addSignature",
+                            Select(signatureTask),
+                        "removeSignature",
+                            Select(eraseSignatureTask),
+                        "updateChecklist",
+                            Select(updateChecklistAttributes);
+                    );
+                    */
+                );
+                
+    Refresh(Delay As Boolean, GlobalFilter As String):
+        Delay:
+            Default: =true
+        GlobalFilter:
+            Default: ="Text"
+        ThisProperty:
+            Default: |-
+                =Set(isBuildChecklistTasksRunning, true);
+                //Set(defaultGalleryCheklistItem, gallery_checklists.Selected);
+                
+                // COLLECTION CHECKLIST TEMPLATES
+                Refresh('OBOF-DS-appSettings');
+                Refresh('OBOF-DS-userDelegation');
+                Refresh('GLBL-DS-userRegistration');
+                Refresh('OBOF-DS-checklistOutProcessing');
+                Refresh('OBOF-DS-templateOutProcessingChecklist');
+                Refresh('OBOF-DS-templateOutProcessingChecklistLocalTask');
+                
+                ClearCollect(col_organizations, DataSourceComponent.IWAMQueryOrganization("","",""));
+                ClearCollect(col_IWAMUserInfo, DataSourceComponent.IWAMQueryEmail(User().Email));
+                ClearCollect(col_IWAMSupervisor, DataSourceComponent.IWAMQueryDCID(First(col_IWAMUserInfo).DIRECT_SUPERVISOR));
+                ClearCollect(col_IWAMUser,
+                    AddColumns(
+                        col_IWAMUserInfo,
+                        "super_USERID", First(col_IWAMSupervisor).USERID,
+                        "super_ACTIVE", First(col_IWAMSupervisor).ACTIVE,
+                        "super_USR_LAST_NAME", First(col_IWAMSupervisor).USR_LAST_NAME,
+                        "super_USR_MIDDLE_INITIAL", First(col_IWAMSupervisor).USR_MIDDLE_INITIAL,
+                        "super_USR_FIRST_NAME", First(col_IWAMSupervisor).USR_FIRST_NAME,
+                        "super_DCMA_ORGANIZATION_LEVEL", First(col_IWAMSupervisor).DCMA_ORGANIZATION_LEVEL,
+                        "super_DCMA_EMPLOYEE_TYPE", First(col_IWAMSupervisor).DCMA_EMPLOYEE_TYPE,
+                        "super_DCMA_JOB_SERIES", First(col_IWAMSupervisor).DCMA_JOB_SERIES,
+                        "super_IS_SUPERVISOR", First(col_IWAMSupervisor).IS_SUPERVISOR,
+                        "super_DCMA_EMAIL", First(col_IWAMSupervisor).DCMA_EMAIL,
+                        "super_TELEPHONE", First(col_IWAMSupervisor).TELEPHONE,
+                        "super_USR_FULLNAME", First(col_IWAMSupervisor).USR_FULLNAME,
+                        "super_DIRECT_SUPERVISOR", First(col_IWAMSupervisor).DIRECT_SUPERVISOR,
+                        "super_DCMA_SITE_ID", First(col_IWAMSupervisor).DCMA_SITE_ID
+                    )
+                );
+                
+                //Refresh(gallery_checklists);
+                
+                ClearCollect(col_templateChecklistOutprocessing, SortByColumns('OBOF-DS-templateOutProcessingChecklist', "actionItem", SortOrder.Ascending));
+                ClearCollect(col_templateChecklistOutprocessingLocalTask, SortByColumns('OBOF-DS-templateOutProcessingChecklistLocalTask', "actionItem", SortOrder.Ascending));
+                
+                With(
+                    {
+                        obj_currentUserV2: Table(LookUp('GLBL-DS-userRegistration', uid = Office365Users.MyProfileV2().id))
+                    },
+                    ClearCollect(currentUser,
+                        AddColumns(
+                            obj_currentUserV2,
+                            "isTFManager", !IsBlank(LookUp(memberOf, id in _TFManager.role).id),
+                            "isTFProgramManager", !IsBlank(LookUp(memberOf, id in _TFProgramManager.role).id),
+                            "isEmployee", !IsBlank(LookUp(memberOf, id in _Employee.role).id),
+                            "isSupervisor", !IsBlank(LookUp(memberOf, id in _Supervisor.role).id),
+                            "isMSO", !IsBlank(LookUp(memberOf, id in _MSO.role).id),
+                            "isClearingOffice", !IsBlank(LookUp(memberOf, id in _ClearingOffice.role).id)
+                        )
+                    )
+                );
+                
+                With(
+                    {
+                        outprocessingChecklistItems: ShowColumns(
+                            Filter('OBOF-DS-checklistOutProcessing',outprocessingState.Value = GlobalFilter),
+                            "ID",
+                            "uidUser",
+                            "uidDesignee",
+                            "uidSupervisor",
+                            "checklistStatus",
+                            "departureDate",
+                            "outprocessingState",
+                            "outprocessingCompletedDate",
+                            "isDelegated",
+                            "Created",
+                            "newEmployerAgency",
+                            "newEmployerAgencyAddress"
+                        ) // SELECT COLUMNS
+                    },
+                    With(
+                        {
+                            // AGGREGATE ALL FOREIGN TABLES INTO A SINGLE OBJECT
+                            outprocessingChecklistItemsAggregation: AddColumns(
+                                outprocessingChecklistItems,
+                
+                                // IDENTIFY IF EMPLOYEE CHECKLIST IS DELEGATED -->> AGGREGATE DATA ON EMPLOYEE
+                                // IF isDelegate
+                                "employee", If(isDelegated, 
+                                    ShowColumns(Table(LookUp('OBOF-DS-userDelegation' As ud, uidUser = ud.uid)), 
+                                        "uid","displayName","givenName","surname","jobTitle","mail","organization_v2","organizationCode","payPlan_Grade","payPlan","grade","department","service","militaryServiceBranch"), 
+                                    ShowColumns(Table(LookUp('GLBL-DS-userRegistration' As ur, uidUser = ur.uid)),
+                                        "uid","displayName","givenName","surname","jobTitle","mail","organization_v2","organizationCode","payPlan_Grade","payPlan","grade","department","service","militaryServiceBranch")), // END IF isDelegate | employee
+                                
+                                // AGGREGATE DATA ON DESIGNEE
+                                "designee", If(!IsBlank(LookUp('GLBL-DS-userRegistration' As ur, uidDesignee = ur.uid).uid),
+                                    ShowColumns(Table(LookUp('GLBL-DS-userRegistration' As ur, uidDesignee = ur.uid)),
+                                        "uid","displayName","givenName","surname","jobTitle","mail","organization_v2","organizationCode","payPlan_Grade","payPlan","grade","department","service","militaryServiceBranch"),
+                                    With(
+                                        {
+                                            graphApiResponseDesignee: Office365Groups.HttpRequest($"https://dod-graph.microsoft.us/v1.0/users/{uidDesignee}", "GET", "")
+                                        },
+                                        [
+                                            {
+                                                uid: Text(graphApiResponseDesignee.id),
+                                                displayName: Text(graphApiResponseDesignee.displayName),
+                                                givenName: Text(graphApiResponseDesignee.givenName),
+                                                surname: Text(graphApiResponseDesignee.surname),
+                                                jobTitle: Text(graphApiResponseDesignee.jobTitle),
+                                                mail: Text(graphApiResponseDesignee.mail),
+                                                organization: "",
+                                                organizationCode: "",
+                                                payPlan_Grade: "",
+                                                payPlan: "",
+                                                grade: "",
+                                                department: "",
+                                                service: [{Value: ""}],
+                                                militaryServiceBranch: ""
+                                            }
+                                        ]
+                                    )
+                                ),
+                                
+                                // AGGREGATE DATA ON SUPERVISOR
+                                "supervisor", If(!IsBlank(LookUp('GLBL-DS-userRegistration' As ur, uidSupervisor = ur.uid).uid),
+                                    ShowColumns(Table(LookUp('GLBL-DS-userRegistration' As ur, uidSupervisor = ur.uid)),
+                                        "uid","displayName","givenName","surname","jobTitle","mail","organization_v2","organizationCode","payPlan_Grade","payPlan","grade","department","service","militaryServiceBranch"),
+                                    With(
+                                        {
+                                            graphApiResponseSupervisor: Office365Groups.HttpRequest($"https://dod-graph.microsoft.us/v1.0/users/{uidSupervisor}", "GET", "")
+                                        },
+                                        [
+                                            {
+                                                uid: Text(graphApiResponseSupervisor.id),
+                                                displayName: Text(graphApiResponseSupervisor.displayName),
+                                                givenName: Text(graphApiResponseSupervisor.givenName),
+                                                surname: Text(graphApiResponseSupervisor.surname),
+                                                jobTitle: Text(graphApiResponseSupervisor.jobTitle),
+                                                mail: Text(graphApiResponseSupervisor.mail),
+                                                organization: "",
+                                                organizationCode: "",
+                                                payPlan_Grade: "",
+                                                payPlan: "",
+                                                grade: "",
+                                                department: "",
+                                                service: [{Value: ""}],
+                                                militaryServiceBranch: ""
+                                            }
+                                        ]
+                                    )
+                                )
+                            )
+                        },
+                
+                        Set(des, Office365Groups.HttpRequest($"https://dod-graph.microsoft.us/v1.0/users/35573b91-3205-4a0a-9e69-771b4d67260f", "GET", "",{ContentType: "application/json;odata=nometadata"}));
+                        
+                        // BUILD COLLECTION FROM FOREIGN TABLE AGGREGATE
+                        ClearCollect(col_outprocessingChecklistItems, outprocessingChecklistItemsAggregation);
+                    )
+                );
+                If(!Delay,
+                    Set(isBuildChecklistTasksRunning, false);,
+                    true
+                );
+                If(IsEmpty(col_outprocessingChecklistItems), Set(showGalleryLabels, true), Set(showGalleryLabels, false));
+    SendNotificationSupervisorDesignee(NotificationSupervisorDesigneeScope As String):
+        NotificationSupervisorDesigneeScope:
+            Default: ="Text"
+        ThisProperty:
+            Default: |
+                =With(
+                    {
+                        notificationAttributes: {
+                            departingEmployee: If(NotificationSupervisorDesigneeScope = "updateChecklistAttributes", combobox_EmployeeName_4.Selected, combobox_EmployeeName_3.Selected),
+                            supervisor: If(NotificationSupervisorDesigneeScope = "updateChecklistAttributes", combobox_Supervisor_4.Selected, combobox_Supervisor_3.Selected),
+                            designee: If(NotificationSupervisorDesigneeScope = "updateChecklistAttributes", combobox_Designee_4.Selected, combobox_Designee_3.Selected),
+                            checklistID: If(NotificationSupervisorDesigneeScope = "updateChecklistAttributes", gallery_checklists.Selected.ID, chkRecord.ID),
+                            departureDate: If(NotificationSupervisorDesigneeScope = "updateChecklistAttributes", datepicker_DepartureDate_4.SelectedDate,chkRecord.departureDate),
+                            organization: If(NotificationSupervisorDesigneeScope = "updateChecklistAttributes", combobox_Organization_4.Selected.ORG_NAME, combobox_Organization_3.Selected.ORG_NAME),
+                            organizationCode: If(NotificationSupervisorDesigneeScope = "updateChecklistAttributes", input_OrganizationCode_4.Text, input_OrganizationCode_3.Text)
+                        }
+                    },
+                    
+                    If((notificationAttributes.supervisor.Id = First(currentUser).uid) && !(notificationAttributes.designee.Id = First(currentUser).uid),
+                        Set(receivers, notificationAttributes.designee.Mail)
+                    );
+                    If(!(notificationAttributes.supervisor.Id = First(currentUser).uid) && notificationAttributes.designee.Id = First(currentUser).uid,
+                        Set(receivers, notificationAttributes.supervisor.Mail)
+                    );
+                    If((notificationAttributes.supervisor.Id = First(currentUser).uid) && (notificationAttributes.designee.Id = First(currentUser).uid),
+                        Set(receivers, Blank())
+                    );
+                    If((First(currentUser).uid <> notificationAttributes.supervisor.Id) && (First(currentUser).uid <> notificationAttributes.designee.Id),
+                        Set(receivers, notificationAttributes.supervisor.Mail)
+                    );
+                
+                    If(!IsBlank(receivers),
+                        'OBOF-SendNotification-SupervisorDesignee'.Run(
+                            {
+                                text: receivers,
+                                text_1: notificationAttributes.departingEmployee.DisplayName,
+                                text_2: notificationAttributes.supervisor.DisplayName,
+                                text_3: notificationAttributes.designee.DisplayName,
+                                text_4: notificationAttributes.checklistID,
+                                text_5: notificationAttributes.departureDate,
+                                text_6: notificationAttributes.organization,
+                                text_7: notificationAttributes.organizationCode,
+                                text_8: appMetadata.appEnviornment.Value,
+                                text_9: appMetadata.appUrl
+                            }
+                        )
+                    )
+                );
+    SignatureTask(SignatureType As String, ActionItem As Number):
+        SignatureType:
+            Default: ="Text"
+        ActionItem:
+            Default: =100
+        ThisProperty:
+            Default: |-
+                =With(
+                    {
+                        selectedTask: LookUp(col_checklistTasks, ActionItem = ID),
+                        returnCode: Table({})
+                    },
+                
+                    Set(isComplete, false);
+                    Switch(SignatureType,
+                        "signatureDesignee", If(LookUp(col_checklistTasks, ID = selectedTask.ID).signatureDesignee.isComplete = 1,
+                            Collect(returnCode, Defaults(returnCode), {code: 409});
+                            Set(isComplete, true);
+                            Notify($"[signatureDesignee] CODE|409 Object Security:  Task previously accomplished by: {selectedTask.signatureDesignee.signature}", NotificationType.Warning),
+                            ""
+                        ),
+                        "signatureSupervisor", If(LookUp(col_checklistTasks, ID = selectedTask.ID).signatureSupervisor.isComplete = 1,
+                            Collect(returnCode, Defaults(returnCode), {code: 409});
+                            Set(isComplete, true);
+                            Notify($"[signatureSupervisor] CODE|409 Object Security:  Task previously accomplished by: {selectedTask.signatureSupervisor.signature}", NotificationType.Warning),
+                            ""
+                        ),
+                        "signatureSupervisorDesignee", If(LookUp(col_checklistTasks, ID = selectedTask.ID).signatureSupervisorDesignee.isComplete = 1,
+                            Collect(returnCode, Defaults(returnCode), {code: 409});
+                            Set(isComplete, true);
+                            Notify($"[signatureSupervisorDesignee] CODE|409 Object Security:  Task previously accomplished by: {selectedTask.signatureSupervisorDesignee.signature}", NotificationType.Warning),
+                            ""
+                        ),
+                        "signatureEmployee", If(LookUp(col_checklistTasks, ID = selectedTask.ID).signatureEmployee.isComplete = 1,
+                            Collect(returnCode, Defaults(returnCode), {code: 409});
+                            Set(isComplete, true);
+                            Notify($"[signatureEmployee] CODE|409 Object Security:  Task previously accomplished by: {selectedTask.signatureEmployee.signature}", NotificationType.Warning),
+                            ""
+                        ),
+                        "signatureMSO", If(LookUp(col_checklistTasks, ID = selectedTask.ID).signatureMSO.isComplete = 1,
+                            Collect(returnCode, Defaults(returnCode), {code: 409});
+                            Set(isComplete, true);
+                            Notify($"[signatureMSO] CODE|409 Object Security:  Task previously accomplished by: {selectedTask.signatureMSO.signature}", NotificationType.Warning),
+                            ""
+                        ),
+                        "signatureClearingOffice", If(LookUp(col_checklistTasks, ID = selectedTask.ID).signatureClearingOffice.isComplete = 1,
+                            Collect(returnCode, Defaults(returnCode), {code: 409});
+                            Set(isComplete, true);
+                            Notify($"[signatureClearingOffice] CODE|409 Object Security:  Task previously accomplished by: {selectedTask.signatureClearingOffice.signature}", NotificationType.Warning),
+                            ""
+                        ),
+                        "signatureNAACB", If(LookUp(col_checklistTasks, ID = selectedTask.ID).signatureNAACB.isComplete = 1,
+                            Collect(returnCode, Defaults(returnCode), {code: 409});
+                            Set(isComplete, true);
+                            Notify($"[signatureNAACB] CODE|409 Object Security:  Task previously accomplished by: {selectedTask.signatureNAACB.signature}", NotificationType.Warning),
+                            If(
+                                LookUp(col_checklistTasks, ID = selectedTask.ID).signatureClearingOffice.isComplete = 1 ||
+                                LookUp(col_checklistTasks, ID = selectedTask.ID).signatureMSO.isComplete = 1 ||
+                                LookUp(col_checklistTasks, ID = selectedTask.ID).signatureEmployee.isComplete = 1 ||
+                                LookUp(col_checklistTasks, ID = selectedTask.ID).signatureSupervisorDesignee.isComplete = 1 ||
+                                LookUp(col_checklistTasks, ID = selectedTask.ID).signatureSupervisor.isComplete = 1 ||
+                                LookUp(col_checklistTasks, ID = selectedTask.ID).signatureDesignee.isComplete = 1,
+                                Set(isComplete, true);
+                                Notify($"[signatureNAACB] CODE|409 Object Security:  Task previously accomplished.", NotificationType.Warning)
+                            )
+                        )
+                    );
+                
+                    If(!IsBlank(selectedTask) && !isComplete,
+                        Patch(col_checklistTasks,
+                            selectedTask,
+                            Switch(SignatureType,
+                                "signatureDesignee", {
+                                    taskCompletionTelemetry: [
+                                        If(LookUp(col_checklistTasks, ID = selectedTask.ID).signatureDesignee.isComplete = 0, 
+                                            {Value: 1, t: "signatureDesignee"},
+                                            {Value: LookUp(selectedTask.taskCompletionTelemetry, t = "signatureDesignee").Value, t: "signatureDesignee"}
+                                        ),
+                                        {Value: LookUp(selectedTask.taskCompletionTelemetry, t = "signatureSupervisor").Value, t: "signatureSupervisor"},
+                                        {Value: LookUp(selectedTask.taskCompletionTelemetry, t = "signatureSupervisorDesignee").Value, t: "signatureSupervisorDesignee"},
+                                        {Value: LookUp(selectedTask.taskCompletionTelemetry, t = "signatureEmployee").Value, t: "signatureEmployee"},
+                                        {Value: LookUp(selectedTask.taskCompletionTelemetry, t = "signatureMSO").Value, t: "signatureMSO"},
+                                        {Value: LookUp(selectedTask.taskCompletionTelemetry, t = "signatureClearingOffice").Value, t: "signatureClearingOffice"},
+                                        {Value: LookUp(selectedTask.taskCompletionTelemetry, t = "signatureNAACB").Value, t: "signatureNAACB"}
+                                    ],
+                                    signatureDesignee:
+                                        If(LookUp(col_checklistTasks, ID = selectedTask.ID).signatureDesignee.isComplete = 0,
+                                            {
+                                                date: DateTimeValue(Text(Now(), DateTimeFormat.LongDateTime)), 
+                                                isComplete: 1, 
+                                                signature: First(currentUser).displayName, 
+                                                uid: First(currentUser).uid
+                                            },
+                                            {
+                                                date: selectedTask.signatureDesignee.date, 
+                                                isComplete: selectedTask.signatureDesignee.isComplete, 
+                                                signature: selectedTask.signatureDesignee.signature,
+                                                uid: selectedTask.signatureDesignee.uid
+                                            }
+                                        )
+                                    },
+                                "signatureSupervisor", {
+                                    taskCompletionTelemetry: [
+                                        {Value: LookUp(selectedTask.taskCompletionTelemetry, t = "signatureDesignee").Value, t: "signatureDesignee"},
+                                        If(LookUp(col_checklistTasks, ID = selectedTask.ID).signatureSupervisor.isComplete = 0, 
+                                            {Value: 1, t: "signatureSupervisor"},
+                                            {Value: LookUp(selectedTask.taskCompletionTelemetry, t = "signatureSupervisor").Value, t: "signatureSupervisor"}
+                                        ),
+                                        {Value: LookUp(selectedTask.taskCompletionTelemetry, t = "signatureSupervisorDesignee").Value, t: "signatureSupervisorDesignee"},
+                                        {Value: LookUp(selectedTask.taskCompletionTelemetry, t = "signatureEmployee").Value, t: "signatureEmployee"},
+                                        {Value: LookUp(selectedTask.taskCompletionTelemetry, t = "signatureMSO").Value, t: "signatureMSO"},
+                                        {Value: LookUp(selectedTask.taskCompletionTelemetry, t = "signatureClearingOffice").Value, t: "signatureClearingOffice"},
+                                        {Value: LookUp(selectedTask.taskCompletionTelemetry, t = "signatureNAACB").Value, t: "signatureNAACB"}
+                                    ],
+                                    signatureSupervisor: 
+                                        If(LookUp(col_checklistTasks, ID = selectedTask.ID).signatureSupervisor.isComplete = 0,
+                                            {
+                                                date: DateTimeValue(Text(Now(), DateTimeFormat.LongDateTime)), 
+                                                isComplete: 1, 
+                                                signature: First(currentUser).displayName, 
+                                                uid: First(currentUser).uid
+                                            },
+                                            {
+                                                date: selectedTask.signatureSupervisor.date, 
+                                                isComplete: selectedTask.signatureSupervisor.isComplete, 
+                                                signature: selectedTask.signatureSupervisor.signature,
+                                                uid: selectedTask.signatureSupervisor.uid
+                                            }
+                                        )
+                                    },
+                                "signatureSupervisorDesignee", {
+                                    taskCompletionTelemetry: [
+                                        {Value: LookUp(selectedTask.taskCompletionTelemetry, t = "signatureDesignee").Value, t: "signatureDesignee"},
+                                        {Value: LookUp(selectedTask.taskCompletionTelemetry, t = "signatureSupervisor").Value, t: "signatureSupervisor"},
+                                        If(LookUp(col_checklistTasks, ID = selectedTask.ID).signatureSupervisorDesignee.isComplete = 0, 
+                                            {Value: 1, t: "signatureSupervisorDesignee"},
+                                            {Value: LookUp(selectedTask.taskCompletionTelemetry, t = "signatureSupervisorDesignee").Value, t: "signatureSupervisorDesignee"}
+                                        ),
+                                        {Value: LookUp(selectedTask.taskCompletionTelemetry, t = "signatureEmployee").Value, t: "signatureEmployee"},
+                                        {Value: LookUp(selectedTask.taskCompletionTelemetry, t = "signatureMSO").Value, t: "signatureMSO"},
+                                        {Value: LookUp(selectedTask.taskCompletionTelemetry, t = "signatureClearingOffice").Value, t: "signatureClearingOffice"},
+                                        {Value: LookUp(selectedTask.taskCompletionTelemetry, t = "signatureNAACB").Value, t: "signatureNAACB"}
+                                    ],
+                                    signatureSupervisorDesignee:
+                                        If(LookUp(col_checklistTasks, ID = selectedTask.ID).signatureSupervisorDesignee.isComplete = 0,
+                                            {
+                                                date: DateTimeValue(Text(Now(), DateTimeFormat.LongDateTime)), 
+                                                isComplete: 1, 
+                                                signature: First(currentUser).displayName, 
+                                                uid: First(currentUser).uid
+                                            },
+                                            {
+                                                date: selectedTask.signatureSupervisorDesignee.date, 
+                                                isComplete: selectedTask.signatureSupervisorDesignee.isComplete, 
+                                                signature: selectedTask.signatureSupervisorDesignee.signature,
+                                                uid: selectedTask.signatureSupervisorDesignee.uid
+                                            }
+                                        )
+                                    },
+                                "signatureEmployee", {
+                                    taskCompletionTelemetry: [
+                                        {Value: LookUp(selectedTask.taskCompletionTelemetry, t = "signatureDesignee").Value, t: "signatureDesignee"},
+                                        {Value: LookUp(selectedTask.taskCompletionTelemetry, t = "signatureSupervisor").Value, t: "signatureSupervisor"},
+                                        {Value: LookUp(selectedTask.taskCompletionTelemetry, t = "signatureSupervisorDesignee").Value, t: "signatureSupervisorDesignee"},
+                                        If(LookUp(col_checklistTasks, ID = selectedTask.ID).signatureEmployee.isComplete = 0, 
+                                            {Value: 1, t: "signatureEmployee"},
+                                            {Value: LookUp(selectedTask.taskCompletionTelemetry, t = "signatureEmployee").Value, t: "signatureEmployee"}
+                                        ),
+                                        {Value: LookUp(selectedTask.taskCompletionTelemetry, t = "signatureMSO").Value, t: "signatureMSO"},
+                                        {Value: LookUp(selectedTask.taskCompletionTelemetry, t = "signatureClearingOffice").Value, t: "signatureClearingOffice"},
+                                        {Value: LookUp(selectedTask.taskCompletionTelemetry, t = "signatureNAACB").Value, t: "signatureNAACB"}
+                                    ],
+                                    signatureEmployee:
+                                        If(LookUp(col_checklistTasks, ID = selectedTask.ID).signatureEmployee.isComplete = 0,
+                                            {
+                                                date: DateTimeValue(Text(Now(), DateTimeFormat.LongDateTime)), 
+                                                isComplete: 1, 
+                                                signature: First(currentUser).displayName, 
+                                                uid: First(currentUser).uid
+                                            },
+                                            {
+                                                date: selectedTask.signatureEmployee.date, 
+                                                isComplete: selectedTask.signatureEmployee.isComplete, 
+                                                signature: selectedTask.signatureEmployee.signature,
+                                                uid: selectedTask.signatureEmployee.uid
+                                            }
+                                        )
+                                    },
+                                "signatureMSO", {
+                                    taskCompletionTelemetry: [
+                                        {Value: LookUp(selectedTask.taskCompletionTelemetry, t = "signatureDesignee").Value, t: "signatureDesignee"},
+                                        {Value: LookUp(selectedTask.taskCompletionTelemetry, t = "signatureSupervisor").Value, t: "signatureSupervisor"},
+                                        {Value: LookUp(selectedTask.taskCompletionTelemetry, t = "signatureSupervisorDesignee").Value, t: "signatureSupervisorDesignee"},
+                                        {Value: LookUp(selectedTask.taskCompletionTelemetry, t = "signatureEmployee").Value, t: "signatureEmployee"},
+                                        If(LookUp(col_checklistTasks, ID = selectedTask.ID).signatureMSO.isComplete = 0, 
+                                            {Value: 1, t: "signatureMSO"},
+                                            {Value: LookUp(selectedTask.taskCompletionTelemetry, t = "signatureMSO").Value, t: "signatureMSO"}
+                                        ),
+                                        {Value: LookUp(selectedTask.taskCompletionTelemetry, t = "signatureClearingOffice").Value, t: "signatureClearingOffice"},
+                                        {Value: LookUp(selectedTask.taskCompletionTelemetry, t = "signatureNAACB").Value, t: "signatureNAACB"}
+                                    ],
+                                    signatureMSO:
+                                        If(LookUp(col_checklistTasks, ID = selectedTask.ID).signatureMSO.isComplete = 0,
+                                            {
+                                                date: DateTimeValue(Text(Now(), DateTimeFormat.LongDateTime)), 
+                                                isComplete: 1, 
+                                                signature: First(currentUser).displayName, 
+                                                uid: First(currentUser).uid
+                                            },
+                                            {
+                                                date: selectedTask.signatureMSO.date, 
+                                                isComplete: selectedTask.signatureMSO.isComplete, 
+                                                signature: selectedTask.signatureMSO.signature,
+                                                uid: selectedTask.signatureMSO.uid
+                                            }
+                                        )
+                                    },
+                                "signatureClearingOffice", {
+                                    taskCompletionTelemetry: [
+                                        {Value: LookUp(selectedTask.taskCompletionTelemetry, t = "signatureDesignee").Value, t: "signatureDesignee"},
+                                        {Value: LookUp(selectedTask.taskCompletionTelemetry, t = "signatureSupervisor").Value, t: "signatureSupervisor"},
+                                        {Value: LookUp(selectedTask.taskCompletionTelemetry, t = "signatureSupervisorDesignee").Value, t: "signatureSupervisorDesignee"},
+                                        {Value: LookUp(selectedTask.taskCompletionTelemetry, t = "signatureEmployee").Value, t: "signatureEmployee"},
+                                        {Value: LookUp(selectedTask.taskCompletionTelemetry, t = "signatureMSO").Value, t: "signatureMSO"},
+                                        If(LookUp(col_checklistTasks, ID = selectedTask.ID).signatureClearingOffice.isComplete = 0, 
+                                            {Value: 1, t: "signatureClearingOffice"},
+                                            {Value: LookUp(selectedTask.taskCompletionTelemetry, t = "signatureClearingOffice").Value, t: "signatureClearingOffice"}
+                                        ),
+                                        {Value: LookUp(selectedTask.taskCompletionTelemetry, t = "signatureNAACB").Value, t: "signatureNAACB"}
+                                    ],
+                                    signatureClearingOffice:
+                                        If(LookUp(col_checklistTasks, ID = selectedTask.ID).signatureClearingOffice.isComplete = 0,
+                                            {
+                                                date: DateTimeValue(Text(Now(), DateTimeFormat.LongDateTime)), 
+                                                isComplete: 1, 
+                                                signature: First(currentUser).displayName, 
+                                                uid: First(currentUser).uid
+                                            },
+                                            {
+                                                date: selectedTask.signatureClearingOffice.date, 
+                                                isComplete: selectedTask.signatureClearingOffice.isComplete, 
+                                                signature: selectedTask.signatureClearingOffice.signature,
+                                                uid: selectedTask.signatureClearingOffice.uid
+                                            }
+                                        )
+                                    },
+                                "signatureNAACB", {
+                                    taskCompletionTelemetry: [
+                                        {Value: If(selectedTask.isDesigneeACB && !selectedTask.isSupervisorACB, 1, LookUp(selectedTask.taskCompletionTelemetry, t = "signatureDesignee").Value), t: "signatureDesignee"},
+                                        {Value: If(selectedTask.isSupervisorACB && !selectedTask.isDesigneeACB, 1, LookUp(selectedTask.taskCompletionTelemetry, t = "signatureSupervisor").Value), t: "signatureSupervisor"},
+                                        {Value: If(selectedTask.isDesigneeACB && selectedTask.isSupervisorACB, 1, LookUp(selectedTask.taskCompletionTelemetry, t = "signatureSupervisorDesignee").Value), t: "signatureSupervisorDesignee"},
+                                        {Value: If(selectedTask.isEmployeeACB, 1, LookUp(selectedTask.taskCompletionTelemetry, t = "signatureEmployee").Value), t: "signatureEmployee"},
+                                        {Value: If(selectedTask.isMSOACB, 1, LookUp(selectedTask.taskCompletionTelemetry, t = "signatureMSO").Value), t: "signatureMSO"},
+                                        {Value: If(selectedTask.isClearingOffice, 1, LookUp(selectedTask.taskCompletionTelemetry, t = "signatureClearingOffice").Value), t: "signatureClearingOffice"},
+                                        If(LookUp(col_checklistTasks, ID = selectedTask.ID).signatureNAACB.isComplete = 0, 
+                                            {Value: 1, t: "signatureNAACB"},
+                                            {Value: LookUp(selectedTask.taskCompletionTelemetry, t = "signatureNAACB").Value, t: "signatureNAACB"}
+                                        ),
+                                    ],
+                                    signatureDesignee: {
+                                        date: If(selectedTask.isDesigneeACB && !selectedTask.isSupervisorACB, DateTimeValue(Text(Now(), DateTimeFormat.LongDateTime)), selectedTask.signatureDesignee.date),
+                                        isComplete: If(selectedTask.isDesigneeACB && !selectedTask.isSupervisorACB, 1, selectedTask.signatureDesignee.isComplete), 
+                                        signature: If(selectedTask.isDesigneeACB && !selectedTask.isSupervisorACB, Text(""), selectedTask.signatureDesignee.signature), 
+                                        uid: If(selectedTask.isDesigneeACB && !selectedTask.isSupervisorACB, Text(""), selectedTask.signatureDesignee.uid)},
+                                    signatureSupervisor: {
+                                        date: If(!selectedTask.isDesigneeACB && selectedTask.isSupervisorACB, DateTimeValue(Text(Now(), DateTimeFormat.LongDateTime)), selectedTask.signatureSupervisor.date),
+                                        isComplete: If(!selectedTask.isDesigneeACB && selectedTask.isSupervisorACB, 1, selectedTask.signatureSupervisor.isComplete), 
+                                        signature: If(!selectedTask.isDesigneeACB && selectedTask.isSupervisorACB, Text(""), selectedTask.signatureSupervisor.signature), 
+                                        uid: If(!selectedTask.isDesigneeACB && selectedTask.isSupervisorACB, Text(""), selectedTask.signatureSupervisor.uid)},
+                                    signatureSupervisorDesignee: {
+                                        date: If(selectedTask.isDesigneeACB && selectedTask.isSupervisorACB, DateTimeValue(Text(Now(), DateTimeFormat.LongDateTime)), selectedTask.signatureSupervisorDesignee.date),
+                                        isComplete: If(selectedTask.isDesigneeACB && selectedTask.isSupervisorACB, 1, selectedTask.signatureSupervisorDesignee.isComplete), 
+                                        signature: If(selectedTask.isDesigneeACB && selectedTask.isSupervisorACB, Text(""), selectedTask.signatureSupervisorDesignee.signature), 
+                                        uid: If(selectedTask.isDesigneeACB && selectedTask.isSupervisorACB, Text(""), selectedTask.signatureSupervisorDesignee.uid)},
+                                    signatureEmployee: {
+                                        date: If(selectedTask.isEmployeeACB, DateTimeValue(Text(Now(), DateTimeFormat.LongDateTime)), selectedTask.signatureEmployee.date),
+                                        isComplete: If(selectedTask.isEmployeeACB, 1, selectedTask.signatureEmployee.isComplete), 
+                                        signature: If(selectedTask.isEmployeeACB, Text(""), selectedTask.signatureEmployee.signature), 
+                                        uid: If(selectedTask.isEmployeeACB, Text(""), selectedTask.signatureEmployee.uid)},
+                                    signatureMSO: {
+                                        date: If(selectedTask.isMSOACB, DateTimeValue(Text(Now(), DateTimeFormat.LongDateTime)), selectedTask.signatureMSO.date),
+                                        isComplete: If(selectedTask.isMSOACB, 1, selectedTask.signatureMSO.isComplete), 
+                                        signature: If(selectedTask.isMSOACB, Text(""), selectedTask.signatureMSO.signature), 
+                                        uid: If(selectedTask.isMSOACB, Text(""), selectedTask.signatureMSO.uid)},
+                                    signatureClearingOffice: {
+                                        date: If(selectedTask.isClearingOffice, DateTimeValue(Text(Now(), DateTimeFormat.LongDateTime)), selectedTask.signatureClearingOffice.date),
+                                        isComplete: If(selectedTask.isClearingOffice, 1, selectedTask.signatureClearingOffice.isComplete), 
+                                        signature: If(selectedTask.isClearingOffice, Text(""), selectedTask.signatureClearingOffice.signature), 
+                                        uid: If(selectedTask.isClearingOffice, Text(""), selectedTask.signatureClearingOffice.uid)},
+                                    signatureNAACB: {
+                                        date: DateTimeValue(Text(Now(), DateTimeFormat.LongDateTime)), isComplete: 1, signature: First(currentUser).displayName, uid: First(currentUser).uid}
+                                    }
+                            )
+                        )
+                    );
+                
+                    //returnCode
+                
+                )
+    UpdateChecklistAttributes(CurrentGalleryID As Number):
+        CurrentGalleryID:
+            Default: =100
+        ThisProperty:
+            Default: |-
+                =If(!IsBlank(CurrentGalleryID), Set(currentGalleryID, CurrentGalleryID));
+                If(
+                    // BEGIN LOGICAL TEST
+                    IsBlank(combobox_EmployeeName_4.Selected.Mail) ||
+                    IsBlank(combobox_Supervisor_4.Selected.Id) ||
+                    IsBlank(combobox_Designee_4.Selected.Id) ||
+                    IsBlank(combobox_Organization_4.Selected.ORG_NAME) ||
+                    IsBlank(input_OrganizationCode_4.Text) ||
+                    IsBlank(combobox_Service_4.Selected.Value) ||
+                    If(combobox_Service_4.Selected.Value = "Military" && IsBlank(combobox_MilitaryServiceBranch_4.Selected.Value), true, false) ||
+                    IsBlank(combobox_PayPlanGrade_4.Selected.v) ||
+                    IsBlank(combobox_OutprocessingStatus_4.Selected.Value) ||
+                    IsBlank(datepicker_DepartureDate_4.SelectedDate) ||
+                    If(combobox_EmployeeName_4.Selected.Id = combobox_Designee_4.Selected.Id, true, false) ||
+                    If(combobox_EmployeeName_4.Selected.Id = combobox_Supervisor_4.Selected.Id, true, false) ||
+                    If("Transfer" in combobox_OutprocessingStatus_4.Selected.Value && (IsBlank(input_NewEmployerName_4.Text && IsBlank(input_NewEmployerAddress_4.Text))), true, false),
+                    // END LOGICAL TEST
+                
+                    // BEGIN TRUE RESULT - LOGICAL TEST - POPUP ERROR IF TRUE FROM LOGICAL TEST
+                    Set(popupScope, "popup_main_updateChecklistAttributesPatch");
+                    Set(isMainPopupVisible, true),
+                    // END TRUE RESULT - LOGICAL TEST
+                
+                    With(
+                        {
+                            checklistAttributes: {
+                                supervisor: combobox_Supervisor_4.Selected,
+                                designee: combobox_Designee_4.Selected,
+                                organization: combobox_Organization_4.Selected,
+                                organizationCode: input_OrganizationCode_4.Text,
+                                service: combobox_Service_4.Selected,
+                                militaryServiceBranch: combobox_MilitaryServiceBranch_4.Selected,
+                                payplanGrade: combobox_PayPlanGrade_4.Selected,
+                                officeLocation: input_OfficeLocation_4.Text,
+                                city: input_City_4.Text,
+                                outProcessingStatus: combobox_OutprocessingStatus_4.Selected,
+                                departureDate: datepicker_DepartureDate_4.SelectedDate,
+                                newEmployerAgency: input_NewEmployerName_4.Text,
+                                newEmployerAddress: input_NewEmployerAddress_4.Text
+                            },
+                            selectedChecklistUser: If(gallery_checklists.Selected.isDelegated, LookUp('OBOF-DS-userDelegation', uid = gallery_checklists.Selected.uidUser), LookUp('GLBL-DS-userRegistration', uid = gallery_checklists.Selected.uidUser)),
+                            selectedChecklist: LookUp('OBOF-DS-checklistOutProcessing', ID = gallery_checklists.Selected.ID)
+                        },
+                
+                        If(gallery_checklists.Selected.isDelegated,
+                            Set(recentlyPatchedUser,
+                                Patch('OBOF-DS-userDelegation',
+                                    selectedChecklistUser,
+                                    {
+                                        militaryServiceBranch: checklistAttributes.militaryServiceBranch,
+                                        service: checklistAttributes.service,
+                                        payPlan_Grade: checklistAttributes.payplanGrade.v,
+                                        grade: checklistAttributes.payplanGrade.g,
+                                        payPlan: checklistAttributes.payplanGrade.p,
+                                        organization_v2: checklistAttributes.organization.ORG_NAME,
+                                        organizationCode: checklistAttributes.organizationCode,
+                                        officeLocation: checklistAttributes.officeLocation,
+                                        city: checklistAttributes.city,
+                                        delegationUid: checklistAttributes.designee.Id,
+                                        supervisor: {
+                                            '@odata.type':"#Microsoft.Azure.Connectors.SharePoint.SPListExpandedUser",
+                                            Claims: Concatenate("i:0#.f|membership|", checklistAttributes.supervisor.Mail),
+                                            Department: checklistAttributes.supervisor.Department,
+                                            DisplayName: checklistAttributes.supervisor.DisplayName,
+                                            Email: checklistAttributes.supervisor.Mail,
+                                            JobTitle: checklistAttributes.supervisor.JobTitle,
+                                            Picture: ""
+                                        },
+                                        supervisorDisplayName: checklistAttributes.supervisor.DisplayName,
+                                        supervisorEmail: checklistAttributes.supervisor.Mail,
+                                        supervisorGivenName: checklistAttributes.supervisor.GivenName,
+                                        supervisorPhone: checklistAttributes.supervisor.TelephoneNumber,
+                                        supervisorSurname: checklistAttributes.supervisor.Surname,
+                                        supervisorUid: checklistAttributes.supervisor.Id
+                                    }
+                                )
+                            ),
+                            Set(recentlyPatchedUser,
+                                Patch('GLBL-DS-userRegistration',
+                                    selectedChecklistUser,
+                                    {
+                                        militaryServiceBranch: checklistAttributes.militaryServiceBranch,
+                                        service: checklistAttributes.service,
+                                        payPlan_Grade: checklistAttributes.payplanGrade.v,
+                                        grade: checklistAttributes.payplanGrade.g,
+                                        payPlan: checklistAttributes.payplanGrade.p,
+                                        organization_v2: checklistAttributes.organization.ORG_NAME,
+                                        organizationCode: checklistAttributes.organizationCode,
+                                        officeLocation: checklistAttributes.officeLocation,
+                                        city: checklistAttributes.city,
+                                        supervisor: {
+                                            '@odata.type':"#Microsoft.Azure.Connectors.SharePoint.SPListExpandedUser",
+                                            Claims: Concatenate("i:0#.f|membership|", checklistAttributes.supervisor.Mail),
+                                            Department: checklistAttributes.supervisor.Department,
+                                            DisplayName: checklistAttributes.supervisor.DisplayName,
+                                            Email: checklistAttributes.supervisor.Mail,
+                                            JobTitle: checklistAttributes.supervisor.JobTitle,
+                                            Picture: ""
+                                        },
+                                        supervisorDisplayName: checklistAttributes.supervisor.DisplayName,
+                                        supervisorEmail: checklistAttributes.supervisor.Mail,
+                                        supervisorGivenName: checklistAttributes.supervisor.GivenName,
+                                        supervisorPhone: checklistAttributes.supervisor.TelephoneNumber,
+                                        supervisorSurname: checklistAttributes.supervisor.Surname,
+                                        supervisorUid: checklistAttributes.supervisor.Id
+                                    }
+                                )
+                            )
+                        );
+                        If(
+                            Set(recentlyPatchedChecklist,
+                                Patch('OBOF-DS-checklistOutProcessing',
+                                    selectedChecklist,
+                                    {
+                                        uidSupervisor: checklistAttributes.supervisor.Id,
+                                        uidDesignee: checklistAttributes.designee.Id,
+                                        checklistStatus: checklistAttributes.outProcessingStatus,
+                                        departureDate: checklistAttributes.departureDate,
+                                        newEmployerAgency: checklistAttributes.newEmployerAgency,
+                                        newEmployerAgencyAddress:checklistAttributes.newEmployerAddress
+                                    }
+                                )
+                            ),
+                            Notify("Updated", NotificationType.Success),
+                            Notify("[OBOF-DS-checklistOutProcessing] patch error", NotificationType.Error)
+                        );
+                        Set(isEditChecklistVisible, false);
+                        
+                        /*
+                        // REMOVED CODE BUT LEFT FOR REFERENCE
+                        If(runSendNotificationSupervisorDesignee,
+                            Select(sendNotificationSupervisorDesignee);
+                        );
+                        Select(refreshChecklists)
+                        */
+                    )
+                )
+    UpdateChecklistJSON():
+        ThisProperty:
+            Default: |-
+                =With(
+                    {
+                        tasksChecklistObj: JSON(col_checklistTasks)
+                    },
+                
+                    If(
+                        IsEmpty(
+                            Errors('OBOF-DS-checklistOutProcessing',
+                                Patch('OBOF-DS-checklistOutProcessing',
+                                    LookUp('OBOF-DS-checklistOutProcessing', ID = gallery_checklists.Selected.ID),
+                                    {
+                                        checklistJSON: tasksChecklistObj
+                                    }
+                                )
+                            )
+                        ),
+                        Notify(
+                            "[Action Item: " & Text(gallery_checklistTasks.Selected.actionItem, "#0") & "] " &
+                            "CHKID: " & gallery_checklists.Selected.ID & " | " &
+                            "CHK_Task: " & gallery_checklistTasks.Selected.uid & " | " &
+                            "Action Completed By: " & First(currentUser).displayName &"-"& First(currentUser).uid, NotificationType.Success 
+                        ),
+                        Notify("[OBOF-DS-checklistOutProcessing] patch error", NotificationType.Error)
+                    );
+                
+                    /*
+                    // REMOVED CODE BUT LEFT AS REFERENCE
+                    If(runBuildChecklistTasks, Select(buildChecklistTasks), Set(isBuildChecklistTasksRunning, false));
+                    If(runRefreshChecklists, Select(refreshChecklists), Set(isBuildChecklistTasksRunning, false));
+                    Select(buildChecklistTasks);
+                    */
+                    Set(isBuildChecklistTasksRunning, false);
+                )
+    UpdateExtendedAttributes(ExtendedAttributesJSONID As Number, ActionItem As Number, ExtendedAttributesJSONResponse As String):
+        ExtendedAttributesJSONID:
+            Default: =100
+        ActionItem:
+            Default: =100
+        ExtendedAttributesJSONResponse:
+            Default: ="Text"
+        ThisProperty:
+            Default: |-
+                =With(
+                    {
+                        selectedTask: LookUp(col_checklistTasks, ID = ActionItem)
+                        
+                    },
+                
+                    ClearCollect(col_eaj, selectedTask.extendAttributesJSON);
+                
+                    If(
+                        IsEmpty(
+                            Errors(col_eaj,
+                                Patch(col_eaj, {ID: ExtendedAttributesJSONID},
+                                    {
+                                        ID: ExtendedAttributesJSONID,
+                                        description: Text(LookUp(col_eaj, ID = ExtendedAttributesJSONID).description),
+                                        response: ExtendedAttributesJSONResponse,
+                                        responded: true
+                                    }
+                                )
+                            )
+                        ),
+                        Notify("col_eaj Patch", NotificationType.Success), //Select(updateChecklistJSON),
+                        Notify("col_eaj Patch", NotificationType.Error)
+                    );
+                    
+                    If(
+                        IsEmpty(
+                            Errors(col_checklistTasks,
+                                Patch(col_checklistTasks, selectedTask,
+                                    {
+                                        extendAttributesJSON: col_eaj
+                                    }
+                                )
+                            )
+                        ),
+                        Notify("Extended Attributes Patch", NotificationType.Success), //Select(updateChecklistJSON),
+                        Notify("Extended Attributes Patch Error", NotificationType.Error)
+                    )
+                )
+    ValidateChecklistComplete():
+        ThisProperty:
+            Default: |-
+                =If({isCompleted: false} in col_checklistTasks.isCompleted,
+                    If(LookUp('OBOF-DS-checklistOutProcessing', ID = gallery_checklists.Selected.ID).outprocessingState.Value = "Completed", 
+                        Patch('OBOF-DS-checklistOutProcessing',
+                            LookUp('OBOF-DS-checklistOutProcessing', ID = gallery_checklists.Selected.ID),
+                            {
+                                outprocessingState: {Value: "In Progress"},
+                                outprocessingCompletedDate: Blank()
+                            }
+                        );
+                        Set(patchRun, true),
+                
+                        Set(patchRun, false)
+                    );
+                    //Notify("Checklist Not Completed", NotificationType.Warning);
+                    patchRun,
+                
+                    If(LookUp('OBOF-DS-checklistOutProcessing', ID = gallery_checklists.Selected.ID).outprocessingState.Value = "In Progress",
+                        Patch('OBOF-DS-checklistOutProcessing',
+                            LookUp('OBOF-DS-checklistOutProcessing', ID = gallery_checklists.Selected.ID),
+                            {
+                                outprocessingState: {Value: "Completed"},
+                                outprocessingCompletedDate: Now()
+                            }
+                        );
+                        Set(patchRun, true),
+                
+                        Set(patchRun, false)
+                    );
+                    Notify("Checklist Completed", NotificationType.Success);
+                    patchRun
+                );
+    ValidateCompletionSignature():
+        ThisProperty:
+            Default: |-
+                =With(
+                    {
+                        tasksMissingSignatureForCompletion: If(signatureType = "signatureEmployee", 
+                            Filter(col_checklistTasks, actionItem <> 36 && actionItem <> 37 && {t: signatureType, Value: 0} in taskCompletionTelemetry),
+                            Filter(col_checklistTasks, actionItem <> 37 && (
+                                {t: Index(signatureTypeArray, 1).Value, Value: 0} in taskCompletionTelemetry ||
+                                {t: Index(signatureTypeArray, 2).Value, Value: 0} in taskCompletionTelemetry ||
+                                {t: Index(signatureTypeArray, 3).Value, Value: 0} in taskCompletionTelemetry)
+                            )
+                        )
+                    },
+                    
+                    If(CountRows(tasksMissingSignatureForCompletion) > 0, 
+                        Set(isValidateCompletionSignature, false);
+                        //Notify($"NOT VALID {CountRows(tasksMissingSignatureForCompletion)} - {false}"); // DEBUG VALUE
+                        ClearCollect(col_missingSignatures, tasksMissingSignatureForCompletion);
+                        Set(isMainPopupVisible, true);
+                        Set(popupScope, "popup_main_missingCompletionTasks");
+                        false,
+                
+                        Set(isValidateCompletionSignature, true);
+                        //Notify($"VALID {CountRows(tasksMissingSignatureForCompletion)} - {true}"); // DEBUG VALUE
+                        true
+                    )
+                )
+    Fill: =RGBA(0, 0, 0, 0)
+    Height: =20
+    isValidateCompletionSignature: =isValidateCompletionSignature
+    OnReset: =Set(IsRunning, false);
+    RecentlyPatchedChecklist: =recentlyPatchedChecklist
+    RecentlyPatchedUser: =recentlyPatchedUser
+    Width: =20
+    X: =0
+    Y: =0
+    ZIndex: =1
+

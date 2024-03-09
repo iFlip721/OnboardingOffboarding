@@ -1,0 +1,141 @@
+{
+  "properties": {
+    "connectionReferences": {
+      "shared_sharepointonline": {
+        "runtimeSource": "invoker",
+        "connection": {
+          "connectionReferenceLogicalName": "sdg_TravisSykesSHAREPOINT"
+        },
+        "api": {
+          "name": "shared_sharepointonline"
+        }
+      }
+    },
+    "definition": {
+      "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+      "contentVersion": "1.0.0.0",
+      "parameters": {
+        "$connections": {
+          "defaultValue": {},
+          "type": "Object"
+        },
+        "$authentication": {
+          "defaultValue": {},
+          "type": "SecureObject"
+        }
+      },
+      "triggers": {
+        "manual": {
+          "metadata": {
+            "operationMetadataId": "2a914672-46d8-4d00-86ae-6eff07b01d3b"
+          },
+          "type": "Request",
+          "kind": "PowerAppV2",
+          "inputs": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "text": {
+                  "title": "RootUrl",
+                  "type": "string",
+                  "x-ms-dynamically-added": true,
+                  "description": "Root Url",
+                  "x-ms-content-hint": "TEXT"
+                },
+                "text_1": {
+                  "title": "Method",
+                  "type": "string",
+                  "x-ms-dynamically-added": true,
+                  "description": "Method",
+                  "x-ms-content-hint": "TEXT"
+                },
+                "text_2": {
+                  "title": "Uri",
+                  "type": "string",
+                  "x-ms-dynamically-added": true,
+                  "description": "Uri",
+                  "x-ms-content-hint": "TEXT"
+                },
+                "text_3": {
+                  "title": "Headers",
+                  "type": "string",
+                  "x-ms-dynamically-added": true,
+                  "description": "Headers",
+                  "x-ms-content-hint": "TEXT"
+                },
+                "text_4": {
+                  "title": "Body",
+                  "type": "string",
+                  "x-ms-dynamically-added": true,
+                  "description": "Body",
+                  "x-ms-content-hint": "TEXT"
+                }
+              },
+              "required": [
+                "text",
+                "text_1",
+                "text_2",
+                "text_3",
+                "text_4"
+              ]
+            }
+          }
+        }
+      },
+      "actions": {
+        "Send_an_HTTP_request_to_SharePoint": {
+          "runAfter": {},
+          "metadata": {
+            "operationMetadataId": "1c884188-4d6b-47ea-a0f9-33edaefa6616"
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_sharepointonline",
+              "operationId": "HttpRequest",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+            },
+            "parameters": {
+              "dataset": "@triggerBody()['text']",
+              "parameters/method": "@triggerBody()['text_1']",
+              "parameters/uri": "@triggerBody()['text_2']",
+              "parameters/headers": "@json(triggerBody()['text_3'])",
+              "parameters/body": "@triggerBody()['text_4']"
+            },
+            "authentication": "@parameters('$authentication')"
+          }
+        },
+        "Respond_to_a_PowerApp_or_flow": {
+          "runAfter": {
+            "Send_an_HTTP_request_to_SharePoint": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "8232f0bb-c727-4a13-9a13-a727b64cb2bf"
+          },
+          "type": "Response",
+          "kind": "PowerApp",
+          "inputs": {
+            "statusCode": 200,
+            "body": {
+              "body": "@{body('Send_an_HTTP_request_to_SharePoint')}"
+            },
+            "schema": {
+              "type": "object",
+              "properties": {
+                "body": {
+                  "title": "body",
+                  "x-ms-dynamically-added": true,
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "templateName": ""
+  },
+  "schemaVersion": "1.0.0.0"
+}

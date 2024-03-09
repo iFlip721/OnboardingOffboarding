@@ -1,0 +1,180 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ImportExportXml version="9.2.24013.204" SolutionPackageVersion="9.2" languagecode="1033" generatedBy="CrmLive" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <SolutionManifest>
+    <UniqueName>OnboardingOffboarding</UniqueName>
+    <LocalizedNames>
+      <LocalizedName description="Onboarding-Offboarding" languagecode="1033" />
+    </LocalizedNames>
+    <Descriptions />
+    <Version>1.0.2.3</Version>
+    <Managed>0</Managed>
+    <Publisher>
+      <UniqueName>SoftwareDevelopmentGroup</UniqueName>
+      <LocalizedNames>
+        <LocalizedName description="DCMA Software Development Group" languagecode="1033" />
+      </LocalizedNames>
+      <Descriptions>
+        <Description description="DCMA-ITIS Software Development Group" languagecode="1033" />
+      </Descriptions>
+      <EMailAddress xsi:nil="true"></EMailAddress>
+      <SupportingWebsiteUrl xsi:nil="true"></SupportingWebsiteUrl>
+      <CustomizationPrefix>sdg</CustomizationPrefix>
+      <CustomizationOptionValuePrefix>91942</CustomizationOptionValuePrefix>
+      <Addresses>
+        <Address>
+          <AddressNumber>1</AddressNumber>
+          <AddressTypeCode>1</AddressTypeCode>
+          <City xsi:nil="true"></City>
+          <County xsi:nil="true"></County>
+          <Country xsi:nil="true"></Country>
+          <Fax xsi:nil="true"></Fax>
+          <FreightTermsCode xsi:nil="true"></FreightTermsCode>
+          <ImportSequenceNumber xsi:nil="true"></ImportSequenceNumber>
+          <Latitude xsi:nil="true"></Latitude>
+          <Line1 xsi:nil="true"></Line1>
+          <Line2 xsi:nil="true"></Line2>
+          <Line3 xsi:nil="true"></Line3>
+          <Longitude xsi:nil="true"></Longitude>
+          <Name xsi:nil="true"></Name>
+          <PostalCode xsi:nil="true"></PostalCode>
+          <PostOfficeBox xsi:nil="true"></PostOfficeBox>
+          <PrimaryContactName xsi:nil="true"></PrimaryContactName>
+          <ShippingMethodCode>1</ShippingMethodCode>
+          <StateOrProvince xsi:nil="true"></StateOrProvince>
+          <Telephone1 xsi:nil="true"></Telephone1>
+          <Telephone2 xsi:nil="true"></Telephone2>
+          <Telephone3 xsi:nil="true"></Telephone3>
+          <TimeZoneRuleVersionNumber xsi:nil="true"></TimeZoneRuleVersionNumber>
+          <UPSZone xsi:nil="true"></UPSZone>
+          <UTCOffset xsi:nil="true"></UTCOffset>
+          <UTCConversionTimeZoneCode xsi:nil="true"></UTCConversionTimeZoneCode>
+        </Address>
+        <Address>
+          <AddressNumber>2</AddressNumber>
+          <AddressTypeCode>1</AddressTypeCode>
+          <City xsi:nil="true"></City>
+          <County xsi:nil="true"></County>
+          <Country xsi:nil="true"></Country>
+          <Fax xsi:nil="true"></Fax>
+          <FreightTermsCode xsi:nil="true"></FreightTermsCode>
+          <ImportSequenceNumber xsi:nil="true"></ImportSequenceNumber>
+          <Latitude xsi:nil="true"></Latitude>
+          <Line1 xsi:nil="true"></Line1>
+          <Line2 xsi:nil="true"></Line2>
+          <Line3 xsi:nil="true"></Line3>
+          <Longitude xsi:nil="true"></Longitude>
+          <Name xsi:nil="true"></Name>
+          <PostalCode xsi:nil="true"></PostalCode>
+          <PostOfficeBox xsi:nil="true"></PostOfficeBox>
+          <PrimaryContactName xsi:nil="true"></PrimaryContactName>
+          <ShippingMethodCode>1</ShippingMethodCode>
+          <StateOrProvince xsi:nil="true"></StateOrProvince>
+          <Telephone1 xsi:nil="true"></Telephone1>
+          <Telephone2 xsi:nil="true"></Telephone2>
+          <Telephone3 xsi:nil="true"></Telephone3>
+          <TimeZoneRuleVersionNumber xsi:nil="true"></TimeZoneRuleVersionNumber>
+          <UPSZone xsi:nil="true"></UPSZone>
+          <UTCOffset xsi:nil="true"></UTCOffset>
+          <UTCConversionTimeZoneCode xsi:nil="true"></UTCConversionTimeZoneCode>
+        </Address>
+      </Addresses>
+    </Publisher>
+    <RootComponents>
+      <RootComponent type="29" id="{01352b86-1861-ee11-be6e-001dd8105346}" behavior="0" />
+      <RootComponent type="29" id="{59ff7017-9f98-ee11-be37-001dd8105346}" behavior="0" />
+      <RootComponent type="29" id="{68155528-228d-ee11-8179-001dd810548e}" behavior="0" />
+      <RootComponent type="29" id="{71467f39-0bb7-ee11-a569-001dd8105346}" behavior="0" />
+      <RootComponent type="29" id="{744a8eb1-b890-ee11-8179-001dd810548e}" behavior="0" />
+      <RootComponent type="29" id="{7999123f-1cc4-ee11-9079-001dd810548e}" behavior="0" />
+      <RootComponent type="29" id="{8a9b0865-3396-ee11-8179-001dd8105346}" behavior="0" />
+      <RootComponent type="29" id="{9cfb8478-1e9d-ee11-be37-001dd810548e}" behavior="0" />
+      <RootComponent type="29" id="{b168bb5e-7577-ee11-9ae5-001dd8105346}" behavior="0" />
+      <RootComponent type="29" id="{bf5d020e-0092-ee11-8179-001dd810548e}" behavior="0" />
+      <RootComponent type="29" id="{e63625db-8077-ee11-9ae5-001dd8105346}" behavior="0" />
+      <RootComponent type="29" id="{ecf34afb-0b8d-ee11-8179-001dd8105346}" behavior="0" />
+      <RootComponent type="300" schemaName="sdg_onboardingoffboarding_25978" behavior="0" />
+    </RootComponents>
+    <MissingDependencies>
+      <MissingDependency>
+        <Required type="connectionreference" displayName="sdg_TravisSykesMICROSOFTENTRAID" solution="Active" id.connectionreferencelogicalname="sdg_TravisSykesMICROSOFTENTRAID" />
+        <Dependent type="29" displayName="OBOF-AddUserGroup" id="{71467f39-0bb7-ee11-a569-001dd8105346}" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="connectionreference" displayName="sdg_TravisSykesOFFICE365GROUPS" solution="Active" id.connectionreferencelogicalname="sdg_TravisSykesOFFICE365GROUPS" />
+        <Dependent type="29" displayName="OBOF-SecurityRoles-Audit" id="{7999123f-1cc4-ee11-9079-001dd810548e}" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="connectionreference" displayName="sdg_TravisSykesOFFICE365GROUPS" solution="Active" id.connectionreferencelogicalname="sdg_TravisSykesOFFICE365GROUPS" />
+        <Dependent type="29" displayName="OBOF-SendNotification-WeeklyRollup-InProgress" id="{8a9b0865-3396-ee11-8179-001dd8105346}" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="connectionreference" displayName="sdg_TravisSykesOFFICE365GROUPS" solution="Active" id.connectionreferencelogicalname="sdg_TravisSykesOFFICE365GROUPS" />
+        <Dependent type="29" displayName="OBOF-SendNotification-WeeklyRollup-Completed" id="{9cfb8478-1e9d-ee11-be37-001dd810548e}" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="connectionreference" displayName="sdg_TravisSykesOFFICE365OUTLOOK" solution="Active" id.connectionreferencelogicalname="sdg_TravisSykesOFFICE365OUTLOOK" />
+        <Dependent type="29" displayName="OBOF-SendNotification-SupervisorDesignee" id="{59ff7017-9f98-ee11-be37-001dd8105346}" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="connectionreference" displayName="sdg_TravisSykesOFFICE365OUTLOOK" solution="Active" id.connectionreferencelogicalname="sdg_TravisSykesOFFICE365OUTLOOK" />
+        <Dependent type="29" displayName="OBOF-SendNotification" id="{744a8eb1-b890-ee11-8179-001dd810548e}" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="connectionreference" displayName="sdg_TravisSykesOFFICE365OUTLOOK" solution="Active" id.connectionreferencelogicalname="sdg_TravisSykesOFFICE365OUTLOOK" />
+        <Dependent type="29" displayName="OBOF-SendNotification-WeeklyRollup-InProgress" id="{8a9b0865-3396-ee11-8179-001dd8105346}" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="connectionreference" displayName="sdg_TravisSykesOFFICE365OUTLOOK" solution="Active" id.connectionreferencelogicalname="sdg_TravisSykesOFFICE365OUTLOOK" />
+        <Dependent type="29" displayName="OBOF-SendNotification-WeeklyRollup-Completed" id="{9cfb8478-1e9d-ee11-be37-001dd810548e}" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="connectionreference" displayName="sdg_TravisSykesOFFICE365OUTLOOK" solution="Active" id.connectionreferencelogicalname="sdg_TravisSykesOFFICE365OUTLOOK" />
+        <Dependent type="29" displayName="OBOF-SendNotification-Comment" id="{bf5d020e-0092-ee11-8179-001dd810548e}" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="connectionreference" displayName="sdg_TravisSykesOFFICE365USERS" solution="Active" id.connectionreferencelogicalname="sdg_TravisSykesOFFICE365USERS" />
+        <Dependent type="29" displayName="OBOF-AddUserGroup" id="{71467f39-0bb7-ee11-a569-001dd8105346}" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="connectionreference" displayName="sdg_TravisSykesOFFICE365USERS" solution="Active" id.connectionreferencelogicalname="sdg_TravisSykesOFFICE365USERS" />
+        <Dependent type="29" displayName="OBOF-SecurityRoles-Audit" id="{7999123f-1cc4-ee11-9079-001dd810548e}" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="connectionreference" displayName="sdg_TravisSykesPOWERBI" solution="Active" id.connectionreferencelogicalname="sdg_TravisSykesPOWERBI" />
+        <Dependent type="29" displayName="OBOF-SecurityRoles-Audit" id="{7999123f-1cc4-ee11-9079-001dd810548e}" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="connectionreference" displayName="sdg_TravisSykesSHAREPOINT" solution="Active" id.connectionreferencelogicalname="sdg_TravisSykesSHAREPOINT" />
+        <Dependent type="29" displayName="SharePoint_RestAPI" id="{01352b86-1861-ee11-be6e-001dd8105346}" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="connectionreference" displayName="sdg_TravisSykesSHAREPOINT" solution="Active" id.connectionreferencelogicalname="sdg_TravisSykesSHAREPOINT" />
+        <Dependent type="29" displayName="mandatoryOfficesPOC-Sync-UID" id="{68155528-228d-ee11-8179-001dd810548e}" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="connectionreference" displayName="sdg_TravisSykesSHAREPOINT" solution="Active" id.connectionreferencelogicalname="sdg_TravisSykesSHAREPOINT" />
+        <Dependent type="29" displayName="OBOF-SecurityRoles-Audit" id="{7999123f-1cc4-ee11-9079-001dd810548e}" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="connectionreference" displayName="sdg_TravisSykesSHAREPOINT" solution="Active" id.connectionreferencelogicalname="sdg_TravisSykesSHAREPOINT" />
+        <Dependent type="29" displayName="OBOF-SendNotification-WeeklyRollup-InProgress" id="{8a9b0865-3396-ee11-8179-001dd8105346}" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="connectionreference" displayName="sdg_TravisSykesSHAREPOINT" solution="Active" id.connectionreferencelogicalname="sdg_TravisSykesSHAREPOINT" />
+        <Dependent type="29" displayName="OBOF-SendNotification-WeeklyRollup-Completed" id="{9cfb8478-1e9d-ee11-be37-001dd810548e}" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="connectionreference" displayName="sdg_TravisSykesSHAREPOINT" solution="Active" id.connectionreferencelogicalname="sdg_TravisSykesSHAREPOINT" />
+        <Dependent type="29" displayName="ClearingOffice-Generate-UID" id="{b168bb5e-7577-ee11-9ae5-001dd8105346}" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="connectionreference" displayName="sdg_TravisSykesSHAREPOINT" solution="Active" id.connectionreferencelogicalname="sdg_TravisSykesSHAREPOINT" />
+        <Dependent type="29" displayName="Sync uid mandatoryOffice - templateOutProcessingChecklist" id="{e63625db-8077-ee11-9ae5-001dd8105346}" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="connectionreference" displayName="sdg_TravisSykesSHAREPOINT" solution="Active" id.connectionreferencelogicalname="sdg_TravisSykesSHAREPOINT" />
+        <Dependent type="29" displayName="templateOutProcessingChecklist-Generate-UID" id="{ecf34afb-0b8d-ee11-8179-001dd8105346}" />
+      </MissingDependency>
+    </MissingDependencies>
+  </SolutionManifest>
+</ImportExportXml>

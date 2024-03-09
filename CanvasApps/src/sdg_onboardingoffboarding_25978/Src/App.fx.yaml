@@ -1,0 +1,441 @@
+App As appinfo:
+    BackEnabled: =false
+    ConfirmExit: =true
+    ConfirmExitMessage: ="You are exiting the Web Application"
+    Formulas: =
+    MinScreenHeight: =600
+    MinScreenWidth: =800
+    OnStart: |
+        ='OBOF-AddUserGroup'.Run({text: User().Email});
+        
+        // APPLICATION CONFIG VARIABLES
+        Set(appUid, LookUp('OBOF-DS-appSettings', ID = 35).content_PT);
+        Set(appMetadata, 
+            {
+                appBuild: "b252",
+                appUid: appUid, // temp value until we resolve the appId missing variable
+                appName: LookUp('GLBL-DS-appRegistration', uidApplication = appUid).applicationName,
+                appVersion: LookUp('GLBL-DS-appRegistration', uidApplication = appUid).applicationVersion,
+                appEnviornment: LookUp('GLBL-DS-appRegistration', uidApplication = appUid).environment,
+                appPublisher: LookUp('GLBL-DS-appRegistration', uidApplication = appUid).applicationPublisher,
+                appPrefix: LookUp('GLBL-DS-appRegistration', uidApplication = appUid).applicationPublisher,
+                appUrl: LookUp('OBOF-DS-appSettings', ID = 34).content_PT
+            }
+        );
+        Set(appRegistration, LookUp('GLBL-DS-appRegistration', appMetadata.appUid = applicationUid));
+        
+        Refresh('OBOF-DS-appSettings');
+        Refresh('OBOF-DS-userDelegation');
+        Refresh('GLBL-DS-userRegistration');
+        Refresh('OBOF-DS-checklistOutProcessing');
+        Refresh('OBOF-DS-templateOutProcessingChecklist');
+        Refresh('OBOF-DS-templateOutProcessingChecklistLocalTask');
+        
+        Set(seriesResponse, SharePoint_RestAPI.Run(
+            "https://dod365.sharepoint-mil.us/sites/DCMA-Projects-P2-App-Resources",
+            "GET",
+            "_api/v2.1/termStore/groups('eb096297-8209-4358-a8ef-bd59697c1f91')/sets('8240e013-789a-4094-bc96-80e635e4eb23')/terms",
+            "{
+                'content-type': 'application/json',
+                    'accept': 'application/json;odata=nometadata'
+            }",
+            "").body);
+        ClearCollect(
+            positionSeries,
+            ForAll(
+                Table(ParseJSON(seriesResponse).value),
+                {
+                    id: Value.id,
+                    Code: First(
+                        Split(
+                            First(
+                                Filter(
+                                    Table(Value.labels),
+                                    Value.isDefault = true
+                                )
+                            ).Value.name, "-"
+                        )
+                    ).Value,
+                    Label: First(
+                        Filter(
+                            Table(Value.labels),
+                            "-" in Value.name
+                        )
+                    ).Value.name
+                }
+            )
+        );
+        ClearCollect(col_organizations, DataSourceComponent.IWAMQueryOrganization("","",""));
+        ClearCollect(col_IWAMUserInfo, DataSourceComponent.IWAMQueryEmail(User().Email));
+        ClearCollect(col_IWAMSupervisor, DataSourceComponent.IWAMQueryDCID(First(col_IWAMUserInfo).DIRECT_SUPERVISOR));
+        ClearCollect(col_IWAMUser,
+            AddColumns(
+                col_IWAMUserInfo,
+                "jobSeriesLabel", LookUp(positionSeries, 
+                    Text(Code) = Switch(Len(Text(First(col_IWAMUserInfo).DCMA_JOB_SERIES)),
+                        3, Concatenate(0, Text(First(col_IWAMUserInfo).DCMA_JOB_SERIES)),
+                        2, Concatenate(00, Text(First(col_IWAMUserInfo).DCMA_JOB_SERIES)),
+                        1, Concatenate(000, Text(First(col_IWAMUserInfo).DCMA_JOB_SERIES)),
+                        Text(First(col_IWAMUserInfo).DCMA_JOB_SERIES))
+                    ).Label,
+                "jobSeriesId", LookUp(positionSeries, 
+                    Text(Code) = Switch(Len(Text(First(col_IWAMUserInfo).DCMA_JOB_SERIES)),
+                        3, Concatenate(0, Text(First(col_IWAMUserInfo).DCMA_JOB_SERIES)),
+                        2, Concatenate(00, Text(First(col_IWAMUserInfo).DCMA_JOB_SERIES)),
+                        1, Concatenate(000, Text(First(col_IWAMUserInfo).DCMA_JOB_SERIES)),
+                        Text(First(col_IWAMUserInfo).DCMA_JOB_SERIES))
+                    ).id,
+                "super_USERID", First(col_IWAMSupervisor).USERID,
+                "super_ACTIVE", First(col_IWAMSupervisor).ACTIVE,
+                "super_USR_LAST_NAME", First(col_IWAMSupervisor).USR_LAST_NAME,
+                "super_USR_MIDDLE_INITIAL", First(col_IWAMSupervisor).USR_MIDDLE_INITIAL,
+                "super_USR_FIRST_NAME", First(col_IWAMSupervisor).USR_FIRST_NAME,
+                "super_DCMA_ORGANIZATION_LEVEL", First(col_IWAMSupervisor).DCMA_ORGANIZATION_LEVEL,
+                "super_DCMA_EMPLOYEE_TYPE", First(col_IWAMSupervisor).DCMA_EMPLOYEE_TYPE,
+                "super_DCMA_JOB_SERIES", First(col_IWAMSupervisor).DCMA_JOB_SERIES,
+                "super_IS_SUPERVISOR", First(col_IWAMSupervisor).IS_SUPERVISOR,
+                "super_DCMA_EMAIL", First(col_IWAMSupervisor).DCMA_EMAIL,
+                "super_TELEPHONE", First(col_IWAMSupervisor).TELEPHONE,
+                "super_USR_FULLNAME", First(col_IWAMSupervisor).USR_FULLNAME,
+                "super_DIRECT_SUPERVISOR", First(col_IWAMSupervisor).DIRECT_SUPERVISOR,
+                "super_DCMA_SITE_ID", First(col_IWAMSupervisor).DCMA_SITE_ID
+            )
+        );
+        
+        Reset(combobox_JobSeries);
+        Reset(combobox_Organization);
+        Reset(input_OrganizationCode);
+        Reset(combobox_Supervisor);
+        Reset(combobox_Service);
+        Reset(combobox_PayPlanGrade);
+        Reset(combobox_JobSeries_1);
+        Reset(combobox_Organization_1);
+        Reset(input_OrganizationCode_1);
+        Reset(combobox_Supervisor_1);
+        Reset(combobox_Service);
+        Reset(combobox_PayPlanGrade_1);
+        Reset(AsyncDataLoader);
+        
+        Set(daysRemainingWarning, 10);
+        //Set(actionBank2_Props,{height: 26,layoutMinHeight: 26,fillPortions: 0, gap: 10});
+        Set(loginIconSize, 42);
+        Set(portalPadding, 15);
+        Set(debugVar, 32);
+        Set(runAsyncDataHandler, false);
+        Set(focusedBorderSize, 8);
+        Set(focusedBorderColor, RGBA(255, 0, 0, 1));
+        
+        Set(forceSearch, true);
+        Set(runBuildChecklistTasks, true);
+        Set(isNotifyClearingOfficeVisible, false);
+        Set(isPrivacyPolicySatementVisible, true);
+        Set(isNewChecklistVisible, false);
+        Set(isNewLocalTaskVisible, false);
+        Set(isEditChecklistVisible, false);
+        Set(isRegisterPopupVisible, false);
+        Set(isMainPopupVisible, false);
+        Set(isMenuExpanded, false);
+        Set(isServiceTypeChanged, false);
+        Set(isAccountSettingsVisible, false);
+        Set(isCurrentUserRegister, false);
+        Set(isUserAppAssociation, false);
+        Set(isAccessibilityEnabled, false);
+        Set(isNewCommentVisible, false);
+        
+        Set(transactLogScope, Blank());
+        Set(registerScope, Blank());
+        Set(selectedMenuScope, "Employee");
+        Set(selectedMenuHeaderScope, "Departing Employee");
+        
+        // SECURITY ROLE DEFINTIONS IMPORTED FROM appSettings AS COLLECTIONS
+        // ScopeID IS USED TO REDUCE NON-DELEGABLE LOOKUPS FOR EACH DEFINITION
+        //
+        // ScopeID 25 = Employee
+        // ScopeID 26 = Supervisor
+        // ScopeID 27 = TF Manager
+        // ScopeID 28 = TF Program manager
+        // ScopeID 29 = MSO
+        // ScopeID 30 = ClearingOffice
+        
+        ClearCollect(_Employee, 
+            DropColumns(
+                AddColumns(Table(ParseJSON(LookUp('OBOF-DS-appSettings', ScopeID = 25).value_PT)),
+                    "role", Text(Value.role),
+                    "displayName", Office365Groups.HttpRequest($"https://dod-graph.microsoft.us/v1.0/groups/{Text(Value.role)}", "GET", "").displayName
+                ),
+                "Value"
+            )
+        );
+        ClearCollect(_Supervisor, 
+            DropColumns(
+                AddColumns(Table(ParseJSON(LookUp('OBOF-DS-appSettings', ScopeID = 26).value_PT)),
+                    "role", Text(Value.role),
+                    "displayName", Office365Groups.HttpRequest($"https://dod-graph.microsoft.us/v1.0/groups/{Text(Value.role)}", "GET", "").displayName
+                ),
+                "Value"
+            )
+        );
+        ClearCollect(_TFManager, 
+            DropColumns(
+                AddColumns(Table(ParseJSON(LookUp('OBOF-DS-appSettings', ScopeID = 27).value_PT)),
+                    "role", Text(Value.role),
+                    "displayName", Office365Groups.HttpRequest($"https://dod-graph.microsoft.us/v1.0/groups/{Text(Value.role)}", "GET", "").displayName
+                ),
+                "Value"
+            )
+        );
+        ClearCollect(_TFProgramManager, 
+            DropColumns(
+                AddColumns(Table(ParseJSON(LookUp('OBOF-DS-appSettings', ScopeID = 28).value_PT)),
+                    "role", Text(Value.role),
+                    "displayName", Office365Groups.HttpRequest($"https://dod-graph.microsoft.us/v1.0/groups/{Text(Value.role)}", "GET", "").displayName
+                ),
+                "Value"
+            )
+        );
+        ClearCollect(_MSO, 
+            DropColumns(
+                AddColumns(Table(ParseJSON(LookUp('OBOF-DS-appSettings', ScopeID = 29).value_PT)),
+                    "role", Text(Value.role),
+                    "displayName", Office365Groups.HttpRequest($"https://dod-graph.microsoft.us/v1.0/groups/{Text(Value.role)}", "GET", "").displayName
+                ),
+                "Value"
+            )
+        );
+        ClearCollect(_ClearingOffice, 
+            DropColumns(
+                AddColumns(Table(ParseJSON(LookUp('OBOF-DS-appSettings', ScopeID = 30).value_PT)),
+                    "role", Text(Value.role),
+                    "displayName", Office365Groups.HttpRequest($"https://dod-graph.microsoft.us/v1.0/groups/{Text(Value.role)}", "GET", "").displayName
+                ),
+                "Value"
+            )
+        );
+        
+        // DETERMINE USER AND APP ASSOCIATION
+        Set(isCurrentUserRegister, If(IsBlank(LookUp('GLBL-DS-userRegistration', uid = Text(User().EntraObjectId)).uid), false, true));
+        Set(isUserAppAssociation, If(!IsBlank(LookUp('GLBL-DS-userAppAssociation', uidUser = Text(User().EntraObjectId) && uidApplication = appMetadata.appUid).uidUser), true, false));
+        
+        // COLLECTION CHECKLIST TEMPLATES
+        //ClearCollect(col_templateChecklistOutprocessing, SortByColumns('OBOF-DS-templateOutProcessingChecklist', "actionItem", SortOrder.Ascending));
+        //ClearCollect(col_templateChecklistOutprocessingLocalTask, SortByColumns('OBOF-DS-templateOutProcessingChecklistLocalTask', "actionItem", SortOrder.Ascending));
+        
+        // COLLECTION memberOf 
+        Set(graphAPI_memberOf_Response, Office365Groups.HttpRequest("https://dod-graph.microsoft.us/v1.0/me/memberOf/microsoft.graph.group?", "GET", "").value);
+        ClearCollect(memberOf,
+            ForAll(
+                Table(graphAPI_memberOf_Response),
+                {
+                    id: Text(Value.id),
+                    description: Text(Value.description),
+                    displayName: Text(Value.displayName),
+                    mail: Text(Value.mail),
+                    mailEnabled: Value.mailEnabled,
+                    mailNickname: Text(Value.mailNickname),
+                    securityIdentifier: Text(Value.securityIdentifier)
+                }
+            )
+        );
+        
+        // COLLECTION delegatedUser
+        ClearCollect(delegatedUser, 
+            'OBOF-DS-userDelegation'
+        );
+        
+        // COLLECTION currentUser
+        If(!isCurrentUserRegister,
+                //Notify("DEBUG: v1 - compile user object scaffolding. isCurrentUser: "&isCurrentUserRegister&" isUserAppAssociation: "&isUserAppAssociation, NotificationType.Success);
+                With(
+                    {
+                        obj_currentUserV1: Table(Office365Users.MyProfileV2())
+                    },
+                    ClearCollect(currentUser,
+                        AddColumns(
+                            obj_currentUserV1,
+                            "isTFManager", !IsBlank(LookUp(memberOf, id in _TFManager.role).id),
+                            "isTFProgramManager", !IsBlank(LookUp(memberOf, id in _TFProgramManager.role).id),
+                            "isEmployee", !IsBlank(LookUp(memberOf, id in _Employee.role).id),
+                            "isSupervisor", !IsBlank(LookUp(memberOf, id in _Supervisor.role).id),
+                            "isMSO", !IsBlank(LookUp(memberOf, id in _MSO.role).id),
+                            "isClearingOffice", !IsBlank(LookUp(memberOf, id in _ClearingOffice.role).id),
+                            "uid", Text(User().EntraObjectId),
+                            "supervisor", {Claims:"",Department:"",DisplayName:"",Email:"",JobTitle:"",Picture:""},
+                            "supervisorUid", Blank(),
+                            "supervisorEmail", Blank(),
+                            "supervisorPhone", Blank(),
+                            "supervisorDisplayName", Blank(),
+                            "supervisorGivenName", Blank(),
+                            "supervisorSurname", Blank(),
+                            "supervisorImage", Blank(),
+                            "service", Blank(),
+                            "militaryServiceBranch", Blank(),
+                            "payPlan", Blank(),
+                            "payPlan_Grade", Blank(),
+                            "grade", Blank(),
+                            "jobSeries", Blank(),
+                            "accessibilityEnabled", false,
+                            "persona", {
+                                '@odata.type':"#Microsoft.Azure.Connectors.SharePoint.SPListExpandedUser",
+                                Claims: Concatenate("i:0#.f|membership|", First(obj_currentUserV1).mail),
+                                Department: First(obj_currentUserV1).department,
+                                DisplayName: First(obj_currentUserV1).displayName,
+                                Email: First(obj_currentUserV1).mail,
+                                JobTitle: First(obj_currentUserV1).jobTitle,
+                                Picture: ""
+                            }
+                        )
+                    )
+                ),
+                //Notify("DEBUG: v2 - compile user object scaffolding. isCurrentUser: "&Char(10)&isCurrentUserRegister&Char(10)&" isUserAppAssociation: "&isUserAppAssociation, NotificationType.Success);
+                With(
+                    {
+                        obj_currentUserV2: Table(LookUp('GLBL-DS-userRegistration', uid = Office365Users.MyProfileV2().id))
+                    },
+                    ClearCollect(currentUser,
+                        AddColumns(
+                            obj_currentUserV2,
+                            "isTFManager", !IsBlank(LookUp(memberOf, id in _TFManager.role).id),
+                            "isTFProgramManager", !IsBlank(LookUp(memberOf, id in _TFProgramManager.role).id),
+                            "isEmployee", !IsBlank(LookUp(memberOf, id in _Employee.role).id),
+                            "isSupervisor", !IsBlank(LookUp(memberOf, id in _Supervisor.role).id),
+                            "isMSO", !IsBlank(LookUp(memberOf, id in _MSO.role).id),
+                            "isClearingOffice", !IsBlank(LookUp(memberOf, id in _ClearingOffice.role).id)
+                        )
+                    )
+                )
+        );
+        
+        // COLLECTION appSettings
+        ClearCollect(appSettings, 'OBOF-DS-appSettings');
+        
+        // COLLECTION PayPlanGrade
+        ClearCollect(PayPlanGrades,
+            {
+                Service: "Civilian",
+                    ppg: Table(
+                        {v:"GS-01",p:"GS",g:1},
+                        {v:"GS-02",p:"GS",g:2},
+                        {v:"GS-03",p:"GS",g:3},
+                        {v:"GS-04",p:"GS",g:4},
+                        {v:"GS-05",p:"GS",g:5},
+                        {v:"GS-06",p:"GS",g:6},
+                        {v:"GS-07",p:"GS",g:7},
+                        {v:"GS-08",p:"GS",g:8},
+                        {v:"GS-09",p:"GS",g:9},
+                        {v:"GS-10",p:"GS",g:10},
+                        {v:"GS-11",p:"GS",g:11},
+                        {v:"GS-12",p:"GS",g:12},
+                        {v:"GS-13",p:"GS",g:13},
+                        {v:"GS-14",p:"GS",g:14},
+                        {v:"GS-15",p:"GS",g:15},
+                        {v:"NH-II",p:"NH",g:2},
+                        {v:"NH-III",p:"NH",g:3},
+                        {v:"NH-IV",p:"NH",g:4},
+                        {v:"SES-I",p:"SES",g:1},
+                        {v:"SES-II",p:"SES",g:2},
+                        {v:"SES-III",p:"SES",g:3},
+                        {v:"SES-IV",p:"SES",g:4},
+                        {v:"SES-V",p:"SES",g:5}
+                    )
+            },
+            {
+                Service: "Military",
+                    ppg: Table(
+                        {v:"E1",p:"E",g:1},
+                        {v:"E2",p:"E",g:2},
+                        {v:"E3",p:"E",g:3},
+                        {v:"E4",p:"E",g:4},
+                        {v:"E5",p:"E",g:5},
+                        {v:"E6",p:"E",g:6},
+                        {v:"E7",p:"E",g:7},
+                        {v:"E8",p:"E",g:8},
+                        {v:"E9",p:"E",g:9},
+                        {v:"W1",p:"W",g:1},
+                        {v:"CW2",p:"CW",g:2},
+                        {v:"CW3",p:"CW",g:3},
+                        {v:"CW4",p:"CW",g:4},
+                        {v:"CW5",p:"CW",g:5},
+                        {v:"O2",p:"O",g:2},
+                        {v:"O3",p:"O",g:3},
+                        {v:"O4",p:"O",g:4},
+                        {v:"O5",p:"O",g:5},
+                        {v:"O6",p:"O",g:6},
+                        {v:"O7",p:"O",g:7},
+                        {v:"O8",p:"O",g:8},
+                        {v:"O9",p:"O",g:9},
+                        {v:"O10",p:"O",g:10}
+                    )
+            },
+            {
+                Service: "Contractor",
+                    ppg: Table(
+                        {v:"CTR",p:"CTR",g:0}
+                    )
+            }
+        );
+        
+        // STATE CHOICES COLLECTION
+        ClearCollect(stateChoices,
+            Table(
+                {Value: "AK"},
+                {Value: "AL"},
+                {Value: "AZ"},
+                {Value: "AR"},
+                {Value: "CA"},
+                {Value: "CO"},
+                {Value: "CT"},
+                {Value: "DE"},
+                {Value: "FL"},
+                {Value: "GA"},
+                {Value: "HI"},
+                {Value: "ID"},
+                {Value: "IL"},
+                {Value: "IN"},
+                {Value: "IA"},
+                {Value: "KS"},
+                {Value: "KY"},
+                {Value: "LA"},
+                {Value: "ME"},
+                {Value: "MD"},
+                {Value: "MA"},
+                {Value: "MI"},
+                {Value: "MN"},
+                {Value: "MS"},
+                {Value: "MO"},
+                {Value: "MT"},
+                {Value: "NE"},
+                {Value: "NV"},
+                {Value: "NH"},
+                {Value: "NJ"},
+                {Value: "NM"},
+                {Value: "NY"},
+                {Value: "NC"},
+                {Value: "ND"},
+                {Value: "OH"},
+                {Value: "OK"},
+                {Value: "OR"},
+                {Value: "PA"},
+                {Value: "RI"},
+                {Value: "SC"},
+                {Value: "SD"},
+                {Value: "TN"},
+                {Value: "TX"},
+                {Value: "UT"},
+                {Value: "VT"},
+                {Value: "VA"},
+                {Value: "WA"},
+                {Value: "WV"},
+                {Value: "WI"},
+                {Value: "WY"}
+            )
+        );
+        
+        // TERMINATE DATA LOADER FOR ASYNC DATA HANDLER
+        Set(runAsyncDataHandler, true);
+        
+        //Set(secrole_tfm, If(IsBlank(LookUp(memberOf, id = TF_Manager).id), "blank", "not blank"));
+        //Set(secrole_tfpm, If(IsBlank(LookUp(memberOf, id = TF_Program_Manager).id), "blank", "not blank"));
+        // EOF
+    StartScreen: =LOADING
+    Theme: =PowerAppsTheme
+

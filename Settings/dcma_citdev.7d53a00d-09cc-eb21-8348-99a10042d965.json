@@ -1,0 +1,49 @@
+{
+  "EnvironmentVariables": [
+    {
+      "SchemaName": "sdg_GLBLDSappRegistration",
+      "Value": "appRegistration-DEV"
+    },
+    {
+      "SchemaName": "sdg_GLBLDSuserAppAssociation",
+      "Value": "userAppAssociation-DEV"
+    },
+    {
+      "SchemaName": "sdg_GLBLDSuserRegistration",
+      "Value": "userRegistration-DEV"
+    },
+    {
+      "SchemaName": "sdg_OBOFDSappSettings",
+      "Value": "OBOF-appSettings-DEV"
+    },
+    {
+      "SchemaName": "sdg_OBOFDSchecklistOutProcessing",
+      "Value": "OBOF-checklistOutProcessing-DEV"
+    },
+    {
+      "SchemaName": "sdg_OBOFDSmandatoryOfficesPOC",
+      "Value": "OBOF-MandatoryOffices-DEV"
+    },
+    {
+      "SchemaName": "sdg_OBOFDSmandatoryOfficesUID",
+      "Value": "OBOF-MandatoryOfficesPOC-DEV"
+    },
+    {
+      "SchemaName": "sdg_OBOFDStemplateOutProcessingChecklist",
+      "Value": "OBOF-templateOutProcessingChecklist-DEV"
+    },
+    {
+      "SchemaName": "sdg_OBOFDStemplateOutProcessingChecklistLocalTask",
+      "Value": "OBOF-templateOutProcessingChecklistLocalTask-DEV"
+    },
+    {
+      "SchemaName": "sdg_OBOFDSuserDelegation",
+      "Value": "OBOF-userDelegation-DEV"
+    },
+    {
+      "SchemaName": "sdg_OBOFStorageLocationURL",
+      "Value": "https://dod365.sharepoint-mil.us/sites/DCMA-SB-Collaboration"
+    }
+  ],
+  "ConnectionReferences": []
+}

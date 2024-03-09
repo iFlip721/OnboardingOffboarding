@@ -1,0 +1,102 @@
+{
+  "properties": {
+    "connectionReferences": {
+      "shared_sharepointonline": {
+        "runtimeSource": "embedded",
+        "connection": {
+          "connectionReferenceLogicalName": "sdg_TravisSykesSHAREPOINT"
+        },
+        "api": {
+          "name": "shared_sharepointonline"
+        }
+      }
+    },
+    "definition": {
+      "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+      "contentVersion": "1.0.0.0",
+      "parameters": {
+        "$connections": {
+          "defaultValue": {},
+          "type": "Object"
+        },
+        "$authentication": {
+          "defaultValue": {},
+          "type": "SecureObject"
+        },
+        "OBOF-StorageLocationURL (sdg_OBOFStorageLocationURL)": {
+          "defaultValue": "https://dod365.sharepoint-mil.us/sites/DCMA-SB-Collaboration",
+          "type": "String",
+          "metadata": {
+            "schemaName": "sdg_OBOFStorageLocationURL",
+            "description": "OBOF Storage Location URL"
+          }
+        },
+        "OBOF-DS-templateOutProcessingChecklist (sdg_OBOFDStemplateOutProcessingChecklist)": {
+          "defaultValue": "80141462-d20f-47b8-a344-dcf14eb05262",
+          "type": "String",
+          "metadata": {
+            "schemaName": "sdg_OBOFDStemplateOutProcessingChecklist",
+            "description": "Out-Processing Checklist Templates"
+          }
+        },
+        "OBOF-DS-mandatoryOfficesUID (sdg_OBOFDSmandatoryOfficesUID)": {
+          "defaultValue": "5abea3d7-3d84-4809-af88-831e54a1ca44",
+          "type": "String",
+          "metadata": {
+            "schemaName": "sdg_OBOFDSmandatoryOfficesUID"
+          }
+        }
+      },
+      "triggers": {
+        "OBOF-DS-templateOutProcessingChecklist_-_Created_or_Modified_items": {
+          "recurrence": {
+            "interval": 1,
+            "frequency": "Minute"
+          },
+          "splitOn": "@triggerOutputs()?['body/value']",
+          "metadata": {
+            "operationMetadataId": "991a1cd1-a60a-41c8-8fc4-79f60ad8cac2"
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_sharepointonline",
+              "operationId": "GetOnUpdatedItems",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+            },
+            "parameters": {
+              "dataset": "@parameters('OBOF-StorageLocationURL (sdg_OBOFStorageLocationURL)')",
+              "table": "@parameters('OBOF-DS-templateOutProcessingChecklist (sdg_OBOFDStemplateOutProcessingChecklist)')"
+            },
+            "authentication": "@parameters('$authentication')"
+          }
+        }
+      },
+      "actions": {
+        "OBOF-DS-mandatoryOffice_-_Get_Role_=_assignment": {
+          "runAfter": {},
+          "metadata": {
+            "operationMetadataId": "ee037ace-46ba-49a8-831b-011957591a65"
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_sharepointonline",
+              "operationId": "GetItems",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+            },
+            "parameters": {
+              "dataset": "@parameters('OBOF-StorageLocationURL (sdg_OBOFStorageLocationURL)')",
+              "table": "@parameters('OBOF-DS-mandatoryOfficesUID (sdg_OBOFDSmandatoryOfficesUID)')",
+              "$filter": "Role eq '@{triggerOutputs()?['body/assignment/Value']}'"
+            },
+            "authentication": "@parameters('$authentication')"
+          }
+        }
+      },
+      "outputs": {}
+    },
+    "templateName": ""
+  },
+  "schemaVersion": "1.0.0.0"
+}

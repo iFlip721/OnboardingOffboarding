@@ -1,0 +1,197 @@
+{
+  "properties": {
+    "connectionReferences": {
+      "shared_office365users": {
+        "runtimeSource": "embedded",
+        "connection": {
+          "connectionReferenceLogicalName": "sdg_TravisSykesOFFICE365USERS"
+        },
+        "api": {
+          "name": "shared_office365users"
+        }
+      },
+      "shared_azuread": {
+        "runtimeSource": "embedded",
+        "connection": {
+          "connectionReferenceLogicalName": "sdg_TravisSykesMICROSOFTENTRAID"
+        },
+        "api": {
+          "name": "shared_azuread"
+        }
+      }
+    },
+    "definition": {
+      "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+      "contentVersion": "1.0.0.0",
+      "parameters": {
+        "$connections": {
+          "defaultValue": {},
+          "type": "Object"
+        },
+        "$authentication": {
+          "defaultValue": {},
+          "type": "SecureObject"
+        }
+      },
+      "triggers": {
+        "manual": {
+          "metadata": {
+            "operationMetadataId": "fde4d462-ceff-4f5b-9d4b-1e1e4dab2edf"
+          },
+          "type": "Request",
+          "kind": "PowerAppV2",
+          "inputs": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "text": {
+                  "title": "userEmail",
+                  "type": "string",
+                  "x-ms-dynamically-added": true,
+                  "description": "userEmail",
+                  "x-ms-content-hint": "TEXT"
+                }
+              },
+              "required": []
+            }
+          }
+        }
+      },
+      "actions": {
+        "Get_user_profile_(V2)": {
+          "runAfter": {},
+          "metadata": {
+            "operationMetadataId": "1cee3c17-3ff7-475b-951c-695b5b1d7803"
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_office365users",
+              "connectionName": "shared_office365users",
+              "operationId": "UserProfile_V2"
+            },
+            "parameters": {
+              "id": "@triggerBody()['text']"
+            },
+            "authentication": {
+              "value": "@json(decodeBase64(triggerOutputs().headers['X-MS-APIM-Tokens']))['$ConnectionKey']",
+              "type": "Raw"
+            }
+          }
+        },
+        "AddUserGroup": {
+          "runAfter": {
+            "INIT_var_GroupID": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "dfc30222-654d-4094-a208-c1e7735fbed2"
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_azuread",
+              "connectionName": "shared_azuread",
+              "operationId": "AddUserToGroup"
+            },
+            "parameters": {
+              "id": "@variables('GroupID')",
+              "body/@odata.id": "@outputs('Get_user_profile_(V2)')?['body/id']"
+            },
+            "authentication": {
+              "value": "@json(decodeBase64(triggerOutputs().headers['X-MS-APIM-Tokens']))['$ConnectionKey']",
+              "type": "Raw"
+            }
+          }
+        },
+        "INIT_var_GroupID": {
+          "runAfter": {
+            "Get_user_profile_(V2)": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "abe8f987-4c42-4f10-abb3-324f5e51e0f4"
+          },
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "GroupID",
+                "type": "string",
+                "value": "d57a76f5-e599-4ae5-86b5-6bd3a9c58d76"
+              }
+            ]
+          }
+        },
+        "Condition": {
+          "actions": {
+            "Terminate_2": {
+              "runAfter": {},
+              "metadata": {
+                "operationMetadataId": "d370627e-f627-4ecb-902d-93e7e0088150"
+              },
+              "type": "Terminate",
+              "inputs": {
+                "runStatus": "Succeeded"
+              }
+            }
+          },
+          "runAfter": {
+            "INTI_var_groupStatus": [
+              "Succeeded"
+            ]
+          },
+          "else": {
+            "actions": {
+              "Terminate": {
+                "runAfter": {},
+                "metadata": {
+                  "operationMetadataId": "87464aab-44b4-4ee7-a9ad-e98645526784"
+                },
+                "type": "Terminate",
+                "inputs": {
+                  "runStatus": "Succeeded"
+                }
+              }
+            }
+          },
+          "expression": {
+            "equals": [
+              "@variables('groupStatus')",
+              204
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "06e32541-7fdf-4dc7-a29b-e6037540d0ed"
+          },
+          "type": "If"
+        },
+        "INTI_var_groupStatus": {
+          "runAfter": {
+            "AddUserGroup": [
+              "Succeeded",
+              "Failed"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "02817ef1-81b5-4908-bdf8-6978c831a671"
+          },
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "groupStatus",
+                "type": "integer",
+                "value": "@outputs('AddUserGroup')['statusCode']"
+              }
+            ]
+          }
+        }
+      }
+    },
+    "templateName": null
+  },
+  "schemaVersion": "1.0.0.0"
+}

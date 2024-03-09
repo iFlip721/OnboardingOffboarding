@@ -1,0 +1,28 @@
+{
+    "project": {
+        "solutionName": "OnboardingOffboarding"
+    },
+    "env": [
+        {
+            "id": 1,
+            "name": "DCMA_DEV",
+            "env_id": "29e06d80-49ea-4b5a-8369-3be0329da8fc"
+        },
+        {
+            "id": 2,
+            "name": "DCMA_TEST",
+            "env_id": "3ddc5ce7-74d2-43d2-8324-17ba7baf8640"
+        },
+        {
+            "id": 3,
+            "name": "DCMA_PROD",
+            "env_id": "f9ad359e-3010-42a2-8e91-aa27b4428e44"
+        },
+        {
+            "id": 4,
+            "name": "DCMA_CITDEV",
+            "env_id": "7d53a00d-09cc-eb21-8348-99a10042d965"
+        }
+    ]
+}
+

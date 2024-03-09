@@ -1,0 +1,10 @@
+[
+  {
+    "ApiId": "/providers/microsoft.powerapps/apis/shared_logicflows",
+    "FlowNameId": "8c5dbad2-4018-41fd-a208-dbadc711a7c5",
+    "Name": "SharePoint_RestAPI",
+    "ServiceKind": "ConnectedWadl",
+    "Type": "ServiceInfo",
+    "WorkflowEntityId": "01352b86-1861-ee11-be6e-001dd8105346"
+  }
+]

@@ -1,0 +1,45 @@
+{
+  "EnvironmentVariables": [
+    {
+      "SchemaName": "sdg_GLBLDSappRegistration",
+      "Value": "appRegistration"
+    },
+    {
+      "SchemaName": "sdg_GLBLDSuserAppAssociation",
+      "Value": "userAppAssociation"
+    },
+    {
+      "SchemaName": "sdg_GLBLDSuserRegistration",
+      "Value": "userRegistration"
+    },
+    {
+      "SchemaName": "sdg_OBOFDSappSettings",
+      "Value": "OBOF-appSettings"
+    },
+    {
+      "SchemaName": "sdg_OBOFDSchecklistOutProcessing",
+      "Value": "OBOF-checklistOutProcessing"
+    },
+    {
+      "SchemaName": "sdg_OBOFDSmandatoryOfficesPOC",
+      "Value": "OBOF-MandatoryOfficesPOC"
+    },
+    {
+      "SchemaName": "sdg_OBOFDStemplateOutProcessingChecklist",
+      "Value": "OBOF-templateOutProcessingChecklist"
+    },
+    {
+      "SchemaName": "sdg_OBOFDStemplateOutProcessingChecklistLocalTask",
+      "Value": "OBOF-templateOutProcessingChecklistLocalTask"
+    },
+    {
+      "SchemaName": "sdg_OBOFDSuserDelegation",
+      "Value": "OBOF-userDelegation"
+    },
+    {
+      "SchemaName": "sdg_OBOFStorageLocationURL",
+      "Value": "https://dod365.sharepoint-mil.us/sites/DCMA-Projects-P2-App-Resources"
+    }
+  ],
+  "ConnectionReferences": []
+}

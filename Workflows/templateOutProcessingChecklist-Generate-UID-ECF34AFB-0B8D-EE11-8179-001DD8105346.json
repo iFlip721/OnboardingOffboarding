@@ -1,0 +1,177 @@
+{
+  "properties": {
+    "connectionReferences": {
+      "shared_sharepointonline": {
+        "runtimeSource": "embedded",
+        "connection": {
+          "connectionReferenceLogicalName": "sdg_TravisSykesSHAREPOINT"
+        },
+        "api": {
+          "name": "shared_sharepointonline"
+        }
+      }
+    },
+    "definition": {
+      "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+      "contentVersion": "1.0.0.0",
+      "parameters": {
+        "$connections": {
+          "defaultValue": {},
+          "type": "Object"
+        },
+        "$authentication": {
+          "defaultValue": {},
+          "type": "SecureObject"
+        },
+        "OBOF-StorageLocationURL (sdg_OBOFStorageLocationURL)": {
+          "defaultValue": "https://dod365.sharepoint-mil.us/sites/DCMA-SB-Collaboration",
+          "type": "String",
+          "metadata": {
+            "schemaName": "sdg_OBOFStorageLocationURL",
+            "description": "OBOF Storage Location URL"
+          }
+        },
+        "OBOF-DS-templateOutProcessingChecklist (sdg_OBOFDStemplateOutProcessingChecklist)": {
+          "defaultValue": "80141462-d20f-47b8-a344-dcf14eb05262",
+          "type": "String",
+          "metadata": {
+            "schemaName": "sdg_OBOFDStemplateOutProcessingChecklist",
+            "description": "Out-Processing Checklist Templates"
+          }
+        }
+      },
+      "triggers": {
+        "templateOutProcessingChecklist_-_Item_Created": {
+          "recurrence": {
+            "interval": 1,
+            "frequency": "Minute"
+          },
+          "splitOn": "@triggerOutputs()?['body/value']",
+          "metadata": {
+            "operationMetadataId": "023eafbc-b051-4de7-bacf-b8855b9887f3"
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_sharepointonline",
+              "operationId": "GetOnNewItems",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+            },
+            "parameters": {
+              "dataset": "@parameters('OBOF-StorageLocationURL (sdg_OBOFStorageLocationURL)')",
+              "table": "@parameters('OBOF-DS-templateOutProcessingChecklist (sdg_OBOFDStemplateOutProcessingChecklist)')"
+            },
+            "authentication": "@parameters('$authentication')"
+          }
+        }
+      },
+      "actions": {
+        "INIT_-_uid": {
+          "runAfter": {},
+          "metadata": {
+            "operationMetadataId": "6fddaf0a-271c-4827-a4bb-df506cd478ce"
+          },
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "uid",
+                "type": "string",
+                "value": "@{guid()}"
+              }
+            ]
+          }
+        },
+        "INIT_-_serviceObject": {
+          "runAfter": {
+            "INIT_-_uid": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "9c7c64b4-f207-4254-981c-c1c1ba78ab26"
+          },
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "serviceObject",
+                "type": "array",
+                "value": "@null"
+              }
+            ]
+          }
+        },
+        "LOOP_-_service_values": {
+          "foreach": "@triggerOutputs()?['body/service']",
+          "actions": {
+            "APPEND_-_service_value_JSON_array": {
+              "runAfter": {},
+              "metadata": {
+                "operationMetadataId": "f3c241df-b0d5-483e-a9b1-5c65404fb562"
+              },
+              "type": "AppendToArrayVariable",
+              "inputs": {
+                "name": "serviceObject",
+                "value": {
+                  "Value": "@items('LOOP_-_service_values')?['Value']"
+                }
+              }
+            }
+          },
+          "runAfter": {
+            "INIT_-_serviceObject": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "69dcd659-1bb1-45a3-8b6f-388a15d21d01"
+          },
+          "type": "Foreach"
+        },
+        "templateOutProcessingChecklist_-_Update_UID": {
+          "runAfter": {
+            "LOOP_-_service_values": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "b8f0696f-de19-4403-bc1d-526eaad746aa"
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_sharepointonline",
+              "operationId": "PatchItem",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+            },
+            "parameters": {
+              "dataset": "@parameters('OBOF-StorageLocationURL (sdg_OBOFStorageLocationURL)')",
+              "table": "@parameters('OBOF-DS-templateOutProcessingChecklist (sdg_OBOFDStemplateOutProcessingChecklist)')",
+              "id": "@triggerOutputs()?['body/ID']",
+              "item/actionItem": "@triggerOutputs()?['body/actionItem']",
+              "item/taskTitle": "@triggerOutputs()?['body/taskTitle']",
+              "item/dueInDays": "@triggerOutputs()?['body/dueInDays']",
+              "item/mandatoryClearingOfficeACB": "@triggerOutputs()?['body/mandatoryClearingOfficeACB']",
+              "item/isSupervisorACB": "@triggerOutputs()?['body/isSupervisorACB']",
+              "item/isDesigneeACB": "@triggerOutputs()?['body/isDesigneeACB']",
+              "item/isEmployeeACB": "@triggerOutputs()?['body/isEmployeeACB']",
+              "item/isMSOACB": "@triggerOutputs()?['body/isMSOACB']",
+              "item/isNAACB": "@triggerOutputs()?['body/isNAACB']",
+              "item/isClearingOffice": "@triggerOutputs()?['body/isClearingOffice']",
+              "item/service": "@variables('serviceObject')",
+              "item/taskDetails": "@triggerOutputs()?['body/taskDetails']",
+              "item/active": "@triggerOutputs()?['body/active']",
+              "item/autoNotify": "@triggerOutputs()?['body/autoNotify']",
+              "item/createServiceRequest": "@triggerOutputs()?['body/createServiceRequest']",
+              "item/uidTask": "@variables('uid')"
+            },
+            "authentication": "@parameters('$authentication')"
+          }
+        }
+      }
+    },
+    "templateName": ""
+  },
+  "schemaVersion": "1.0.0.0"
+}

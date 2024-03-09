@@ -1,0 +1,375 @@
+{
+  "type": "array",
+  "items": {
+    "type": "object",
+    "properties": {
+      "ID": {
+        "type": "number"
+      },
+      "actionItem": {
+        "type": "number"
+      },
+      "autoNotify": {
+        "type": "boolean"
+      },
+      "built": {
+        "type": "string"
+      },
+      "createServiceRequest": {
+        "type": "boolean"
+      },
+      "dueInDays": {
+        "type": "number"
+      },
+      "dueInDaysEval": {
+        "type": "object",
+        "properties": {
+          "daysRemaining": {
+            "type": "number"
+          },
+          "dueDate": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "daysRemaining",
+          "dueDate"
+        ]
+      },
+      "extendAttributes": {
+        "type": "boolean"
+      },
+      "extendAttributesJSON": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "ID": {
+              "type": "number"
+            },
+            "description": {
+              "type": "string"
+            },
+            "responded": {
+              "type": "boolean"
+            },
+            "response": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "ID",
+            "description",
+            "responded",
+            "response"
+          ]
+        }
+      },
+      "groupValue": {
+        "type": "string"
+      },
+      "isClearingOffice": {
+        "type": "boolean"
+      },
+      "isCompleted": {
+        "type": "boolean"
+      },
+      "isDesigneeACB": {
+        "type": "boolean"
+      },
+      "isEmployeeACB": {
+        "type": "boolean"
+      },
+      "isMSOACB": {
+        "type": "boolean"
+      },
+      "isNAACB": {
+        "type": "boolean"
+      },
+      "isServiceRequestCompleted": {
+        "type": "boolean"
+      },
+      "isSupervisorACB": {
+        "type": "boolean"
+      },
+      "mandatoryClearingOfficeACB": {
+        "type": "boolean"
+      },
+      "notificationDetails": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string"
+          },
+          "isNotified": {
+            "type": "boolean"
+          },
+          "timestamp": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "email",
+          "isNotified",
+          "timestamp"
+        ]
+      },
+      "service": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "Value": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "Value"
+          ]
+        }
+      },
+      "serviceRequestNumber": {
+        "type": "string"
+      },
+      "signatureClearingOffice": {
+        "type": "object",
+        "properties": {
+          "date": {
+            "type": "string"
+          },
+          "isComplete": {
+            "type": "number"
+          },
+          "signature": {
+            "type": "string"
+          },
+          "uid": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "date",
+          "isComplete",
+          "signature",
+          "uid"
+        ]
+      },
+      "signatureDesignee": {
+        "type": "object",
+        "properties": {
+          "date": {
+            "type": "string"
+          },
+          "isComplete": {
+            "type": "number"
+          },
+          "signature": {
+            "type": "string"
+          },
+          "uid": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "date",
+          "isComplete",
+          "signature",
+          "uid"
+        ]
+      },
+      "signatureEmployee": {
+        "type": "object",
+        "properties": {
+          "date": {
+            "type": "string"
+          },
+          "isComplete": {
+            "type": "number"
+          },
+          "signature": {
+            "type": "string"
+          },
+          "uid": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "date",
+          "isComplete",
+          "signature",
+          "uid"
+        ]
+      },
+      "signatureMSO": {
+        "type": "object",
+        "properties": {
+          "date": {
+            "type": "string"
+          },
+          "isComplete": {
+            "type": "number"
+          },
+          "signature": {
+            "type": "string"
+          },
+          "uid": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "date",
+          "isComplete",
+          "signature",
+          "uid"
+        ]
+      },
+      "signatureNAACB": {
+        "type": "object",
+        "properties": {
+          "date": {
+            "type": "string"
+          },
+          "isComplete": {
+            "type": "number"
+          },
+          "signature": {
+            "type": "string"
+          },
+          "uid": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "date",
+          "isComplete",
+          "signature",
+          "uid"
+        ]
+      },
+      "signatureSupervisor": {
+        "type": "object",
+        "properties": {
+          "date": {
+            "type": "string"
+          },
+          "isComplete": {
+            "type": "number"
+          },
+          "signature": {
+            "type": "string"
+          },
+          "uid": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "date",
+          "isComplete",
+          "signature",
+          "uid"
+        ]
+      },
+      "signatureSupervisorDesignee": {
+        "type": "object",
+        "properties": {
+          "date": {
+            "type": "string"
+          },
+          "isComplete": {
+            "type": "number"
+          },
+          "signature": {
+            "type": "string"
+          },
+          "uid": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "date",
+          "isComplete",
+          "signature",
+          "uid"
+        ]
+      },
+      "taskCompletionTelemetry": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "Value": {
+              "type": "number"
+            },
+            "t": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "t"
+          ]
+        }
+      },
+      "transactLog": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "ID": {
+              "type": "number"
+            },
+            "log": {
+              "type": "string"
+            },
+            "timestamp": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "ID",
+            "log",
+            "timestamp"
+          ]
+        }
+      },
+      "uid": {
+        "type": "string"
+      },
+      "urlServiceRequest": {
+        "type": "string"
+      }
+    },
+    "required": [
+      "ID",
+      "actionItem",
+      "autoNotify",
+      "built",
+      "createServiceRequest",
+      "dueInDays",
+      "dueInDaysEval",
+      "extendAttributes",
+      "groupValue",
+      "isClearingOffice",
+      "isCompleted",
+      "isDesigneeACB",
+      "isEmployeeACB",
+      "isMSOACB",
+      "isNAACB",
+      "isServiceRequestCompleted",
+      "isSupervisorACB",
+      "mandatoryClearingOfficeACB",
+      "notificationDetails",
+      "service",
+      "serviceRequestNumber",
+      "signatureClearingOffice",
+      "signatureDesignee",
+      "signatureEmployee",
+      "signatureMSO",
+      "signatureNAACB",
+      "signatureSupervisor",
+      "signatureSupervisorDesignee",
+      "taskCompletionTelemetry",
+      "transactLog",
+      "uid"
+    ]
+  }
+}

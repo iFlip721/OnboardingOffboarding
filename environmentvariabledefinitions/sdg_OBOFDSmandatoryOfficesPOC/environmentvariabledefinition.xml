@@ -1,0 +1,18 @@
+<environmentvariabledefinition schemaname="sdg_OBOFDSmandatoryOfficesPOC">
+  <apiid>/providers/microsoft.powerapps/apis/shared_sharepointonline</apiid>
+  <description default="Clearing Offices Point of Contact List">
+    <label description="Clearing Offices Point of Contact List" languagecode="1033" />
+  </description>
+  <displayname default="OBOF-DS-mandatoryOfficesPOC">
+    <label description="OBOF-DS-mandatoryOfficesPOC" languagecode="1033" />
+  </displayname>
+  <introducedversion>1.0.0.0</introducedversion>
+  <iscustomizable>1</iscustomizable>
+  <isrequired>0</isrequired>
+  <parameterkey>table</parameterkey>
+  <parentdefinitionid>
+    <schemaname>sdg_OBOFStorageLocationURL</schemaname>
+  </parentdefinitionid>
+  <secretstore>0</secretstore>
+  <type>100000004</type>
+</environmentvariabledefinition>

@@ -1,0 +1,76 @@
+{
+  "type": "array",
+  "items": {
+    "type": "object",
+    "properties": {
+      "ID": {
+        "type": "number"
+      },
+      "comments": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "ID": {
+              "type": "number"
+            },
+            "comment": {
+              "type": "string"
+            },
+            "displayName": {
+              "type": "string"
+            },
+            "notifyEmail": {
+              "type": "string"
+            },
+            "notifyUid": {
+              "type": "string"
+            },
+            "replyDisplayName": {
+              "type": "string"
+            },
+            "replyUid": {
+              "type": "string"
+            },
+            "timestamp": {
+              "type": "string"
+            },
+            "uid": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "ID",
+            "comment",
+            "displayName",
+            "notifyEmail",
+            "notifyUid",
+            "replyDisplayName",
+            "replyUid",
+            "timestamp",
+            "uid"
+          ]
+        }
+      },
+      "viewedBy": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "uid": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "uid"
+          ]
+        }
+      }
+    },
+    "required": [
+      "ID",
+      "comments",
+      "viewedBy"
+    ]
+  }
+}

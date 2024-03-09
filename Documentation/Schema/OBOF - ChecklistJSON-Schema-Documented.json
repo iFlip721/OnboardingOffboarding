@@ -1,0 +1,460 @@
+{
+    "$id": "https://dod365.sharepoint-mil.us/sites/DCMA-Projects-P2-App-Resources/SiteAssets/json_schemas/obof.checklist.schema.json",
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "title": "DCMA Out-Processing Checklist Task Items",
+    "description": "JSON array representing task items on an out-processing checklist",
+    "type": "array",
+    "items": {
+      "type": "object",
+      "description": "JSON object representing a single out-processing task",
+      "properties": {
+        "ID": {
+          "type": "number",
+          "description": "Identification number pulled from OBOF-templateOutProcessingChecklist-DEV SPO list https://dod365.sharepoint-mil.us/sites/DCMA-SB-Collaboration/Lists/OBOFtemplateOutProcessingChecklist"
+        },
+        "actionItem": {
+          "type": "number",
+          "description": "Identification number pulled from OBOF-templateOutProcessingChecklist-DEV SPO list https://dod365.sharepoint-mil.us/sites/DCMA-SB-Collaboration/Lists/OBOFtemplateOutProcessingChecklist - this number will always be the same as ID"
+        },
+        "autoNotify": {
+          "type": "boolean",
+          "description": "Indicates if the task will use the Send Notification component"
+        },
+        "built": {
+          "type": "string",
+          "description": "Date value updated each time this task is built within the application. Value is used for internal purposes to during development to validate the function DataSourceComponent.BuildChecklistTasks() is/has run and when the last time the ChecklistJSON was built and viewed within the application."
+        },
+        "createServiceRequest": {
+          "type": "boolean",
+          "description": "Indicates if the task will use the ChangeGear Service Requests ticket component and require a value supplied prior to signing task."
+        },
+        "dueInDays": {
+          "type": "number",
+          "description": "Number of days the task is due prior to the departure date."
+        },
+        "dueInDaysEval": {
+          "type": "object",
+          "description": "Represents the properties associate with dueInDays from computaional results",
+          "properties": {
+            "daysRemaining": {
+              "type": "number",
+              "description": "Dynamic number of business days remaining before due calculated each time with DataSourceComponent.BuildChecklistTasks() due to the possibility a departure date could change or the number of lapsed days."
+            },
+            "dueDate": {
+              "type": "string",
+              "description": "Dynamic date value calculated each time with DataSourceComponent.BuildChecklistTasks() due to the possibility a departure date could change or the number of lapsed days."
+            }
+          },
+          "required": [
+            "daysRemaining",
+            "dueDate"
+          ]
+        },
+        "extendAttributes": {
+          "type": "boolean",
+          "description": "Indicates if the task will use the Extended Atributes Component. Extended attributes are freely defined using nested JSON Schema to identify Yes/No responses within the application. Limited to 4 possible extended attributes."
+        },
+        "extendAttributesJSON": {
+          "type": "array",
+          "description": "Defines the exntended attributes properties",
+          "items": {
+            "type": "object",
+            "description": "",
+            "properties": {
+              "ID": {
+                "type": "number",
+                "description": "Unique ID used for indexing will always be a a number of 1-4"
+              },
+              "description": {
+                "type": "string",
+                "description": "String value of what will be displayed in application"
+              },
+              "responded": {
+                "type": "boolean",
+                "description": "Identifies whether this extedended attribute is complete - used for validating next step in application"
+              },
+              "response": {
+                "type": "string",
+                "description": "Recorded response from application"
+              }
+            },
+            "required": [
+              "ID",
+              "description",
+              "responded",
+              "response"
+            ]
+          }
+        },
+        "groupValue": {
+          "type": "string",
+          "description": "Defines the category each task belongs to within application. Used for sorting and grouping filters on UI/UX"
+        },
+        "isClearingOffice": {
+          "type": "boolean",
+          "description": "Indicates if the task is associated with a Clearing Office action."
+        },
+        "isCompleted": {
+          "type": "boolean",
+          "description": "Indicates if the Task is compmlete"
+        },
+        "isDesigneeACB": {
+          "type": "boolean",
+          "description": "Indicates if the Designee signature Action Completed By (ACB) is required.. If true the Designee signature component show in UI. When both Designee and Supervisor are TRUE then Supervisor/Designee signature component will show in UI."
+        },
+        "isEmployeeACB": {
+          "type": "boolean",
+          "description": "Indicates if the Departing Employee signature Action Completed By (ACB) is required.. If true the Departing Employee signature component show in UI."
+        },
+        "isMSOACB": {
+          "type": "boolean",
+          "description": "Indicates if the Mission Support signature Action Completed By (ACB) is required.. If true the Mission Support signature component show in UI."
+        },
+        "isNAACB": {
+          "type": "boolean",
+          "description": "Indicates if the N|A signature Action Completed By (ACB) is required.. If true the N|A signature component show in UI."
+        },
+        "isServiceRequestCompleted": {
+          "type": "boolean",
+          "description": "Indicates if the ChangeGear Service Request ticket number has been supplied by user. Used for validating next step in application."
+        },
+        "isSupervisorACB": {
+          "type": "boolean",
+          "description": "Indicates if the Supervisor signature Action Completed By (ACB) is required.. If true the Supervisor signature component show in UI. When both Designee and Supervisor are TRUE then Supervisor/Designee signature component will show in UI."
+        },
+        "mandatoryClearingOfficeACB": {
+          "type": "boolean",
+          "description": "Indicates if the Clearing Office signature Action Completed By (ACB) is required.. If true the Clearing Office signature component show in UI."
+        },
+        "notificationDetails": {
+          "type": "object",
+          "description": "Properties related to the email sent when notifying Clearing Office. Related to autoNotify object.",
+          "properties": {
+            "email": {
+              "type": "string",
+              "description": "Email address where notification was sent."
+            },
+            "isNotified": {
+              "type": "boolean",
+              "description": "Indicates if a notification has been sent."
+            },
+            "timestamp": {
+              "type": "string",
+              "description": "Date value of when the notification was sent."
+            }
+          },
+          "required": [
+            "email",
+            "isNotified",
+            "timestamp"
+          ]
+        },
+        "service": {
+          "type": "array",
+          "description": "Properties related to the types of service this task applies (Civilian, Military, Contractor)",
+          "items": {
+            "type": "object",
+            "description": "",
+            "properties": {
+              "Value": {
+                "type": "string",
+                "description": "The name of the service"
+              }
+            },
+            "required": [
+              "Value"
+            ]
+          }
+        },
+        "serviceRequestNumber": {
+          "type": "string",
+          "description": "The value of the ChangeGear Service Request ticket number. Constrained in UI/UX by regex = SR-\d+\d+\d+\d+\d+\d+\d+"
+        },
+        "signatureClearingOffice": {
+          "type": "object",
+          "description": "Signature properties",
+          "properties": {
+            "date": {
+              "type": "string",
+              "description": "Date value of when a signature was recorded"
+            },
+            "isComplete": {
+              "type": "number",
+              "description": "Indicates if this signature is complete. 0 = incomplete 1 = complete"
+            },
+            "signature": {
+              "type": "string",
+              "description": "Signature display value"
+            },
+            "uid": {
+              "type": "string",
+              "description": "Unique ID security key identifer related to individual signature"
+            }
+          },
+          "required": [
+            "date",
+            "isComplete",
+            "signature",
+            "uid"
+          ]
+        },
+        "signatureDesignee": {
+          "type": "object",
+          "description": "",
+          "properties": {
+            "date": {
+              "type": "string",
+              "description": "Date value of when a signature was recorded"
+            },
+            "isComplete": {
+              "type": "number",
+              "description": "Indicates if this signature is complete. 0 = incomplete 1 = complete"
+            },
+            "signature": {
+              "type": "string",
+              "description": "Signature display value"
+            },
+            "uid": {
+              "type": "string",
+              "description": "Unique ID security key identifer related to individual signature"
+            }
+          },
+          "required": [
+            "date",
+            "isComplete",
+            "signature",
+            "uid"
+          ]
+        },
+        "signatureEmployee": {
+          "type": "object",
+          "description": "",
+          "properties": {
+            "date": {
+              "type": "string",
+              "description": "Date value of when a signature was recorded"
+            },
+            "isComplete": {
+              "type": "number",
+              "description": "Indicates if this signature is complete. 0 = incomplete 1 = complete"
+            },
+            "signature": {
+              "type": "string",
+              "description": "Signature display value"
+            },
+            "uid": {
+              "type": "string",
+              "description": "Unique ID security key identifer related to individual signature"
+            }
+          },
+          "required": [
+            "date",
+            "isComplete",
+            "signature",
+            "uid"
+          ]
+        },
+        "signatureMSO": {
+          "type": "object",
+          "description": "",
+          "properties": {
+            "date": {
+              "type": "string",
+              "description": "Date value of when a signature was recorded"
+            },
+            "isComplete": {
+              "type": "number",
+              "description": "Indicates if this signature is complete. 0 = incomplete 1 = complete"
+            },
+            "signature": {
+              "type": "string",
+              "description": "Signature display value"
+            },
+            "uid": {
+              "type": "string",
+              "description": "Unique ID security key identifer related to individual signature"
+            }
+          },
+          "required": [
+            "date",
+            "isComplete",
+            "signature",
+            "uid"
+          ]
+        },
+        "signatureNAACB": {
+          "type": "object",
+          "description": "",
+          "properties": {
+            "date": {
+              "type": "string",
+              "description": "Date value of when a signature was recorded"
+            },
+            "isComplete": {
+              "type": "number",
+              "description": "Indicates if this signature is complete. 0 = incomplete 1 = complete"
+            },
+            "signature": {
+              "type": "string",
+              "description": "Signature display value"
+            },
+            "uid": {
+              "type": "string",
+              "description": "Unique ID security key identifer related to individual signature"
+            }
+          },
+          "required": [
+            "date",
+            "isComplete",
+            "signature",
+            "uid"
+          ]
+        },
+        "signatureSupervisor": {
+          "type": "object",
+          "description": "",
+          "properties": {
+            "date": {
+              "type": "string",
+              "description": "Date value of when a signature was recorded"
+            },
+            "isComplete": {
+              "type": "number",
+              "description": "Indicates if this signature is complete. 0 = incomplete 1 = complete"
+            },
+            "signature": {
+              "type": "string",
+              "description": "Signature display valueSignature display value"
+            },
+            "uid": {
+              "type": "string",
+              "description": "Unique ID security key identifer related to individual signature"
+            }
+          },
+          "required": [
+            "date",
+            "isComplete",
+            "signature",
+            "uid"
+          ]
+        },
+        "signatureSupervisorDesignee": {
+          "type": "object",
+          "description": "",
+          "properties": {
+            "date": {
+              "type": "string",
+              "description": "Date value of when a signature was recorded"
+            },
+            "isComplete": {
+              "type": "number",
+              "description": "Indicates if this signature is complete. 0 = incomplete 1 = complete"
+            },
+            "signature": {
+              "type": "string",
+              "description": "Signature display value"
+            },
+            "uid": {
+              "type": "string",
+              "description": "Unique ID security key identifer related to individual signature"
+            }
+          },
+          "required": [
+            "date",
+            "isComplete",
+            "signature",
+            "uid"
+          ]
+        },
+        "taskCompletionTelemetry": {
+          "type": "array",
+          "description": "Numerical representaion of the required, incomplete, and complete signature for an individual task. -1 = not required, 0 = incomplete, 1 = complete",
+          "items": {
+            "type": "object",
+            "description": "",
+            "properties": {
+              "Value": {
+                "type": "number",
+                "description": "Value representing the signature: -1 = not required, 0 = incomplete, 1 = complete"
+              },
+              "t": {
+                "type": "string",
+                "description": "The title of the signature: signatureClearingOffice, signatureEmployee, signatureMSO, signatureDesignee, signatureSupervisor, signatureSupervisorDesignee"
+              }
+            },
+            "required": [
+              "t"
+            ]
+          }
+        },
+        "transactLog": {
+          "type": "array",
+          "description": "Properties for transaction logs on each individual task",
+          "items": {
+            "type": "object",
+            "description": "",
+            "properties": {
+              "ID": {
+                "type": "number",
+                "description": "Index for transaction logs. Used for accessing and patching logs."
+              },
+              "log": {
+                "type": "string",
+                "description": "Log message"
+              },
+              "timestamp": {
+                "type": "string",
+                "description": "Date value of when log message was recorded."
+              }
+            },
+            "required": [
+              "ID",
+              "log",
+              "timestamp"
+            ]
+          }
+        },
+        "uid": {
+          "type": "string",
+          "description": "Unique ID of the task - pulled from OBOF-templateOutProcessingChecklist-DEV SPO list https://dod365.sharepoint-mil.us/sites/DCMA-SB-Collaboration/Lists/OBOFtemplateOutProcessingChecklist"
+        },
+        "urlServiceRequest": {
+          "type": "string",
+          "description": "URL to access the ChangeGear template when creating a ServiceRequest ticket."
+        }
+      },
+      "required": [
+        "ID",
+        "actionItem",
+        "autoNotify",
+        "built",
+        "createServiceRequest",
+        "dueInDays",
+        "dueInDaysEval",
+        "extendAttributes",
+        "groupValue",
+        "isClearingOffice",
+        "isCompleted",
+        "isDesigneeACB",
+        "isEmployeeACB",
+        "isMSOACB",
+        "isNAACB",
+        "isServiceRequestCompleted",
+        "isSupervisorACB",
+        "mandatoryClearingOfficeACB",
+        "notificationDetails",
+        "service",
+        "serviceRequestNumber",
+        "signatureClearingOffice",
+        "signatureDesignee",
+        "signatureEmployee",
+        "signatureMSO",
+        "signatureNAACB",
+        "signatureSupervisor",
+        "signatureSupervisorDesignee",
+        "taskCompletionTelemetry",
+        "transactLog",
+        "uid"
+      ]
+    }
+}

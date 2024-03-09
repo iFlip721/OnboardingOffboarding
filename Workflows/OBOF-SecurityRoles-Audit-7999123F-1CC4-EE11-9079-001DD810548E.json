@@ -1,0 +1,661 @@
+{
+  "properties": {
+    "connectionReferences": {
+      "shared_powerbi": {
+        "runtimeSource": "embedded",
+        "connection": {
+          "connectionReferenceLogicalName": "sdg_TravisSykesPOWERBI"
+        },
+        "api": {
+          "name": "shared_powerbi"
+        }
+      },
+      "shared_office365groups": {
+        "runtimeSource": "embedded",
+        "connection": {
+          "connectionReferenceLogicalName": "sdg_TravisSykesOFFICE365GROUPS"
+        },
+        "api": {
+          "name": "shared_office365groups"
+        }
+      },
+      "shared_office365users": {
+        "runtimeSource": "embedded",
+        "connection": {
+          "connectionReferenceLogicalName": "sdg_TravisSykesOFFICE365USERS"
+        },
+        "api": {
+          "name": "shared_office365users"
+        }
+      },
+      "shared_sharepointonline": {
+        "runtimeSource": "embedded",
+        "connection": {
+          "connectionReferenceLogicalName": "sdg_TravisSykesSHAREPOINT"
+        },
+        "api": {
+          "name": "shared_sharepointonline"
+        }
+      }
+    },
+    "definition": {
+      "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+      "contentVersion": "1.0.0.0",
+      "parameters": {
+        "$connections": {
+          "defaultValue": {},
+          "type": "Object"
+        },
+        "$authentication": {
+          "defaultValue": {},
+          "type": "SecureObject"
+        },
+        "OBOF-DS-mandatoryOfficesPOC (sdg_OBOFDSmandatoryOfficesPOC)": {
+          "defaultValue": "1b15b097-3400-43a2-aa66-c890ece17f6a",
+          "type": "String",
+          "metadata": {
+            "schemaName": "sdg_OBOFDSmandatoryOfficesPOC",
+            "description": "Clearing Offices Point of Contact List"
+          }
+        },
+        "OBOF-StorageLocationURL (sdg_OBOFStorageLocationURL)": {
+          "defaultValue": "https://dod365.sharepoint-mil.us/sites/DCMA-SB-Collaboration",
+          "type": "String",
+          "metadata": {
+            "schemaName": "sdg_OBOFStorageLocationURL",
+            "description": "OBOF Storage Location URL"
+          }
+        }
+      },
+      "triggers": {
+        "Recurrence": {
+          "recurrence": {
+            "frequency": "Day",
+            "interval": 1,
+            "timeZone": "Eastern Standard Time",
+            "startTime": "2024-02-04T00:00:00Z",
+            "schedule": {
+              "hours": [
+                "0"
+              ]
+            }
+          },
+          "metadata": {
+            "operationMetadataId": "2a075d7d-b7b3-4e1e-8772-b209bcd1dd29"
+          },
+          "type": "Recurrence"
+        }
+      },
+      "actions": {
+        "DAXQuery-IWAM": {
+          "runAfter": {
+            "TERMINATE": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "457068e2-d905-40a8-8bd7-33572e977e7d"
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_powerbi",
+              "operationId": "ExecuteDatasetQuery",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_powerbi"
+            },
+            "parameters": {
+              "groupid": "208885bd-ffb9-441b-8c9a-2106d426e81a",
+              "datasetid": "d190c00c-71e7-4a6a-a53e-1b1ca7aa7ec9",
+              "specification/query": "EVALUATE\n\tCALCULATETABLE(\n\t\t'IWAM USERS',\n\t\t'IWAM USERS'[IS_SUPERVISOR] = \"true\"\n\t)",
+              "specification/serializerSettings/includeNulls": false
+            },
+            "authentication": "@parameters('$authentication')"
+          }
+        },
+        "Filter-AddMembers": {
+          "runAfter": {
+            "GroupMembers": [
+              "Succeeded"
+            ],
+            "DAXMembers": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "a762fdf6-6781-4006-a5f6-6faf97ce2faa"
+          },
+          "type": "Query",
+          "inputs": {
+            "from": "@body('DAXMembers')",
+            "where": "@not(contains(body('GroupMembers'), item()))"
+          }
+        },
+        "Get-DCMA-OBOF-Supervisors": {
+          "runAfter": {
+            "TERMINATE": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "6edc922c-a1cd-44dd-9ce6-99303acd85e2"
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_office365groups",
+              "operationId": "ListGroupMembers",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_office365groups"
+            },
+            "parameters": {
+              "groupId": "f835aab1-1d5e-4f3b-8c6f-c3a507f28816",
+              "$top": 999
+            },
+            "authentication": "@parameters('$authentication')"
+          },
+          "runtimeConfiguration": {
+            "paginationPolicy": {
+              "minimumItemCount": 5000
+            }
+          }
+        },
+        "GroupMembers": {
+          "runAfter": {
+            "Get-DCMA-OBOF-Supervisors": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "761070e9-f300-48fa-be79-1bd3c825bfc6"
+          },
+          "type": "Select",
+          "inputs": {
+            "from": "@outputs('Get-DCMA-OBOF-Supervisors')?['body/value']",
+            "select": "@item()?['Mail']"
+          }
+        },
+        "DAXMembers": {
+          "runAfter": {
+            "DAXQuery-IWAM": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "d77d86e3-1627-4572-b937-ec21ebfd3f57"
+          },
+          "type": "Select",
+          "inputs": {
+            "from": "@outputs('DAXQuery-IWAM')?['body/firstTableRows']",
+            "select": "@item()?['IWAM USERS[DCMA_EMAIL]']"
+          }
+        },
+        "Apply_to_each": {
+          "foreach": "@body('Filter-AddMembers')",
+          "actions": {
+            "Filter-DAXQueryObject": {
+              "runAfter": {},
+              "metadata": {
+                "operationMetadataId": "ee97297a-0db7-464c-8dbc-e9e41598c435"
+              },
+              "type": "Query",
+              "inputs": {
+                "from": "@outputs('DAXQuery-IWAM')?['body/firstTableRows']",
+                "where": "@equals(item()?['IWAM USERS[DCMA_EMAIL]'], items('Apply_to_each'))"
+              }
+            },
+            "Get-GroupMembers-MissingProfile": {
+              "runAfter": {
+                "Filter-DAXQueryObject": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "cf68c815-6388-45d6-ad1a-ae52e71e3af9"
+              },
+              "type": "OpenApiConnection",
+              "inputs": {
+                "host": {
+                  "connectionName": "shared_office365users",
+                  "operationId": "UserProfile_V2",
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_office365users"
+                },
+                "parameters": {
+                  "id": "@items('Apply_to_each')"
+                },
+                "authentication": "@parameters('$authentication')"
+              }
+            },
+            "Condition-statusCode": {
+              "actions": {
+                "Compose-FullMemberEntity": {
+                  "runAfter": {},
+                  "metadata": {
+                    "operationMetadataId": "e626dc98-cf08-4e96-8d07-1a51a3c8d53f"
+                  },
+                  "type": "Compose",
+                  "inputs": {
+                    "reason": "Profile missing from security group",
+                    "source": "Automation Function",
+                    "action": "add",
+                    "securityGroup": "DCMA-OBOF-Supervisors",
+                    "actionTaken": "@{true}",
+                    "userid": "@{body('Filter-DAXQueryObject')?[0]?['IWAM USERS[USERID]']}",
+                    "active": "@{body('Filter-DAXQueryObject')?[0]?['IWAM USERS[ACTIVE]']}",
+                    "organizationLevel": "@{body('Filter-DAXQueryObject')?[0]?['IWAM USERS[DCMA_ORGANIZATION_LEVEL]']}",
+                    "employeeType": "@{body('Filter-DAXQueryObject')?[0]?['IWAM USERS[DCMA_EMPLOYEE_TYPE]']}",
+                    "jobSeries": "@{body('Filter-DAXQueryObject')?[0]?['IWAM USERS[DCMA_JOB_SERIES]']}",
+                    "isSupervisor": "@{body('Filter-DAXQueryObject')?[0]?['IWAM USERS[IS_SUPERVISOR]']}",
+                    "email": "@{body('Filter-DAXQueryObject')?[0]?['IWAM USERS[DCMA_EMAIL]']}",
+                    "telephone": "@{body('Filter-DAXQueryObject')?[0]?['IWAM USERS[TELEPHONE]']}",
+                    "fullname": "@{body('Filter-DAXQueryObject')?[0]?['IWAM USERS[USR_FULLNAME]']}",
+                    "parentSupervisor": "@{body('Filter-DAXQueryObject')?[0]?['IWAM USERS[DIRECT_SUPERVISOR]']}",
+                    "siteId": "@{body('Filter-DAXQueryObject')?[0]?['IWAM USERS[DCMA_SITE_ID]']}",
+                    "jobTitle": "@{outputs('Get-GroupMembers-MissingProfile')?['body/jobTitle']}",
+                    "displayName": "@{outputs('Get-GroupMembers-MissingProfile')?['body/displayName']}",
+                    "entraId": "@{outputs('Get-GroupMembers-MissingProfile')?['body/id']}",
+                    "officeLocation": "@{outputs('Get-GroupMembers-MissingProfile')?['body/officeLocation']}",
+                    "mail": "@{outputs('Get-GroupMembers-MissingProfile')?['body/mail']}",
+                    "userPrincipalName": "@{outputs('Get-GroupMembers-MissingProfile')?['body/userPrincipalName']}"
+                  }
+                },
+                "RecordAuditLog-Add": {
+                  "runAfter": {
+                    "Compose-FullMemberEntity": [
+                      "Succeeded"
+                    ]
+                  },
+                  "metadata": {
+                    "operationMetadataId": "e6c4fd36-b295-44b7-8828-1ac00d4abf90"
+                  },
+                  "type": "OpenApiConnection",
+                  "inputs": {
+                    "host": {
+                      "connectionName": "shared_sharepointonline",
+                      "operationId": "PostItem",
+                      "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+                    },
+                    "parameters": {
+                      "dataset": "https://dod365.sharepoint-mil.us/sites/DCMA-Projects-P2-App-Resources",
+                      "table": "66048356-ca14-4eb0-9b88-455a8b5f27b8",
+                      "item/securityGroup": "@outputs('Compose-FullMemberEntity')['securityGroup']",
+                      "item/source": "@outputs('Compose-FullMemberEntity')['source']",
+                      "item/action": "@outputs('Compose-FullMemberEntity')['action']",
+                      "item/actionTaken": "@outputs('Compose-FullMemberEntity')['actionTaken']",
+                      "item/statusCode": 0,
+                      "item/userid": "@outputs('Compose-FullMemberEntity')['userid']",
+                      "item/isSupervisor": "@outputs('Compose-FullMemberEntity')['isSupervisor']",
+                      "item/fullname": "@outputs('Compose-FullMemberEntity')['fullname']",
+                      "item/iwamEmail": "@outputs('Compose-FullMemberEntity')['email']",
+                      "item/oEmail": "@outputs('Compose-FullMemberEntity')['mail']",
+                      "item/userPrincipalName": "@outputs('Compose-FullMemberEntity')['userPrincipalName']",
+                      "item/accountActive": "@outputs('Compose-FullMemberEntity')['active']",
+                      "item/organizationLevel": "@outputs('Compose-FullMemberEntity')['organizationLevel']",
+                      "item/employeeType": "@outputs('Compose-FullMemberEntity')['employeeType']",
+                      "item/jobSeries": "@outputs('Compose-FullMemberEntity')['jobSeries']",
+                      "item/telephone": "@outputs('Compose-FullMemberEntity')['telephone']",
+                      "item/parentSupervisor": "@outputs('Compose-FullMemberEntity')['parentSupervisor']",
+                      "item/siteId": "@outputs('Compose-FullMemberEntity')['siteId']",
+                      "item/jobTitle": "@outputs('Compose-FullMemberEntity')['jobTitle']",
+                      "item/displayName": "@outputs('Compose-FullMemberEntity')['displayName']",
+                      "item/entraId": "@outputs('Compose-FullMemberEntity')['entraId']",
+                      "item/officeLocation": "@outputs('Compose-FullMemberEntity')['officeLocation']",
+                      "item/reason": "@outputs('Compose-FullMemberEntity')['reason']"
+                    },
+                    "authentication": "@parameters('$authentication')"
+                  }
+                },
+                "AddMember-DCMA-OBOF-Supervisors": {
+                  "runAfter": {
+                    "RecordAuditLog-Add": [
+                      "Succeeded"
+                    ]
+                  },
+                  "metadata": {
+                    "operationMetadataId": "0b5c4936-fba2-42d0-a275-4811c5635084"
+                  },
+                  "type": "OpenApiConnection",
+                  "inputs": {
+                    "host": {
+                      "connectionName": "shared_office365groups",
+                      "operationId": "AddMemberToGroup",
+                      "apiId": "/providers/Microsoft.PowerApps/apis/shared_office365groups"
+                    },
+                    "parameters": {
+                      "groupId": "f835aab1-1d5e-4f3b-8c6f-c3a507f28816",
+                      "userUpn": "@outputs('Compose-FullMemberEntity')['userPrincipalName']"
+                    },
+                    "authentication": "@parameters('$authentication')"
+                  }
+                },
+                "Condition-AddMemberResponseCode": {
+                  "actions": {
+                    "RecordAuditLog-Add-ResponseMessage": {
+                      "runAfter": {},
+                      "metadata": {
+                        "operationMetadataId": "c8452009-779f-451d-b0ed-fac1b7c70410"
+                      },
+                      "type": "OpenApiConnection",
+                      "inputs": {
+                        "host": {
+                          "connectionName": "shared_sharepointonline",
+                          "operationId": "PostItem",
+                          "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+                        },
+                        "parameters": {
+                          "dataset": "https://dod365.sharepoint-mil.us/sites/DCMA-Projects-P2-App-Resources",
+                          "table": "66048356-ca14-4eb0-9b88-455a8b5f27b8",
+                          "item/securityGroup": "@outputs('Compose-FullMemberEntity')['securityGroup']",
+                          "item/source": "@outputs('Compose-FullMemberEntity')['source']",
+                          "item/action": "@outputs('Compose-FullMemberEntity')['action']",
+                          "item/actionTaken": true,
+                          "item/statusCode": "@outputs('AddMember-DCMA-OBOF-Supervisors')['statusCode']",
+                          "item/userid": "@outputs('Compose-FullMemberEntity')['userid']",
+                          "item/isSupervisor": "@outputs('Compose-FullMemberEntity')['isSupervisor']",
+                          "item/fullname": "@outputs('Compose-FullMemberEntity')['fullname']",
+                          "item/iwamEmail": "@outputs('Compose-FullMemberEntity')['email']",
+                          "item/oEmail": "@outputs('Compose-FullMemberEntity')['mail']",
+                          "item/userPrincipalName": "@outputs('Compose-FullMemberEntity')['userPrincipalName']",
+                          "item/accountActive": "@outputs('Compose-FullMemberEntity')['active']",
+                          "item/organizationLevel": "@outputs('Compose-FullMemberEntity')['organizationLevel']",
+                          "item/employeeType": "@outputs('Compose-FullMemberEntity')['employeeType']",
+                          "item/jobSeries": "@outputs('Compose-FullMemberEntity')['jobSeries']",
+                          "item/telephone": "@outputs('Compose-FullMemberEntity')['telephone']",
+                          "item/parentSupervisor": "@outputs('Compose-FullMemberEntity')['parentSupervisor']",
+                          "item/siteId": "@outputs('Compose-FullMemberEntity')['siteId']",
+                          "item/jobTitle": "@outputs('Compose-FullMemberEntity')['jobTitle']",
+                          "item/displayName": "@outputs('Compose-FullMemberEntity')['displayName']",
+                          "item/entraId": "@outputs('Compose-FullMemberEntity')['entraId']",
+                          "item/officeLocation": "@outputs('Compose-FullMemberEntity')['officeLocation']",
+                          "item/reason": "@body('AddMember-DCMA-OBOF-Supervisors')['error']['message']"
+                        },
+                        "authentication": "@parameters('$authentication')"
+                      }
+                    }
+                  },
+                  "runAfter": {
+                    "AddMember-DCMA-OBOF-Supervisors": [
+                      "Succeeded",
+                      "Failed"
+                    ]
+                  },
+                  "else": {
+                    "actions": {
+                      "RecordAuditLog-Add-ResponseMessage200": {
+                        "runAfter": {},
+                        "metadata": {
+                          "operationMetadataId": "c8452009-779f-451d-b0ed-fac1b7c70410"
+                        },
+                        "type": "OpenApiConnection",
+                        "inputs": {
+                          "host": {
+                            "connectionName": "shared_sharepointonline",
+                            "operationId": "PostItem",
+                            "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+                          },
+                          "parameters": {
+                            "dataset": "https://dod365.sharepoint-mil.us/sites/DCMA-Projects-P2-App-Resources",
+                            "table": "66048356-ca14-4eb0-9b88-455a8b5f27b8",
+                            "item/securityGroup": "@outputs('Compose-FullMemberEntity')['securityGroup']",
+                            "item/source": "@outputs('Compose-FullMemberEntity')['source']",
+                            "item/action": "@outputs('Compose-FullMemberEntity')['action']",
+                            "item/actionTaken": true,
+                            "item/statusCode": "@outputs('AddMember-DCMA-OBOF-Supervisors')['statusCode']",
+                            "item/userid": "@outputs('Compose-FullMemberEntity')['userid']",
+                            "item/isSupervisor": "@outputs('Compose-FullMemberEntity')['isSupervisor']",
+                            "item/fullname": "@outputs('Compose-FullMemberEntity')['fullname']",
+                            "item/iwamEmail": "@outputs('Compose-FullMemberEntity')['email']",
+                            "item/oEmail": "@outputs('Compose-FullMemberEntity')['mail']",
+                            "item/userPrincipalName": "@outputs('Compose-FullMemberEntity')['userPrincipalName']",
+                            "item/accountActive": "@outputs('Compose-FullMemberEntity')['active']",
+                            "item/organizationLevel": "@outputs('Compose-FullMemberEntity')['organizationLevel']",
+                            "item/employeeType": "@outputs('Compose-FullMemberEntity')['employeeType']",
+                            "item/jobSeries": "@outputs('Compose-FullMemberEntity')['jobSeries']",
+                            "item/telephone": "@outputs('Compose-FullMemberEntity')['telephone']",
+                            "item/parentSupervisor": "@outputs('Compose-FullMemberEntity')['parentSupervisor']",
+                            "item/siteId": "@outputs('Compose-FullMemberEntity')['siteId']",
+                            "item/jobTitle": "@outputs('Compose-FullMemberEntity')['jobTitle']",
+                            "item/displayName": "@outputs('Compose-FullMemberEntity')['displayName']",
+                            "item/entraId": "@outputs('Compose-FullMemberEntity')['entraId']",
+                            "item/officeLocation": "@outputs('Compose-FullMemberEntity')['officeLocation']"
+                          },
+                          "authentication": "@parameters('$authentication')"
+                        }
+                      }
+                    }
+                  },
+                  "expression": {
+                    "not": {
+                      "equals": [
+                        "@outputs('AddMember-DCMA-OBOF-Supervisors')['statusCode']",
+                        204
+                      ]
+                    }
+                  },
+                  "metadata": {
+                    "operationMetadataId": "9e5f2781-ac8f-4db2-99ba-4552784ccfa2"
+                  },
+                  "type": "If"
+                }
+              },
+              "runAfter": {
+                "Get-GroupMembers-MissingProfile": [
+                  "Succeeded",
+                  "Failed"
+                ]
+              },
+              "else": {
+                "actions": {
+                  "Compose-EmptyMemberEntity": {
+                    "runAfter": {},
+                    "metadata": {
+                      "operationMetadataId": "e626dc98-cf08-4e96-8d07-1a51a3c8d53f"
+                    },
+                    "type": "Compose",
+                    "inputs": {
+                      "reason": "@{body('Get-GroupMembers-MissingProfile')['error']['message']}",
+                      "source": "Automation Function",
+                      "action": "add",
+                      "securityGroup": "DCMA-OBOF-Supervisors",
+                      "actionTaken": "@{false}",
+                      "userid": "@{body('Filter-DAXQueryObject')?[0]?['IWAM USERS[USERID]']}",
+                      "active": "@{body('Filter-DAXQueryObject')?[0]?['IWAM USERS[ACTIVE]']}",
+                      "organizationLevel": "@{body('Filter-DAXQueryObject')?[0]?['IWAM USERS[DCMA_ORGANIZATION_LEVEL]']}",
+                      "employeeType": "@{body('Filter-DAXQueryObject')?[0]?['IWAM USERS[DCMA_EMPLOYEE_TYPE]']}",
+                      "jobSeries": "@{body('Filter-DAXQueryObject')?[0]?['IWAM USERS[DCMA_JOB_SERIES]']}",
+                      "isSupervisor": "@{body('Filter-DAXQueryObject')?[0]?['IWAM USERS[IS_SUPERVISOR]']}",
+                      "email": "@{body('Filter-DAXQueryObject')?[0]?['IWAM USERS[DCMA_EMAIL]']}",
+                      "telephone": "@{body('Filter-DAXQueryObject')?[0]?['IWAM USERS[TELEPHONE]']}",
+                      "fullname": "@{body('Filter-DAXQueryObject')?[0]?['IWAM USERS[USR_FULLNAME]']}",
+                      "parentSupervisor": "@{body('Filter-DAXQueryObject')?[0]?['IWAM USERS[DIRECT_SUPERVISOR]']}",
+                      "siteId": "@{body('Filter-DAXQueryObject')?[0]?['IWAM USERS[DCMA_SITE_ID]']}",
+                      "jobTitle": "Not Found",
+                      "displayName": "Not Found",
+                      "entraId": "Not Found",
+                      "officeLocation": "Not Found",
+                      "mail": "Not Found",
+                      "userPrincipalName": "Not Found"
+                    }
+                  },
+                  "RecordAuditLog-Add-NoAction": {
+                    "runAfter": {
+                      "Compose-EmptyMemberEntity": [
+                        "Succeeded"
+                      ]
+                    },
+                    "metadata": {
+                      "operationMetadataId": "1af4df32-d8b6-4643-8a32-433637b838db"
+                    },
+                    "type": "OpenApiConnection",
+                    "inputs": {
+                      "host": {
+                        "connectionName": "shared_sharepointonline",
+                        "operationId": "PostItem",
+                        "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+                      },
+                      "parameters": {
+                        "dataset": "https://dod365.sharepoint-mil.us/sites/DCMA-Projects-P2-App-Resources",
+                        "table": "66048356-ca14-4eb0-9b88-455a8b5f27b8",
+                        "item/securityGroup": "@outputs('Compose-EmptyMemberEntity')['securityGroup']",
+                        "item/source": "@outputs('Compose-EmptyMemberEntity')['source']",
+                        "item/action": "@outputs('Compose-EmptyMemberEntity')['action']",
+                        "item/actionTaken": "@outputs('Compose-EmptyMemberEntity')['actionTaken']",
+                        "item/statusCode": "@outputs('Get-GroupMembers-MissingProfile')['statusCode']",
+                        "item/userid": "@outputs('Compose-EmptyMemberEntity')['userid']",
+                        "item/isSupervisor": "@outputs('Compose-EmptyMemberEntity')['isSupervisor']",
+                        "item/fullname": "@outputs('Compose-EmptyMemberEntity')['fullname']",
+                        "item/iwamEmail": "@outputs('Compose-EmptyMemberEntity')['email']",
+                        "item/oEmail": "@outputs('Compose-EmptyMemberEntity')['mail']",
+                        "item/userPrincipalName": "@outputs('Compose-EmptyMemberEntity')['userPrincipalName']",
+                        "item/accountActive": "@outputs('Compose-EmptyMemberEntity')['active']",
+                        "item/organizationLevel": "@outputs('Compose-EmptyMemberEntity')['organizationLevel']",
+                        "item/employeeType": "@outputs('Compose-EmptyMemberEntity')['employeeType']",
+                        "item/jobSeries": "@outputs('Compose-EmptyMemberEntity')['jobSeries']",
+                        "item/telephone": "@outputs('Compose-EmptyMemberEntity')['telephone']",
+                        "item/parentSupervisor": "@outputs('Compose-EmptyMemberEntity')['parentSupervisor']",
+                        "item/siteId": "@outputs('Compose-EmptyMemberEntity')['siteId']",
+                        "item/jobTitle": "@outputs('Compose-EmptyMemberEntity')['jobTitle']",
+                        "item/displayName": "@outputs('Compose-EmptyMemberEntity')['displayName']",
+                        "item/entraId": "@outputs('Compose-EmptyMemberEntity')['entraId']",
+                        "item/officeLocation": "@outputs('Compose-EmptyMemberEntity')['officeLocation']",
+                        "item/reason": "@outputs('Compose-EmptyMemberEntity')['reason']"
+                      },
+                      "authentication": "@parameters('$authentication')"
+                    }
+                  }
+                }
+              },
+              "expression": {
+                "equals": [
+                  "@outputs('Get-GroupMembers-MissingProfile')['statusCode']",
+                  200
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "45a18f85-1707-4ce7-a1dc-2646dc8650ef"
+              },
+              "type": "If"
+            }
+          },
+          "runAfter": {
+            "Filter-RemoveMembers": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "58cd8214-5396-4ca5-b546-4eba70b2c7dd"
+          },
+          "type": "Foreach"
+        },
+        "Filter-RemoveMembers": {
+          "runAfter": {
+            "Filter-AddMembers": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "a762fdf6-6781-4006-a5f6-6faf97ce2faa"
+          },
+          "type": "Query",
+          "inputs": {
+            "from": "@body('GroupMembers')",
+            "where": "@not(contains(body('DAXMembers'), item()))"
+          }
+        },
+        "TERMINATE": {
+          "runAfter": {
+            "loopClearingOfficePOCsItems": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "34547fa9-a950-42d6-ba14-2970693b6d76"
+          },
+          "type": "Terminate",
+          "inputs": {
+            "runStatus": "Succeeded"
+          }
+        },
+        "ClearingOfficePOCsItems": {
+          "runAfter": {},
+          "metadata": {
+            "operationMetadataId": "da319b76-371e-4059-9278-770f01d67e1c"
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_sharepointonline",
+              "operationId": "GetItems",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+            },
+            "parameters": {
+              "dataset": "@parameters('OBOF-StorageLocationURL (sdg_OBOFStorageLocationURL)')",
+              "table": "@parameters('OBOF-DS-mandatoryOfficesPOC (sdg_OBOFDSmandatoryOfficesPOC)')",
+              "viewScopeOption": "RecursiveAll",
+              "$top": 10
+            },
+            "authentication": "@parameters('$authentication')"
+          }
+        },
+        "loopClearingOfficePOCsItems": {
+          "foreach": "@outputs('ClearingOfficePOCsItems')?['body/value']",
+          "actions": {
+            "selectClearingOfficePOCs": {
+              "runAfter": {},
+              "metadata": {
+                "operationMetadataId": "55f6ffd3-f55e-43c8-a579-f53c63c92e2d"
+              },
+              "type": "Select",
+              "inputs": {
+                "from": "@items('loopClearingOfficePOCsItems')?['POCs']",
+                "select": "@item()['Email']"
+              }
+            },
+            "Compose": {
+              "runAfter": {
+                "selectClearingOfficePOCs": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "5c9eac5d-77ad-4aa7-9d57-12ed88d79ef8"
+              },
+              "type": "Compose",
+              "inputs": "@union(body('selectClearingOfficePOCs'),body('selectClearingOfficePOCs'))"
+            }
+          },
+          "runAfter": {
+            "clearingOfficePOCs": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "996362ea-a8b4-4ba2-b445-c0340c805bd9"
+          },
+          "type": "Foreach"
+        },
+        "clearingOfficePOCs": {
+          "runAfter": {
+            "ClearingOfficePOCsItems": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "21e30a26-0007-4c1b-bd76-b97a066cb7db"
+          },
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "clearingOfficePOCs",
+                "type": "array",
+                "value": []
+              }
+            ]
+          }
+        }
+      },
+      "outputs": {}
+    },
+    "templateName": ""
+  },
+  "schemaVersion": "1.0.0.0"
+}

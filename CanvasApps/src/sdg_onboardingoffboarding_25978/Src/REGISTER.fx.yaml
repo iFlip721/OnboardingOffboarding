@@ -1,0 +1,2032 @@
+REGISTER As screen:
+    OnVisible: =
+
+    VC_Background As groupContainer.verticalAutoLayoutContainer:
+        DropShadow: =DropShadow.None
+        Height: =Parent.Height
+        LayoutDirection: =LayoutDirection.Vertical
+        LayoutMode: =LayoutMode.Auto
+        RadiusBottomLeft: =0
+        RadiusBottomRight: =0
+        RadiusTopLeft: =0
+        RadiusTopRight: =0
+        Width: =Parent.Width
+        X: |-
+            =//0 - 150
+            VC_NewUser.X - (VC_NewUser.Width)
+        Y: |-
+            =//(Parent.Height - Self.Height) + 220
+            VC_NewUser.Y + (VC_NewUser.Height / 10)
+        ZIndex: =2
+
+        BKG As image:
+            AccessibleLabel: ="DCMA-Seal-Color-v2"
+            AlignInContainer: =AlignInContainer.Start
+            AutoDisableOnSelect: =false
+            Height: =1100
+            Image: ='NOBAK-DCMA-Seal'
+            ImagePosition: =ImagePosition.Fill
+            Transparency: =0.6
+            Width: =1200
+            X: |
+                =VC_Background.X - 300
+            Y: |
+                =0
+            ZIndex: =2
+
+    HC_Register As groupContainer.horizontalAutoLayoutContainer:
+        DropShadow: =DropShadow.None
+        Height: =Parent.Height
+        LayoutAlignItems: =LayoutAlignItems.Stretch
+        LayoutMode: =LayoutMode.Auto
+        PaddingRight: =0.00
+        PaddingTop: =0.00
+        RadiusBottomLeft: =0
+        RadiusBottomRight: =0
+        RadiusTopLeft: =0
+        RadiusTopRight: =0
+        Width: =Parent.Width
+        ZIndex: =3
+
+        CC_NewUser As groupContainer.manualLayoutContainer:
+            AlignInContainer: =AlignInContainer.Start
+            DropShadow: =DropShadow.None
+            FillPortions: =
+            Height: =Parent.Height
+            LayoutMinHeight: =Self.Height
+            LayoutMinWidth: =Self.Width
+            PaddingRight: =0.00
+            PaddingTop: =0.00
+            RadiusBottomLeft: =0
+            RadiusBottomRight: =0
+            RadiusTopLeft: =0
+            RadiusTopRight: =0
+            Width: =Parent.Width
+            ZIndex: =2
+
+            glassBlur As htmlViewer:
+                AutoHeight: =true
+                Height: =Parent.Height - 140
+                HtmlText: |-
+                    ="
+                    <div style='background-color:rgba(255,255,255,0.4);width:100%;height:"&VC_NewUser.Height+2&"px;backdrop-filter:blur(20px);border-radius:10px'></div>
+                    "
+                PaddingBottom: =0
+                PaddingLeft: =0
+                PaddingRight: =0.00
+                PaddingTop: =0.00
+                Size: =9.98
+                Visible: =!isAccessibilityEnabled
+                Width: =816.33
+                X: =(Parent.Width - Self.Width)/2
+                Y: =(Parent.Height - Self.Height)/2
+                ZIndex: =3
+
+            VC_NewUser As groupContainer.verticalAutoLayoutContainer:
+                BorderColor: =RGBA(39, 67, 125, 1)
+                DropShadow: =DropShadow.ExtraBold
+                Fill: =If(!isAccessibilityEnabled, RGBA(0, 0, 0, 0), RGBA(255,255,255,6))
+                Height: =618
+                LayoutAlignItems: =LayoutAlignItems.Center
+                LayoutDirection: =LayoutDirection.Vertical
+                LayoutMode: =LayoutMode.Auto
+                PaddingBottom: =2
+                PaddingRight: =0.00
+                PaddingTop: =2
+                RadiusBottomLeft: =10
+                RadiusBottomRight: =10
+                RadiusTopLeft: =10
+                RadiusTopRight: =10
+                Width: =816
+                X: =(Parent.Width - Self.Width)/2
+                Y: =(Parent.Height - Self.Height)/2
+                ZIndex: =4
+
+                label_Title As label:
+                    Align: =Align.Center
+                    FontWeight: =FontWeight.Bold
+                    PaddingRight: =4.54
+                    PaddingTop: =4.54
+                    Role: =TextRole.Heading1
+                    Size: =21.77
+                    Text: =$"{If(!IsBlank(First(currentUser).ID), "We found a ", "Register your ")}DCMA Enterprise Profile"
+                    Width: =816.33
+                    X: =0.00
+                    ZIndex: =1
+
+                HC_UserHeader As groupContainer.horizontalAutoLayoutContainer:
+                    AlignInContainer: =AlignInContainer.SetByContainer
+                    DropShadow: =DropShadow.None
+                    FillPortions: =0
+                    Height: =image_UserPicture.Height
+                    LayoutAlignItems: =LayoutAlignItems.Center
+                    LayoutGap: =10
+                    LayoutJustifyContent: =LayoutJustifyContent.Center
+                    LayoutMinHeight: =Self.Height
+                    LayoutMinWidth: =Self.Width
+                    LayoutMode: =LayoutMode.Auto
+                    PaddingRight: =0.00
+                    PaddingTop: =0.00
+                    Width: =Parent.Width
+                    X: =68.03
+                    ZIndex: =5
+
+                    image_UserPicture As image:
+                        Height: =75
+                        Image: =User().Image
+                        PaddingRight: =0.00
+                        PaddingTop: =0.00
+                        RadiusBottomLeft: =40
+                        RadiusBottomRight: =40
+                        RadiusTopLeft: =40
+                        RadiusTopRight: =40
+                        Width: =75
+                        ZIndex: =1
+
+                    VC_Container_UserHeaderLabels As groupContainer.verticalAutoLayoutContainer:
+                        AlignInContainer: =AlignInContainer.SetByContainer
+                        DropShadow: =DropShadow.None
+                        FillPortions: =0
+                        Height: =label_DisplayName.Height + label_JobTitle_Department.Height
+                        LayoutDirection: =LayoutDirection.Vertical
+                        LayoutMinHeight: =label_DisplayName.Height + label_JobTitle_Department.Height
+                        LayoutMinWidth: =label_DisplayName.Width
+                        LayoutMode: =LayoutMode.Auto
+                        PaddingRight: =0.00
+                        PaddingTop: =0.00
+                        Width: =Len(First(currentUser).displayName) * 10.75
+                        X: =204.99
+                        ZIndex: =2
+
+                        label_DisplayName As label:
+                            Font: =Font.'Segoe UI'
+                            FontWeight: =FontWeight.Semibold
+                            Height: =image_UserPicture.Height / 2.2
+                            Text: =First(currentUser).displayName
+                            VerticalAlign: =VerticalAlign.Bottom
+                            Width: =Len(Self.Text) * 10.25
+                            X: =0.00
+                            ZIndex: =1
+
+                        label_JobTitle_Department As label:
+                            Font: =Font.'Segoe UI'
+                            FontWeight: =FontWeight.Semibold
+                            Height: =20
+                            Size: =9
+                            Text: =Concatenate(First(currentUser).jobTitle, " - ", First(currentUser).department)
+                            VerticalAlign: =VerticalAlign.Bottom
+                            Width: =label_DisplayName.Width
+                            X: =0.00
+                            ZIndex: =2
+
+                HC_OverviewDetails As groupContainer.horizontalAutoLayoutContainer:
+                    AlignInContainer: =AlignInContainer.SetByContainer
+                    DropShadow: =DropShadow.None
+                    FillPortions: =0
+                    Height: =30
+                    LayoutMinHeight: =Self.Height
+                    LayoutMinWidth: =Self.Width
+                    LayoutMode: =LayoutMode.Auto
+                    PaddingRight: =0.00
+                    PaddingTop: =0.00
+                    Width: =770.98
+                    X: =22.68
+                    ZIndex: =6
+
+                    label_OverviewDetails As label:
+                        AlignInContainer: =AlignInContainer.End
+                        Font: =Font.'Segoe UI'
+                        FontWeight: =FontWeight.Semibold
+                        Height: =30
+                        LayoutMinHeight: =Self.Height
+                        LayoutMinWidth: =Self.Width
+                        PaddingBottom: =0
+                        PaddingLeft: =0
+                        PaddingRight: =0.00
+                        PaddingTop: =0.00
+                        Role: =TextRole.Heading3
+                        Size: =11
+                        Text: ="Employee Information"
+                        VerticalAlign: =VerticalAlign.Bottom
+                        Width: =770.98
+                        X: =0.00
+                        Y: =40
+                        ZIndex: =1
+
+                separator_UserMenu As rectangle:
+                    Fill: =RGBA(77, 77, 77, 1)
+                    Height: =1
+                    Width: =770.98
+                    X: =22.68
+                    ZIndex: =8
+
+                VC_UserMenuDetailItems As groupContainer.verticalAutoLayoutContainer:
+                    AlignInContainer: =AlignInContainer.SetByContainer
+                    DropShadow: =DropShadow.None
+                    FillPortions: =0
+                    Height: =(HC_UserMenuDetailItems_1.Height * 3) + 10
+                    LayoutDirection: =LayoutDirection.Vertical
+                    LayoutMinHeight: =100
+                    LayoutMinWidth: =Parent.Width
+                    LayoutMode: =LayoutMode.Auto
+                    PaddingRight: =0.00
+                    PaddingTop: =0.00
+                    Width: =770.98
+                    X: =22.68
+                    ZIndex: =11
+
+                    HC_UserMenuDetailItems_1 As groupContainer.horizontalAutoLayoutContainer:
+                        AlignInContainer: =AlignInContainer.SetByContainer
+                        DropShadow: =DropShadow.None
+                        FillPortions: =0
+                        Height: =40  
+                        LayoutAlignItems: =LayoutAlignItems.Center
+                        LayoutMinHeight: =Self.Height
+                        LayoutMinWidth: =Self.Width
+                        LayoutMode: =LayoutMode.Auto
+                        PaddingRight: =0.00
+                        PaddingTop: =4.54
+                        Width: =770.98
+                        X: =0.00
+                        ZIndex: =1
+
+                        icon_Waypoint_1 As icon.Mail:
+                            Color: =RGBA(77, 77, 77, 1)
+                            Height: =loginIconSize
+                            Icon: =Icon.Waypoint
+                            PaddingBottom: =12
+                            PaddingLeft: =12
+                            PaddingRight: =9.07
+                            PaddingTop: =10.88
+                            Width: =38.10
+                            X: =0.00
+                            ZIndex: =1
+
+                        tbl_OfficeLocation As htmlViewer:
+                            AutoHeight: =true
+                            Font: =Font.'Segoe UI'
+                            Height: =Parent.Height - Parent.PaddingTop
+                            HtmlText: |-
+                                ="
+                                <div style='line-height: 1.3;'><strong>Office Location</strong></br>"&First(currentUser).officeLocation&"</div>
+                                "
+                            LayoutMinHeight: =Self.Height
+                            LayoutMinWidth: =Self.Width
+                            PaddingLeft: =0
+                            PaddingRight: =4.54
+                            PaddingTop: =0.00
+                            Size: =9
+                            Width: =235.83
+                            X: =38.10
+                            ZIndex: =2
+
+                        icon_Person_1 As icon.Mail:
+                            Color: =RGBA(77, 77, 77, 1)
+                            Height: =loginIconSize
+                            Icon: =Icon.Person
+                            PaddingBottom: =12
+                            PaddingLeft: =12
+                            PaddingRight: =9.07
+                            PaddingTop: =10.88
+                            Width: =38.10
+                            X: =273.93
+                            ZIndex: =5
+
+                        tbl_JobTitle As htmlViewer:
+                            AutoHeight: =true
+                            Font: =Font.'Segoe UI'
+                            Height: =Parent.Height - Parent.PaddingTop
+                            HtmlText: |-
+                                ="
+                                <div style='line-height: 1.3;'><strong>Job Title</strong></br>"&First(currentUser).jobTitle&"</div>
+                                "
+                            LayoutMinHeight: =Self.Height
+                            LayoutMinWidth: =Self.Width
+                            PaddingLeft: =0
+                            PaddingRight: =4.54
+                            PaddingTop: =0.00
+                            Size: =9
+                            Width: =235.83
+                            X: =312.02
+                            ZIndex: =6
+
+                        icon_People_1 As icon.Mail:
+                            Color: =RGBA(77, 77, 77, 1)
+                            Height: =loginIconSize
+                            Icon: =Icon.People
+                            PaddingBottom: =12
+                            PaddingLeft: =12
+                            PaddingRight: =9.07
+                            PaddingTop: =10.88
+                            Width: =38.10
+                            X: =547.85
+                            ZIndex: =7
+
+                        tbl_Department As htmlViewer:
+                            AutoHeight: =true
+                            Font: =Font.'Segoe UI'
+                            Height: =Parent.Height - Parent.PaddingTop
+                            HtmlText: |-
+                                ="
+                                <div style='line-height: 1.3;'><strong>Department</strong></br>"&First(currentUser).department&"</div>
+                                "
+                            LayoutMinHeight: =Self.Height
+                            LayoutMinWidth: =Self.Width
+                            PaddingLeft: =0
+                            PaddingRight: =4.54
+                            PaddingTop: =0.00
+                            Size: =9
+                            Width: =181.41
+                            X: =585.95
+                            ZIndex: =8
+
+                    HC_UserMenuDetailItems_2 As groupContainer.horizontalAutoLayoutContainer:
+                        AlignInContainer: =AlignInContainer.SetByContainer
+                        DropShadow: =DropShadow.None
+                        FillPortions: =0
+                        Height: =HC_UserMenuDetailItems_1.Height
+                        LayoutAlignItems: =LayoutAlignItems.Center
+                        LayoutMinHeight: =100
+                        LayoutMinWidth: =Parent.Width / 1.2
+                        LayoutMode: =LayoutMode.Auto
+                        PaddingRight: =0.00
+                        PaddingTop: =1.81
+                        Width: =770.98
+                        X: =0.00
+                        ZIndex: =2
+
+                        icon_Waypoint_2 As icon.Mail:
+                            Color: =RGBA(77, 77, 77, 1)
+                            Height: =loginIconSize
+                            Icon: =Icon.Waypoint
+                            PaddingBottom: =12
+                            PaddingLeft: =12
+                            PaddingRight: =9.07
+                            PaddingTop: =10.88
+                            Width: =38.10
+                            X: =0.00
+                            ZIndex: =3
+
+                        tbl_Street As htmlViewer:
+                            AutoHeight: =true
+                            Font: =Font.'Segoe UI'
+                            Height: =Parent.Height - Parent.PaddingTop
+                            HtmlText: |-
+                                ="
+                                <div style='line-height: 1.3;'><strong>Street</strong></br>"&First(currentUser).streetAddress&"</div>
+                                "
+                            LayoutMinHeight: =Self.Height
+                            LayoutMinWidth: =Self.Width
+                            PaddingLeft: =0
+                            PaddingRight: =4.54
+                            PaddingTop: =0.00
+                            Size: =9
+                            Width: =235.83
+                            X: =38.10
+                            ZIndex: =4
+
+                        icon_Globe_1 As icon.Mail:
+                            Color: =RGBA(77, 77, 77, 1)
+                            Height: =loginIconSize
+                            Icon: =Icon.Globe
+                            PaddingBottom: =12
+                            PaddingLeft: =12
+                            PaddingRight: =9.07
+                            PaddingTop: =10.88
+                            Width: =38.10
+                            X: =273.93
+                            ZIndex: =5
+
+                        tbl_City As htmlViewer:
+                            AutoHeight: =true
+                            Font: =Font.'Segoe UI'
+                            Height: =Parent.Height - Parent.PaddingTop
+                            HtmlText: |-
+                                ="
+                                <div style='line-height: 1.3;'><strong>City</strong></br>"&First(currentUser).city&"</div>
+                                "
+                            LayoutMinHeight: =Self.Height
+                            LayoutMinWidth: =Self.Width
+                            PaddingLeft: =0
+                            PaddingRight: =4.54
+                            PaddingTop: =0.00
+                            Size: =9
+                            Width: =235.83
+                            X: =312.02
+                            ZIndex: =6
+
+                        icon_Gloobe_2 As icon.Mail:
+                            Color: =RGBA(77, 77, 77, 1)
+                            Height: =loginIconSize
+                            Icon: =Icon.Globe
+                            PaddingBottom: =12
+                            PaddingLeft: =12
+                            PaddingRight: =9.07
+                            PaddingTop: =10.88
+                            Width: =38.10
+                            X: =547.85
+                            ZIndex: =7
+
+                        tbl_State As htmlViewer:
+                            AutoHeight: =true
+                            Font: =Font.'Segoe UI'
+                            Height: =Parent.Height - Parent.PaddingTop
+                            HtmlText: |-
+                                ="
+                                <div style='line-height: 1.3;'><strong>State</strong></br>"&First(currentUser).state&"</div>
+                                "
+                            LayoutMinHeight: =Self.Height
+                            LayoutMinWidth: =Self.Width
+                            PaddingLeft: =0
+                            PaddingRight: =4.54
+                            PaddingTop: =0.00
+                            Size: =9
+                            Width: =181.41
+                            X: =585.95
+                            ZIndex: =8
+
+                    HC_UserMenuDetailItems_3 As groupContainer.horizontalAutoLayoutContainer:
+                        AlignInContainer: =AlignInContainer.SetByContainer
+                        DropShadow: =DropShadow.None
+                        FillPortions: =0
+                        Height: =HC_UserMenuDetailItems_1.Height
+                        LayoutAlignItems: =LayoutAlignItems.Center
+                        LayoutMinHeight: =100
+                        LayoutMinWidth: =Parent.Width / 1.2
+                        LayoutMode: =LayoutMode.Auto
+                        PaddingRight: =0.00
+                        PaddingTop: =1.81
+                        Width: =770.98
+                        X: =0.00
+                        ZIndex: =3
+
+                        icon_Email_1 As icon.Mail:
+                            Color: =RGBA(77, 77, 77, 1)
+                            Height: =loginIconSize
+                            Icon: =Icon.Mail
+                            PaddingBottom: =12
+                            PaddingLeft: =12
+                            PaddingRight: =9.07
+                            PaddingTop: =10.88
+                            Width: =38.10
+                            X: =0.00
+                            ZIndex: =1
+
+                        tbl_Email As htmlViewer:
+                            AutoHeight: =true
+                            Font: =Font.'Segoe UI'
+                            Height: =Parent.Height - Parent.PaddingTop
+                            HtmlText: |-
+                                ="
+                                <div style='line-height: 1.3;'><strong>Email</strong></br>"&First(currentUser).mail&"</div>
+                                "
+                            LayoutMinHeight: =Self.Height
+                            LayoutMinWidth: =Self.Width
+                            PaddingLeft: =0
+                            PaddingRight: =4.54
+                            PaddingTop: =0.00
+                            Size: =9
+                            Width: =235.83
+                            X: =38.10
+                            ZIndex: =2
+
+                        icon_Chat_1 As icon.Mail:
+                            Color: =RGBA(77, 77, 77, 1)
+                            Height: =loginIconSize
+                            Icon: =Icon.Message
+                            PaddingBottom: =12
+                            PaddingLeft: =12
+                            PaddingRight: =9.07
+                            PaddingTop: =10.88
+                            Width: =38.10
+                            X: =273.93
+                            ZIndex: =3
+
+                        tbl_Chat As htmlViewer:
+                            AutoHeight: =true
+                            Font: =Font.'Segoe UI'
+                            Height: =Parent.Height - Parent.PaddingTop
+                            HtmlText: |-
+                                ="
+                                <div style='line-height: 1.3;'><strong>Chat</strong></br>"&First(currentUser).mail&"</div>
+                                
+                                "
+                            LayoutMinHeight: =Self.Height
+                            LayoutMinWidth: =Self.Width
+                            PaddingLeft: =0
+                            PaddingRight: =4.54
+                            PaddingTop: =0.00
+                            Size: =9
+                            Width: =235.83
+                            X: =312.02
+                            ZIndex: =4
+
+                        icon_Building_1 As icon.Mail:
+                            Color: =RGBA(77, 77, 77, 1)
+                            Height: =loginIconSize
+                            Icon: =Icon.OfficeBuilding
+                            PaddingBottom: =12
+                            PaddingLeft: =12
+                            PaddingRight: =9.07
+                            PaddingTop: =10.88
+                            Width: =38.10
+                            X: =547.85
+                            ZIndex: =5
+
+                        tbl_Company As htmlViewer:
+                            AutoHeight: =true
+                            Font: =Font.'Segoe UI'
+                            Height: =Parent.Height - Parent.PaddingTop
+                            HtmlText: |-
+                                ="
+                                <div style='line-height: 1.3;'><strong>Agency</strong></br>"&First(currentUser).companyName&" - "& First(col_IWAMUserInfo).DCMA_ORGANIZATION_LEVEL &"</div>
+                                "
+                            LayoutMinHeight: =Self.Height
+                            LayoutMinWidth: =Self.Width
+                            PaddingLeft: =0
+                            PaddingRight: =4.54
+                            PaddingTop: =0.00
+                            Size: =9
+                            Width: =181.41
+                            X: =585.95
+                            ZIndex: =6
+
+                CC_AccountSettings As groupContainer.manualLayoutContainer:
+                    AlignInContainer: =AlignInContainer.SetByContainer
+                    BorderColor: =RGBA(106, 122, 127, 1)
+                    BorderThickness: =0.25
+                    DropShadow: =DropShadow.None
+                    Fill: =RGBA(255, 255, 255, 0.60)
+                    FillPortions: =0
+                    Height: =320
+                    LayoutMinHeight: =Self.Height
+                    LayoutMinWidth: =Self.Width
+                    PaddingRight: =0.00
+                    PaddingTop: =0.00
+                    RadiusBottomLeft: =10
+                    RadiusBottomRight: =10
+                    RadiusTopLeft: =10
+                    RadiusTopRight: =10
+                    Width: =770
+                    X: =22.68
+                    ZIndex: =13
+
+                    VC_AppSettings_Controller As groupContainer.horizontalAutoLayoutContainer:
+                        DropShadow: =DropShadow.None
+                        Height: =Parent.Height - (HC_AccountSettings_Props2.Height + HC_AccountSetings_Props1.Height + HC_AccountSettings_Header.Height) - 1
+                        LayoutAlignItems: =LayoutAlignItems.Stretch
+                        LayoutDirection: =LayoutDirection.Vertical
+                        LayoutMode: =LayoutMode.Auto
+                        PaddingRight: =0.00
+                        PaddingTop: =0.00
+                        Width: =770.98
+                        X: =0.00
+                        Y: =HC_AccountSettings_Props2.Y + HC_AccountSettings_Props2.Height
+                        ZIndex: =2
+
+                        HC_AppSettingsControl_1 As groupContainer.horizontalAutoLayoutContainer:
+                            AlignInContainer: =AlignInContainer.Start
+                            DropShadow: =DropShadow.None
+                            FillPortions: =0
+                            Height: =160
+                            LayoutGap: =2
+                            LayoutMinHeight: =Self.Height
+                            LayoutMinWidth: =250
+                            LayoutMode: =LayoutMode.Auto
+                            Width: =770.98
+                            X: =0.00
+                            ZIndex: =1
+
+                            VC_AccountSettings_ColumnLeft As groupContainer.verticalAutoLayoutContainer:
+                                AlignInContainer: =AlignInContainer.SetByContainer
+                                DropShadow: =DropShadow.None
+                                FillPortions: =0
+                                Height: =Parent.Height
+                                LayoutDirection: =LayoutDirection.Vertical
+                                LayoutGap: =3
+                                LayoutMinHeight: =Self.Height
+                                LayoutMinWidth: =Self.Width
+                                LayoutMode: =LayoutMode.Auto
+                                PaddingBottom: =2
+                                PaddingLeft: =10
+                                PaddingRight: =10
+                                PaddingTop: =2
+                                RadiusBottomLeft: =0
+                                RadiusBottomRight: =0
+                                RadiusTopLeft: =0
+                                RadiusTopRight: =0
+                                Width: =Parent.Width / 2
+                                ZIndex: =2
+
+                                HC_JobSeries_label As groupContainer.horizontalAutoLayoutContainer:
+                                    DropShadow: =DropShadow.None
+                                    FillPortions: =0
+                                    Height: =22
+                                    LayoutAlignItems: =LayoutAlignItems.Center
+                                    LayoutMinHeight: =100
+                                    LayoutMinWidth: =350
+                                    LayoutMode: =LayoutMode.Auto
+                                    Width: =350
+                                    ZIndex: =1
+
+                                    icon_JobSeries_Help As icon.Help:
+                                        Color: =RGBA(26, 26, 26, 1)
+                                        Height: =13
+                                        Icon: =Icon.Help
+                                        OnSelect: |-
+                                            =Set(popupScope, "popup_register_jobseriesHelp");
+                                            Set(isRegisterPopupVisible, true)
+                                        PaddingRight: =0.00
+                                        PaddingTop: =0.00
+                                        Width: =13
+                                        X: =480.73
+                                        ZIndex: =1
+
+                                    label_JobSeries As label:
+                                        Font: =Font.'Segoe UI'
+                                        FontWeight: =FontWeight.Semibold
+                                        Height: =22
+                                        Role: =TextRole.Heading3
+                                        Size: =9
+                                        Text: ="Job Series *"
+                                        Width: =350
+                                        ZIndex: =2
+
+                                VC_Combobox_JobSeries As groupContainer.verticalAutoLayoutContainer:
+                                    AlignInContainer: =AlignInContainer.SetByContainer
+                                    FillPortions: =0
+                                    Height: =24
+                                    LayoutAlignItems: =LayoutAlignItems.Center
+                                    LayoutDirection: =LayoutDirection.Vertical
+                                    LayoutJustifyContent: =LayoutJustifyContent.Center
+                                    LayoutMinHeight: =Self.Height
+                                    LayoutMinWidth: =Self.Width
+                                    LayoutMode: =LayoutMode.Auto
+                                    RadiusBottomLeft: =6
+                                    RadiusBottomRight: =6
+                                    RadiusTopLeft: =6
+                                    RadiusTopRight: =6
+                                    Width: =350
+                                    ZIndex: =3
+
+                                    combobox_JobSeries As combobox:
+                                        AccessibleLabel: =If(First(currentUser).accessibilityEnabled, "Search Job Series")
+                                        BorderThickness: =0.5
+                                        ChevronBackground: =RGBA(167, 182, 203, 1)
+                                        DefaultSelectedItems: |
+                                            =If(!IsBlank(First(currentUser).jobSeries.Label),
+                                                First(currentUser).jobSeries,
+                                                {
+                                                    __type: "TaxonomyFieldValue:#Microsoft.SharePoint.Taxonomy",
+                                                    Label: First(col_IWAMUser).jobSeriesLabel,
+                                                    TermID: First(col_IWAMUser).jobSeriesId,
+                                                    Value: First(col_IWAMUser).jobSeriesLabel &"|"& First(col_IWAMUser).jobSeriesId
+                                                }
+                                            )
+                                        DisplayFields: =["Label"]
+                                        FocusedBorderColor: =RGBA(255,0,0,1)
+                                        FocusedBorderThickness: =If(isAccessibilityEnabled, 4, 0)
+                                        Font: =Font.'Segoe UI'
+                                        Height: =Parent.Height + 2
+                                        HoverFill: =RGBA(255, 255, 255, 1)
+                                        InputTextPlaceholder: ="Search Job Series"
+                                        Items: =Choices('GLBL-DS-userRegistration'.jobSeries)
+                                        PressedBorderColor: =
+                                        PressedColor: =RGBA(0, 0, 0, 0)
+                                        PressedFill: =RGBA(0, 0, 0, 0)
+                                        SearchFields: =["Label"]
+                                        SearchItems: =Choices('GLBL-DS-userRegistration'.jobSeries,combobox_JobSeries.SearchText)
+                                        SelectionColor: =RGBA(40, 112, 134, 1)
+                                        SelectionFill: =RGBA(214, 221, 224, 1)
+                                        SelectionTagColor: |-
+                                            =ColorValue("#287086") //Self.HoverColor
+                                        SelectMultiple: =false
+                                        Size: =9
+                                        TabIndex: =If(isRegisterPopupVisible, -1, 10)
+                                        Width: =Parent.Width + 2
+                                        ZIndex: =2
+
+                                HC_Organization_label As groupContainer.horizontalAutoLayoutContainer:
+                                    DropShadow: =DropShadow.None
+                                    FillPortions: =0
+                                    Height: =22
+                                    LayoutAlignItems: =LayoutAlignItems.Center
+                                    LayoutMinHeight: =100
+                                    LayoutMinWidth: =350
+                                    LayoutMode: =LayoutMode.Auto
+                                    Width: =350
+                                    ZIndex: =4
+
+                                    icon_Organization_Help As icon.Help:
+                                        Color: =RGBA(26, 26, 26, 1)
+                                        Height: =13
+                                        Icon: =Icon.Help
+                                        OnSelect: |-
+                                            =Set(popupScope, "popup_register_organizationHelp");
+                                            Set(isRegisterPopupVisible, true)
+                                        PaddingRight: =0.00
+                                        PaddingTop: =0.00
+                                        Width: =13
+                                        X: =480.73
+                                        ZIndex: =1
+
+                                    label_Organization As label:
+                                        Font: =Font.'Segoe UI'
+                                        FontWeight: =FontWeight.Semibold
+                                        Height: =22
+                                        Role: =TextRole.Heading3
+                                        Size: =9
+                                        Text: ="Organization *"
+                                        Width: =110
+                                        ZIndex: =2
+
+                                VC_Combobox_Organization As groupContainer.verticalAutoLayoutContainer:
+                                    AlignInContainer: =AlignInContainer.SetByContainer
+                                    FillPortions: =0
+                                    Height: =24
+                                    LayoutAlignItems: =LayoutAlignItems.Center
+                                    LayoutDirection: =LayoutDirection.Vertical
+                                    LayoutJustifyContent: =LayoutJustifyContent.Center
+                                    LayoutMinHeight: =Self.Height
+                                    LayoutMinWidth: =Self.Width
+                                    LayoutMode: =LayoutMode.Auto
+                                    RadiusBottomLeft: =6
+                                    RadiusBottomRight: =6
+                                    RadiusTopLeft: =6
+                                    RadiusTopRight: =6
+                                    Width: =350
+                                    ZIndex: =5
+
+                                    combobox_Organization As combobox:
+                                        AccessibleLabel: =If(isAccessibilityEnabled, "Organization Job Series")
+                                        AlignInContainer: =AlignInContainer.Center
+                                        BorderThickness: =0.5
+                                        ChevronBackground: =RGBA(167, 182, 203, 1)
+                                        ChevronDisabledFill: =RGBA(40, 112, 134, 1)
+                                        DefaultSelectedItems: |-
+                                            =If(!IsBlank(First(currentUser).organization_v2),
+                                                LookUp(col_organizations, ORG_ID = First(currentUser).organizationId),
+                                                {}
+                                            )
+                                        DisplayFields: =["ORG_NAME","ORG Code"]
+                                        FocusedBorderColor: =RGBA(255,0,0,1)
+                                        FocusedBorderThickness: =If(isAccessibilityEnabled, 4, 0)
+                                        Font: =Font.'Segoe UI'
+                                        Height: =Parent.Height + 2
+                                        HoverFill: =RGBA(255, 255, 255, 1)
+                                        InputTextPlaceholder: ="Search Organization"
+                                        Items: =col_organizations
+                                        OnChange: |+
+                                            =/*UpdateContext(
+                                                {
+                                                    sharepointRestApiResponse: SharePoint_RestAPI.Run(
+                                                        "https://dod365.sharepoint-mil.us/sites/DCMA-Projects-P2-App-Resources",
+                                                        "GET",
+                                                        "_api/v2.1/termStore/groups('eb096297-8209-4358-a8ef-bd59697c1f91')/sets('064e2d55-e287-4cbc-9cbd-589f6229f043')/terms",
+                                                        "{
+                                                            'content-type': 'application/json',
+                                                             'accept': 'application/json;odata=nometadata'
+                                                        }",
+                                                        ""
+                                                    ).body
+                                                }
+                                            );
+                                            ClearCollect(
+                                                managedMetadataTaxonomy,
+                                                ForAll(
+                                                    Table(ParseJSON(sharepointRestApiResponse).value),
+                                                    {
+                                                        id: Value.id,
+                                                        name: First(
+                                                            Filter(
+                                                                Table(Value.labels),
+                                                                Value.isDefault = true
+                                                            )
+                                                        ).Value.name,
+                                                        label: First(
+                                                            Filter(
+                                                                Table(Value.labels),
+                                                                "-" in Value.name
+                                                            )
+                                                        ).Value.name
+                                                    }
+                                                )
+                                            );*/
+                                            
+                                            
+                                        OnSelect: =
+                                        PressedBorderColor: =
+                                        PressedColor: =RGBA(0, 0, 0, 0)
+                                        PressedFill: =RGBA(167, 182, 203, 1)
+                                        SearchFields: =["ORG_NAME", "ORG Code"]
+                                        SearchItems: =Search(col_organizations,combobox_Organization.SearchText,"ORG_NAME","ORG Code")
+                                        SelectionColor: =RGBA(40, 112, 134, 1)
+                                        SelectionFill: =RGBA(0, 0, 0, 0)
+                                        SelectionTagColor: |-
+                                            =ColorValue("#287086") //Self.HoverColor
+                                        SelectMultiple: =false
+                                        Size: =9
+                                        TabIndex: =If(isRegisterPopupVisible, -1, 20)
+                                        Template: =ListItemTemplate.Double
+                                        Width: =Parent.Width + 2
+                                        ZIndex: =2
+
+                                HC_OrganizationCode_label As groupContainer.horizontalAutoLayoutContainer:
+                                    DropShadow: =DropShadow.None
+                                    FillPortions: =0
+                                    Height: =22
+                                    LayoutAlignItems: =LayoutAlignItems.Center
+                                    LayoutMinHeight: =100
+                                    LayoutMinWidth: =350
+                                    LayoutMode: =LayoutMode.Auto
+                                    Width: =350
+                                    ZIndex: =6
+
+                                    icon_OrganizationCode_Help As icon.Help:
+                                        Color: =RGBA(26, 26, 26, 1)
+                                        Height: =13
+                                        Icon: =Icon.Help
+                                        OnSelect: |-
+                                            =Set(popupScope, "popup_register_organizationCodeHelp");
+                                            Set(isRegisterPopupVisible, true)
+                                        PaddingRight: =0.00
+                                        PaddingTop: =0.00
+                                        Width: =13
+                                        X: =480.73
+                                        ZIndex: =1
+
+                                    label_OrganizationCode As label:
+                                        Font: =Font.'Segoe UI'
+                                        FontWeight: =FontWeight.Semibold
+                                        Height: =22
+                                        Role: =TextRole.Heading3
+                                        Size: =9
+                                        Text: ="Organization Code *"
+                                        Width: =142
+                                        ZIndex: =2
+
+                                VC_Input_OrganizationCode As groupContainer.verticalAutoLayoutContainer:
+                                    AlignInContainer: =AlignInContainer.SetByContainer
+                                    FillPortions: =0
+                                    Height: =24
+                                    LayoutDirection: =LayoutDirection.Vertical
+                                    LayoutMinHeight: =Self.Height
+                                    LayoutMinWidth: =Self.Width
+                                    LayoutMode: =LayoutMode.Auto
+                                    RadiusBottomLeft: =6
+                                    RadiusBottomRight: =6
+                                    RadiusTopLeft: =6
+                                    RadiusTopRight: =6
+                                    Width: =350
+                                    ZIndex: =7
+
+                                    input_OrganizationCode As text:
+                                        AccessibleLabel: =If(isAccessibilityEnabled, "Enter Organization Code")
+                                        BorderThickness: =0
+                                        Clear: =true
+                                        Color: |-
+                                            =If(Self.Text = combobox_Organization.Selected.'ORG Code',
+                                                ColorValue("#287086"),
+                                                RGBA(0, 0, 0, 1)
+                                            )
+                                        Default: |-
+                                            =/*First(Filter(
+                                                managedMetadataTaxonomy,
+                                                id = combobox_Organization.Selected.TermGuid
+                                            )).label*/
+                                            combobox_Organization.Selected.'ORG Code'
+                                        DisabledBorderColor: =RGBA(255, 255, 255, 1)
+                                        DisabledFill: =RGBA(255, 255, 255, 1)
+                                        FocusedBorderColor: =RGBA(255,0,0,1)
+                                        FocusedBorderThickness: =If(isAccessibilityEnabled, 4, 0)
+                                        Font: =Font.'Segoe UI'
+                                        FontWeight: |-
+                                            =If(Self.Text = combobox_Organization.Selected.'ORG Code',
+                                                FontWeight.Normal,
+                                                FontWeight.Bold
+                                            )
+                                        Height: =Parent.Height
+                                        HoverBorderColor: =RGBA(255, 255, 255, 1)
+                                        HoverColor: =Self.Color
+                                        HoverFill: =RGBA(255, 255, 255, 1)
+                                        PaddingLeft: =5
+                                        PressedBorderColor: =RGBA(255, 255, 255, 1)
+                                        PressedFill: =RGBA(255, 255, 255, 1)
+                                        RadiusBottomLeft: =0
+                                        RadiusBottomRight: =0
+                                        RadiusTopLeft: =0
+                                        RadiusTopRight: =0
+                                        Size: =9
+                                        TabIndex: =If(isRegisterPopupVisible, -1, 30)
+                                        Width: =Parent.Width
+                                        ZIndex: =1
+
+                            VC_AccountSettings_ColumnRight As groupContainer.verticalAutoLayoutContainer:
+                                AlignInContainer: =AlignInContainer.SetByContainer
+                                DropShadow: =DropShadow.None
+                                FillPortions: =0
+                                Height: =Parent.Height
+                                LayoutDirection: =LayoutDirection.Vertical
+                                LayoutGap: =3
+                                LayoutMinHeight: =Self.Height
+                                LayoutMinWidth: =Self.Width
+                                LayoutMode: =LayoutMode.Auto
+                                PaddingBottom: =10
+                                PaddingLeft: =10
+                                PaddingRight: =10
+                                PaddingTop: =2
+                                RadiusBottomLeft: =0
+                                RadiusBottomRight: =0
+                                RadiusTopLeft: =0
+                                RadiusTopRight: =0
+                                Width: =Parent.Width / 2
+                                ZIndex: =3
+
+                                label_JobSeries_3 As label:
+                                    Font: =Font.'Segoe UI'
+                                    FontWeight: =FontWeight.Semibold
+                                    Height: =22
+                                    Size: =9
+                                    Text: |
+                                        ="Supervisor * (Last Name, First Name) OR Email"
+                                    Width: =350
+                                    ZIndex: =1
+
+                                VC_Combobox_Supervisor As groupContainer.verticalAutoLayoutContainer:
+                                    AlignInContainer: =AlignInContainer.Start
+                                    FillPortions: =0
+                                    Height: =24
+                                    LayoutAlignItems: =LayoutAlignItems.Center
+                                    LayoutDirection: =LayoutDirection.Vertical
+                                    LayoutJustifyContent: =LayoutJustifyContent.Center
+                                    LayoutMinHeight: =Self.Height
+                                    LayoutMinWidth: =Self.Width
+                                    LayoutMode: =LayoutMode.Auto
+                                    RadiusBottomLeft: =6
+                                    RadiusBottomRight: =6
+                                    RadiusTopLeft: =6
+                                    RadiusTopRight: =6
+                                    Width: =350
+                                    ZIndex: =2
+
+                                    combobox_Supervisor As combobox:
+                                        AccessibleLabel: =If(isAccessibilityEnabled, "Search Supervisor by Last Name, First Name")
+                                        AlignInContainer: =AlignInContainer.Center
+                                        BorderThickness: =0.5
+                                        ChevronBackground: =RGBA(167, 182, 203, 1)
+                                        ChevronDisabledFill: =RGBA(40, 112, 134, 1)
+                                        DefaultSelectedItems: |-
+                                            =If(!IsBlank(First(col_IWAMUser).super_DCMA_EMAIL) || !IsBlank(First(currentUser).supervisor.DisplayName),
+                                                
+                                                If(First(col_IWAMUser).super_DCMA_EMAIL = First(currentUser).supervisor.Email,
+                                                    First(Office365Users.SearchUser({searchTerm: First(currentUser).supervisor.Email, top: 1})),
+                                            
+                                                    If(!IsBlank(First(col_IWAMUser).super_DCMA_EMAIL) && IsBlank(First(currentUser).supervisor.Email),
+                                                        First(Office365Users.SearchUser({searchTerm: First(col_IWAMUser).super_DCMA_EMAIL, top: 1})),
+                                            
+                                                        If(IsBlank(First(col_IWAMUser).super_DCMA_EMAIL) && !IsBlank(First(currentUser).supervisor.Email),
+                                                            First(Office365Users.SearchUser({searchTerm: First(currentUser).supervisor.Email, top: 1})),
+                                                            {}
+                                                        )
+                                                    )
+                                                ),
+                                                {}
+                                            )
+                                        DisplayFields: =["DisplayName","Path","Value"]
+                                        FocusedBorderColor: =RGBA(255,0,0,1)
+                                        FocusedBorderThickness: =If(isAccessibilityEnabled, 4, 0)
+                                        Font: =Font.'Segoe UI'
+                                        Height: =Parent.Height + 2
+                                        HoverFill: =RGBA(255, 255, 255, 1)
+                                        InputTextPlaceholder: ="Last Name, First Name OR Email"
+                                        Items: |-
+                                            =Office365Users.SearchUser({searchTerm:Self.SearchText, top: 10})
+                                        OnChange: |-
+                                            =If(!IsBlank(combobox_Supervisor.Selected), Set(isSupervisorSelected, true));
+                                            If(IsBlank(combobox_Supervisor.Selected), Set(isSupervisorSelected, false));
+                                            
+                                            If(isSupervisorSelected, 
+                                                Set(supervisorHoverColor, ColorValue("#B4D6FA"));
+                                                Set(supervisorColor, ColorValue("#B4D6FA"))
+                                            );
+                                            
+                                            If(!isSupervisorSelected, 
+                                                Set(supervisorHoverColor, ColorValue("#FFFFFF"));
+                                                Set(supervisorColor, ColorValue("#FFFFFF"))
+                                            );
+                                        OnSelect: |-
+                                            =Set(isSupervisorDropdown, !isSupervisorDropdown);
+                                            
+                                            
+                                            //If(!IsBlank(combobox_Supervisor.SelectedItems), Set(isSupervisorSelected, true), Set(isSupervisorSelected, false));
+                                        PressedBorderColor: =RGBA(255, 255, 255, 1)
+                                        PressedFill: =RGBA(167, 182, 203, 1)
+                                        SearchFields: =["DisplayName", "Mail"]
+                                        SearchItems: |-
+                                            =Search(Office365Users.SearchUser({searchTerm:Self.SearchText, top: 10}),combobox_Supervisor.SearchText,"DisplayName","Mail")
+                                        SelectionColor: =RGBA(40, 112, 134, 1)
+                                        SelectionFill: =RGBA(214, 221, 224, 1)
+                                        SelectionTagColor: |-
+                                            =ColorValue("#287086") //Self.HoverColor
+                                        SelectMultiple: =false
+                                        Size: =9
+                                        TabIndex: =If(isRegisterPopupVisible, -1, 40)
+                                        Width: =Parent.Width + 2
+                                        ZIndex: =2
+
+                                HC_ServiceAndBranch As groupContainer.horizontalAutoLayoutContainer:
+                                    AlignInContainer: =AlignInContainer.Start
+                                    DropShadow: =DropShadow.None
+                                    FillPortions: =0
+                                    Height: =49
+                                    LayoutAlignItems: =LayoutAlignItems.Center
+                                    LayoutGap: =8
+                                    LayoutMinHeight: =100
+                                    LayoutMinWidth: =Self.Width
+                                    LayoutMode: =LayoutMode.Auto
+                                    RadiusBottomLeft: =0
+                                    RadiusBottomRight: =0
+                                    RadiusTopLeft: =0
+                                    RadiusTopRight: =0
+                                    Width: =350
+                                    ZIndex: =4
+
+                                    VC_Combobox_Service As groupContainer.verticalAutoLayoutContainer:
+                                        AlignInContainer: =AlignInContainer.SetByContainer
+                                        DropShadow: =DropShadow.None
+                                        FillPortions: =0
+                                        Height: =46
+                                        LayoutAlignItems: =LayoutAlignItems.Center
+                                        LayoutDirection: =LayoutDirection.Vertical
+                                        LayoutJustifyContent: =LayoutJustifyContent.Center
+                                        LayoutMinHeight: =Self.Height
+                                        LayoutMinWidth: =Self.Width
+                                        LayoutMode: =LayoutMode.Auto
+                                        PaddingBottom: =4
+                                        PaddingLeft: =2
+                                        PaddingRight: =2
+                                        RadiusBottomLeft: =6
+                                        RadiusBottomRight: =6
+                                        RadiusTopLeft: =6
+                                        RadiusTopRight: =6
+                                        Width: =170
+                                        ZIndex: =1
+
+                                        label_Service As label:
+                                            Font: =Font.'Segoe UI'
+                                            FontWeight: =FontWeight.Semibold
+                                            Height: =22
+                                            Size: =9
+                                            Text: ="Service Type *"
+                                            Width: =Parent.Width
+                                            ZIndex: =1
+
+                                        VC_comboboxService As groupContainer.verticalAutoLayoutContainer:
+                                            AlignInContainer: =AlignInContainer.Start
+                                            FillPortions: =0
+                                            Height: =24
+                                            LayoutAlignItems: =LayoutAlignItems.Center
+                                            LayoutDirection: =LayoutDirection.Vertical
+                                            LayoutJustifyContent: =LayoutJustifyContent.Center
+                                            LayoutMinHeight: =100
+                                            LayoutMinWidth: =250
+                                            LayoutMode: =LayoutMode.Auto
+                                            RadiusBottomLeft: =6
+                                            RadiusBottomRight: =6
+                                            RadiusTopLeft: =6
+                                            RadiusTopRight: =6
+                                            Width: =Parent.Width
+                                            ZIndex: =3
+
+                                            combobox_Service As combobox:
+                                                AccessibleLabel: |-
+                                                    =If(isAccessibilityEnabled, "Enter Service Type: Civilian or Military")
+                                                BorderThickness: =0
+                                                ChevronBackground: =RGBA(167, 182, 203, 1)
+                                                DefaultSelectedItems: |
+                                                    =If(!IsBlank(First(currentUser).service.Value),
+                                                        First(currentUser).service,
+                                                        If(!IsBlank(Find("civ", User().Email)),
+                                                            {Value: "Civilian"},
+                                                            If(!IsBlank(Find("ctr", User().Email)),
+                                                                {Value: "Contractor"},
+                                                                {Value: "Military"}
+                                                            )
+                                                        )
+                                                    )
+                                                DisplayFields: =["Value","Path","Value"]
+                                                FocusedBorderColor: =RGBA(255,0,0,1)
+                                                FocusedBorderThickness: =If(isAccessibilityEnabled, 4, 0)
+                                                Font: =Font.'Segoe UI'
+                                                Height: =24
+                                                HoverFill: =RGBA(255, 255, 255, 1)
+                                                IsSearchable: =false
+                                                Items: =Choices('GLBL-DS-userRegistration'.service).Value
+                                                OnChange: |+
+                                                    =Reset(combobox_PayPlanGrade);
+                                                    
+                                                    
+                                                OnSelect: |+
+                                                    =If(Self.Selected.Value = "Civilian" || Self.Selected.Value = "Contractor",
+                                                        Reset(combobox_MilitaryServiceBranch);
+                                                        Reset(combobox_PayPlanGrade);
+                                                        Set(isServiceTypeChanged, true);
+                                                    )
+                                                    
+                                                    
+                                                PressedBorderColor: =
+                                                PressedColor: =RGBA(0, 0, 0, 0)
+                                                PressedFill: =RGBA(0, 0, 0, 0)
+                                                SearchFields: =["Value"]
+                                                SearchItems: =[]
+                                                SelectionColor: =RGBA(40, 112, 134, 1)
+                                                SelectionFill: =RGBA(0, 0, 0, 0)
+                                                SelectionTagColor: |-
+                                                    =ColorValue("#287086") //Self.HoverColor
+                                                SelectMultiple: =false
+                                                Size: =10
+                                                TabIndex: =If(isRegisterPopupVisible, -1, 50)
+                                                Width: =Parent.Width
+                                                ZIndex: =1
+
+                                    VC_Combobox_Service_2 As groupContainer.verticalAutoLayoutContainer:
+                                        AlignInContainer: =AlignInContainer.SetByContainer
+                                        DropShadow: =DropShadow.None
+                                        FillPortions: =0
+                                        Height: =46
+                                        LayoutAlignItems: =LayoutAlignItems.Center
+                                        LayoutDirection: =LayoutDirection.Vertical
+                                        LayoutJustifyContent: =LayoutJustifyContent.Center
+                                        LayoutMinHeight: =Self.Height
+                                        LayoutMinWidth: =Self.Width
+                                        LayoutMode: =LayoutMode.Auto
+                                        PaddingBottom: =4
+                                        PaddingLeft: =2
+                                        PaddingRight: =2
+                                        RadiusBottomLeft: =6
+                                        RadiusBottomRight: =6
+                                        RadiusTopLeft: =6
+                                        RadiusTopRight: =6
+                                        Width: =170
+                                        ZIndex: =2
+
+                                        label_MilitaryServiceBranch As label:
+                                            Font: =Font.'Segoe UI'
+                                            FontWeight: =FontWeight.Semibold
+                                            Height: =22
+                                            Size: =9
+                                            Text: ="Military Branch *"
+                                            Width: =Parent.Width
+                                            ZIndex: =1
+
+                                        VC_comboboxMilitaryServiceBranch As groupContainer.verticalAutoLayoutContainer:
+                                            AlignInContainer: =AlignInContainer.Start
+                                            FillPortions: =0
+                                            Height: =24
+                                            LayoutAlignItems: =LayoutAlignItems.Center
+                                            LayoutDirection: =LayoutDirection.Vertical
+                                            LayoutJustifyContent: =LayoutJustifyContent.Center
+                                            LayoutMinHeight: =100
+                                            LayoutMinWidth: =250
+                                            LayoutMode: =LayoutMode.Auto
+                                            RadiusBottomLeft: =6
+                                            RadiusBottomRight: =6
+                                            RadiusTopLeft: =6
+                                            RadiusTopRight: =6
+                                            Width: =Parent.Width
+                                            ZIndex: =3
+
+                                            combobox_MilitaryServiceBranch As combobox:
+                                                AccessibleLabel: |-
+                                                    =If(isAccessibilityEnabled, "Enter Service Type: Civilian or Military")
+                                                BorderThickness: =0
+                                                ChevronBackground: =RGBA(167, 182, 203, 1)
+                                                DefaultSelectedItems: |
+                                                    =/*If(!IsBlank(First(currentUser).militaryServiceBranch.Value),
+                                                        First(currentUser).militaryServiceBranch
+                                                    )*/
+                                                    
+                                                    If(!IsBlank(First(currentUser).militaryServiceBranch.Value),
+                                                        If(isServiceTypeChanged, 
+                                                            Blank(),
+                                                            {Value: First(currentUser).militaryServiceBranch.Value}),
+                                                        Blank()
+                                                    )
+                                                DisplayFields: =["Value","Path","Value"]
+                                                DisplayMode: =If(combobox_Service.Selected.Value = "Military", DisplayMode.Edit, DisplayMode.Disabled)
+                                                FocusedBorderColor: =RGBA(255,0,0,1)
+                                                FocusedBorderThickness: =If(isAccessibilityEnabled, 4, 0)
+                                                Font: =Font.'Segoe UI'
+                                                Height: =24
+                                                HoverFill: =RGBA(255, 255, 255, 1)
+                                                IsSearchable: =false
+                                                Items: =Choices('GLBL-DS-userRegistration'.militaryServiceBranch).Value
+                                                OnChange: |+
+                                                    =Reset(combobox_PayPlanGrade);
+                                                    
+                                                    
+                                                OnSelect: |-
+                                                    =Reset(combobox_PayPlanGrade);
+                                                    Set(isServiceTypeChanged, true);
+                                                PressedBorderColor: =
+                                                PressedColor: =RGBA(0, 0, 0, 0)
+                                                PressedFill: =RGBA(0, 0, 0, 0)
+                                                SearchFields: =["Value"]
+                                                SearchItems: =[]
+                                                SelectionColor: =RGBA(40, 112, 134, 1)
+                                                SelectionFill: =RGBA(0, 0, 0, 0)
+                                                SelectionTagColor: |-
+                                                    =ColorValue("#287086") //Self.HoverColor
+                                                SelectMultiple: =false
+                                                Size: =9
+                                                TabIndex: =If(isRegisterPopupVisible, -1, 50)
+                                                Width: =Parent.Width
+                                                ZIndex: =1
+
+                                label_PayPlayGrade As label:
+                                    Font: =Font.'Segoe UI'
+                                    FontWeight: =FontWeight.Semibold
+                                    Height: =22
+                                    Size: =9
+                                    Text: ="Pay Plan / Grade / Rank *"
+                                    Width: =350
+                                    ZIndex: =6
+
+                                VC_Combobox_PayPlayGrade As groupContainer.verticalAutoLayoutContainer:
+                                    AlignInContainer: =AlignInContainer.SetByContainer
+                                    FillPortions: =0
+                                    Height: =24
+                                    LayoutAlignItems: =LayoutAlignItems.Center
+                                    LayoutDirection: =LayoutDirection.Vertical
+                                    LayoutJustifyContent: =LayoutJustifyContent.Center
+                                    LayoutMinHeight: =Self.Height
+                                    LayoutMinWidth: =Self.Width
+                                    LayoutMode: =LayoutMode.Auto
+                                    RadiusBottomLeft: =6
+                                    RadiusBottomRight: =6
+                                    RadiusTopLeft: =6
+                                    RadiusTopRight: =6
+                                    Width: =350
+                                    ZIndex: =7
+
+                                    combobox_PayPlanGrade As combobox:
+                                        AccessibleLabel: =If(isAccessibilityEnabled, "Select Pay Plan, Grade")
+                                        BorderThickness: =0.5
+                                        ChevronBackground: =RGBA(167, 182, 203, 1)
+                                        DefaultSelectedItems: |-
+                                            =If(!IsBlank(First(currentUser).payPlan_Grade),
+                                                If(isServiceTypeChanged, 
+                                                    Blank(), 
+                                                    {v: First(currentUser).payPlan_Grade}),
+                                                Blank()
+                                            )
+                                            //{g: First(currentUser).grade, p: First(currentUser).payPlan, v: First(currentUser).payPlan_Grade}
+                                        DisplayFields: =["v","Service"]
+                                        FocusedBorderColor: =RGBA(255,0,0,1)
+                                        FocusedBorderThickness: =If(isAccessibilityEnabled, 4, 0)
+                                        Font: =Font.'Segoe UI'
+                                        Height: =Parent.Height + 2
+                                        HoverFill: =RGBA(255, 255, 255, 1)
+                                        IsSearchable: =false
+                                        Items: |-
+                                            =//Choices(Ungroup(Filter(PayPlanGrades, Service = combobox_Service.Selected.Value), "ppg"))
+                                            Ungroup(Filter(PayPlanGrades, Service = combobox_Service.Selected.Value), "ppg").v
+                                        OnChange: =//Reset(Self)
+                                        OnSelect: |-
+                                            =Set(payPlan, First(Filter(Ungroup(Filter(PayPlanGrades, Service = combobox_Service.Selected.Value), "ppg"), v = combobox_PayPlanGrade.Selected.v).p).p);
+                                            Set(grade, First(Filter(Ungroup(Filter(PayPlanGrades, Service = combobox_Service.Selected.Value), "ppg"), v = combobox_PayPlanGrade.Selected.v).g).g);
+                                        PressedBorderColor: =
+                                        PressedColor: =RGBA(0, 0, 0, 0)
+                                        PressedFill: =RGBA(0, 0, 0, 0)
+                                        SearchFields: =["v"]
+                                        SearchItems: =[]
+                                        SelectionColor: =RGBA(40, 112, 134, 1)
+                                        SelectionFill: =RGBA(0, 0, 0, 0)
+                                        SelectionTagColor: |-
+                                            =ColorValue("#287086") //Self.HoverColor
+                                        SelectMultiple: =false
+                                        Size: =9
+                                        TabIndex: =If(isRegisterPopupVisible, -1, 60)
+                                        Width: =Parent.Width + 2
+                                        ZIndex: =2
+
+                        HC_AppSettingsControl_2 As groupContainer.horizontalAutoLayoutContainer:
+                            AlignInContainer: =AlignInContainer.SetByContainer
+                            DropShadow: =DropShadow.None
+                            FillPortions: =0
+                            Height: =46
+                            LayoutAlignItems: =LayoutAlignItems.Center
+                            LayoutGap: =10
+                            LayoutJustifyContent: =LayoutJustifyContent.End
+                            LayoutMinHeight: =Self.Height
+                            LayoutMinWidth: =Self.Width
+                            LayoutMode: =LayoutMode.Auto
+                            PaddingBottom: =2
+                            PaddingLeft: =20
+                            PaddingRight: =20
+                            PaddingTop: =2
+                            Width: =770.98
+                            X: =0.00
+                            ZIndex: =3
+
+                            HC_AccessibilityControl As groupContainer.horizontalAutoLayoutContainer:
+                                AlignInContainer: =AlignInContainer.Center
+                                DropShadow: =DropShadow.None
+                                FillPortions: =0
+                                Height: =Parent.Height
+                                LayoutAlignItems: =LayoutAlignItems.Center
+                                LayoutJustifyContent: =LayoutJustifyContent.Center
+                                LayoutMinHeight: =Self.Height
+                                LayoutMinWidth: =250
+                                LayoutMode: =LayoutMode.Auto
+                                PaddingBottom: =2
+                                PaddingLeft: =2
+                                PaddingRight: =2
+                                PaddingTop: =2
+                                RadiusBottomLeft: =0
+                                RadiusBottomRight: =0
+                                RadiusTopLeft: =0
+                                RadiusTopRight: =0
+                                Width: =200
+                                ZIndex: =1
+
+                                icon_AccessibilityOption_Help As icon.Help:
+                                    Color: =RGBA(26, 26, 26, 1)
+                                    Height: =13
+                                    Icon: =Icon.Help
+                                    OnSelect: |-
+                                        =Set(popupScope, "popup_register_accessibilityHelp");
+                                        Set(isRegisterPopupVisible, true)
+                                    PaddingRight: =0.00
+                                    PaddingTop: =0.00
+                                    Width: =13
+                                    X: =480.73
+                                    ZIndex: =1
+
+                                togle_AccessibilityOption As toggleSwitch:
+                                    AccessibleLabel: =If(isAccessibilityEnabled, "accessibility enabled")
+                                    FalseText: |-
+                                        ="Accessibility: Disabled"
+                                    FocusedBorderColor: =RGBA(255,0,0,1)
+                                    FocusedBorderThickness: =If(isAccessibilityEnabled, 4)
+                                    Height: =18
+                                    OnCheck: =Set(isAccessibilityEnabled, true)
+                                    OnUncheck: =Set(isAccessibilityEnabled, false)
+                                    Size: =10
+                                    TabIndex: =If(isRegisterPopupVisible, -1, 1)
+                                    TextPosition: =TextPosition.Left
+                                    TrueText: |-
+                                        ="Accessibility: Enabled"
+                                    Width: =Parent.Width - icon_AccessibilityOption_Help.Width
+                                    X: =18.139999999999986
+                                    ZIndex: =2
+
+                            button_RegisterAccount As button:
+                                BorderThickness: =0
+                                DisabledBorderColor: =RGBA(0, 0, 0, 0)
+                                DisabledColor: =RGBA(0, 0, 0, 1)
+                                DisabledFill: =RGBA(214, 221, 224, 1)
+                                Fill: =RGBA(50, 86, 160, 1)
+                                FocusedBorderColor: =If(isAccessibilityEnabled, RGBA(255,0,0,1))
+                                Height: =32
+                                HoverBorderColor: =
+                                HoverFill: =ColorFade(Self.Fill, 0.1)
+                                OnSelect: |+
+                                    =If(
+                                        IsBlank(combobox_JobSeries.Selected.Label) || 
+                                        IsBlank(combobox_Organization.Selected.ORG_NAME) || 
+                                        IsBlank(input_OrganizationCode.Text) || 
+                                        IsBlank(combobox_Supervisor.Selected.DisplayName) || 
+                                        IsBlank(combobox_Service.Selected.Value) || 
+                                        IsBlank(combobox_PayPlanGrade.Selected.v) ||
+                                        If(combobox_Service.Selected.Value = "Military" && IsBlank(combobox_MilitaryServiceBranch.Selected.Value), true, false),
+                                    
+                                            Set(popupScope, "popup_register_registerUserErrorPatch");
+                                            Set(isRegisterPopupVisible, true),
+                                    
+                                            // PATCH USER ACCOUNT IN [OBOF-userRegistration]
+                                            If(First(currentUser).isTFManager || First(currentUser).isTFProgramManager || First(currentUser).isEmployee || First(currentUser).isSupervisor || First(currentUser).isMSO || First(currentUser).isClearingOffice,
+                                                With(
+                                                    {
+                                                        patchMethod: If(!isCurrentUserRegister, 
+                                                            Defaults('GLBL-DS-userRegistration'), 
+                                                            {ID: LookUp('GLBL-DS-userRegistration', uid = First(currentUser).uid).ID})
+                                                    },
+                                                    Patch('GLBL-DS-userRegistration',
+                                                        patchMethod,
+                                                        {
+                                                            displayName: First(currentUser).displayName,
+                                                            givenName: First(currentUser).givenName,
+                                                            surname: First(currentUser).surname,
+                                                            mail: First(currentUser).mail,
+                                                            officeLocation: First(currentUser).officeLocation,
+                                                            userPrincipalName: First(currentUser).userPrincipalName,
+                                                            uid: First(currentUser).uid,
+                                                            state: First(currentUser).state,
+                                                            streetAddress: First(currentUser).streetAddress,
+                                                            postalCode: First(currentUser).postalCode,
+                                                            userType: First(currentUser).userType,
+                                                            accountEnabled: First(currentUser).accountEnabled,
+                                                            jobTitle: First(currentUser).jobTitle,
+                                                            city: First(currentUser).city,
+                                                            department: First(currentUser).department,
+                                                            companyName: First(currentUser).companyName,
+                                                            image: User().Image,
+                                                            jobSeries: combobox_JobSeries.Selected,
+                                                            //organization: combobox_Organization.Selected,
+                                                            organization_v2: combobox_Organization.Selected.ORG_NAME,
+                                                            organizationId: combobox_Organization.Selected.ORG_ID,
+                                                            organizationCode: Upper(input_OrganizationCode.Text),
+                                                            service: combobox_Service.Selected,
+                                                            militaryServiceBranch: combobox_MilitaryServiceBranch.Selected,
+                                                            payPlan_Grade: combobox_PayPlanGrade.Selected.v,
+                                                            payPlan: payPlan,
+                                                            grade: Value(grade),
+                                                            accessibilityEnabled: If(isAccessibilityEnabled, true, false),
+                                                            supervisorEmail: combobox_Supervisor.Selected.Mail,
+                                                            supervisorUid: combobox_Supervisor.Selected.Id,
+                                                            supervisorPhone: combobox_Supervisor.Selected.TelephoneNumber,
+                                                            supervisorDisplayName: combobox_Supervisor.Selected.DisplayName,
+                                                            supervisorGivenName: combobox_Supervisor.Selected.GivenName,
+                                                            supervisorSurname: combobox_Supervisor.Selected.Surname,
+                                                            persona: {
+                                                                '@odata.type':"#Microsoft.Azure.Connectors.SharePoint.SPListExpandedUser",
+                                                                Claims: Concatenate("i:0#.f|membership|", First(currentUser).mail),
+                                                                Department: First(currentUser).department,
+                                                                DisplayName: First(currentUser).displayName,
+                                                                Email: First(currentUser).mail,
+                                                                JobTitle: First(currentUser).jobTitle,
+                                                                Picture: ""
+                                                            },
+                                                            supervisor: {
+                                                                '@odata.type':"#Microsoft.Azure.Connectors.SharePoint.SPListExpandedUser",
+                                                                Claims: Concatenate("i:0#.f|membership|", combobox_Supervisor.Selected.Mail),
+                                                                Department: combobox_Supervisor.Selected.Department,
+                                                                DisplayName: combobox_Supervisor.Selected.DisplayName,
+                                                                Email: combobox_Supervisor.Selected.Mail,
+                                                                JobTitle: combobox_Supervisor.Selected.JobTitle,
+                                                                Picture: ""
+                                                            }
+                                                        }
+                                                    )
+                                                ),
+                                                Set(popupScope, "popup_register_registerUserError");
+                                                Set(isRegisterPopupVisible, true)
+                                            );
+                                    
+                                            If(!IsEmpty(Errors('GLBL-DS-userRegistration')),
+                                                Set(isRegisterPopupVisible, true);
+                                                Set(isUserRegistrationPatchOk, false);
+                                                Set(popupScope, "popup_register_registerUserErrorPatch"),
+                                                // PATCH USER APPLICATION ASSOCIATION IN [OBOF-userAppAssociation]
+                                                If(!isUserAppAssociation,
+                                                    With(
+                                                        {
+                                                            patchMethod: If(!isUserAppAssociation, Defaults('GLBL-DS-userAppAssociation'), {ID: LookUp('GLBL-DS-userAppAssociation', (uidUser = Text(User().EntraObjectId)) && (uidApplication = appMetadata.appUid)).ID})
+                                                        }, 
+                                                        Patch('GLBL-DS-userAppAssociation',
+                                                            patchMethod,
+                                                            {
+                                                                uidUser: First(currentUser).uid,
+                                                                uidApplication: appMetadata.appUid,
+                                                                applicationName: "Out-Processing",
+                                                                applicationIteration: Value(0)
+                                                            }
+                                                        )
+                                                    )
+                                                );
+                                                Set(isUserRegistrationPatchOk, true);
+                                            );
+                                    
+                                            If(!IsEmpty(Errors('GLBL-DS-userAppAssociation')),
+                                                Set(isRegisterPopupVisible, true);
+                                                Set(isUserAppAssociationPatchOk, false);
+                                                Set(popupScope, "popup_register_registerUserErrorPatch"),
+                                                Set(isUserAppAssociationPatchOk, true)
+                                            );
+                                    
+                                            ClearCollect(currentUser, 
+                                                AddColumns(
+                                                    LookUp('GLBL-DS-userRegistration', uid = Text(User().EntraObjectId)),
+                                                    "isTFManager", !IsBlank(LookUp(memberOf, id in _TFManager.role).id),
+                                                    "isTFProgramManager", !IsBlank(LookUp(memberOf, id in _TFProgramManager.role).id),
+                                                    "isEmployee", !IsBlank(LookUp(memberOf, id in _Employee.role).id),
+                                                    "isSupervisor", !IsBlank(LookUp(memberOf, id in _Supervisor.role).id),
+                                                    "isMSO", !IsBlank(LookUp(memberOf, id in _MSO.role).id),
+                                                    "isClearingOffice", !IsBlank(LookUp(memberOf, id in _ClearingOffice.role).id)
+                                                )
+                                            );
+                                            
+                                            Reset(combobox_JobSeries);
+                                            Reset(combobox_Organization);
+                                            Reset(input_OrganizationCode);
+                                            Reset(combobox_Supervisor);
+                                            Reset(combobox_Service);
+                                            Reset(combobox_PayPlanGrade);
+                                            Reset(combobox_JobSeries_1);
+                                            Reset(combobox_Organization_1);
+                                            Reset(input_OrganizationCode_1);
+                                            Reset(combobox_Supervisor_1);
+                                            Reset(combobox_Service);
+                                            Set(isServiceTypeChanged, false);
+                                    
+                                            // NAVIGATE TO MAIN OBOF SCREEN AFTER CHECKING ROLES/MEMBERSHIP PRIOR
+                                            If((
+                                                isUserRegistrationPatchOk && isUserAppAssociationPatchOk) || 
+                                                First(currentUser).isTFManager || 
+                                                First(currentUser).isTFProgramManager || 
+                                                First(currentUser).isEmployee || 
+                                                First(currentUser).isSupervisor || 
+                                                First(currentUser).isMSO ||
+                                                First(currentUser).isClearingOffice,
+                                                    Notify("Application Association successfully executed", NotificationType.Success);
+                                                    Navigate(MAIN_OBOF, ScreenTransition.Fade),
+                                                    Notify("Application Association encountered an error", NotificationType.Error);
+                                                    Set(isRegisterPopupVisible, true);
+                                                    Set(popupScope, "popup_register_registerUserError")
+                                            )
+                                    );
+                                    
+                                PressedBorderColor: =
+                                PressedColor: =RGBA(255, 255, 255, 1)
+                                PressedFill: =
+                                RadiusBottomLeft: =8
+                                RadiusBottomRight: =8
+                                RadiusTopLeft: =8
+                                RadiusTopRight: =8
+                                Size: =11
+                                TabIndex: =If(isRegisterPopupVisible, -1, 70)
+                                Text: =$"{If(!IsBlank(First(currentUser).ID), "Verified Info", "Register Info")}"
+                                Width: =145.13
+                                X: =607.72
+                                ZIndex: =2
+
+                    HC_AccountSettings_Props2 As groupContainer.horizontalAutoLayoutContainer:
+                        DropShadow: =DropShadow.None
+                        Height: =HC_UserMenuDetailItems_1.Height
+                        LayoutAlignItems: =LayoutAlignItems.Center
+                        LayoutMode: =LayoutMode.Auto
+                        PaddingRight: =0.00
+                        PaddingTop: =1.81
+                        Width: =770.98
+                        X: =0.00
+                        Y: =HC_AccountSetings_Props1.Y + HC_AccountSetings_Props1.Height
+                        ZIndex: =3
+
+                        icon_People_5 As icon.Mail:
+                            Color: =RGBA(77, 77, 77, 1)
+                            Height: =50
+                            Icon: =Icon.People
+                            PaddingBottom: =12
+                            PaddingLeft: =12
+                            PaddingRight: =9.07
+                            PaddingTop: =10.88
+                            Width: =45.35
+                            X: =0.00
+                            ZIndex: =1
+
+                        tbl_MSO As htmlViewer:
+                            AutoHeight: =true
+                            Font: =Font.'Segoe UI'
+                            Height: =Parent.Height - Parent.PaddingTop
+                            HtmlText: |-
+                                =Concatenate(
+                                "<div style='line-height: 1.3;'><strong>MSO</strong></br>",
+                                If(First(currentUser).isMSO, "<span style='color: #50C878'>&#11044</span> Role Assigned", "N|A"),
+                                "</div>"
+                                )
+                            PaddingLeft: =0
+                            PaddingRight: =4.54
+                            PaddingTop: =0.00
+                            Size: =9
+                            Width: =235.83
+                            X: =45.35
+                            ZIndex: =2
+
+                        icon_People_6 As icon.Mail:
+                            Color: =RGBA(77, 77, 77, 1)
+                            Height: =50
+                            Icon: =Icon.People
+                            PaddingBottom: =12
+                            PaddingLeft: =12
+                            PaddingRight: =9.07
+                            PaddingTop: =10.88
+                            Width: =45.35
+                            X: =281.18
+                            ZIndex: =5
+
+                        tbl_ClearingOffice As htmlViewer:
+                            AutoHeight: =true
+                            Font: =Font.'Segoe UI'
+                            Height: =Parent.Height - Parent.PaddingTop
+                            HtmlText: |-
+                                =Concatenate(
+                                "<div style='line-height: 1.3;'><strong>Clearing Office</strong></br>",
+                                If(First(currentUser).isClearingOffice, "<span style='color: #50C878'>&#11044</span> Role Assigned", "N|A"),
+                                "</div>"
+                                )
+                            PaddingLeft: =0
+                            PaddingRight: =4.54
+                            PaddingTop: =0.00
+                            Size: =9
+                            Width: =235.83
+                            X: =326.53
+                            ZIndex: =6
+
+                        icon_People_7 As icon.Mail:
+                            Color: =RGBA(77, 77, 77, 1)
+                            Height: =50
+                            Icon: =Icon.People
+                            PaddingBottom: =12
+                            PaddingLeft: =12
+                            PaddingRight: =9.07
+                            PaddingTop: =10.88
+                            Width: =45.35
+                            X: =562.36
+                            ZIndex: =7
+
+                        tbl_Employee As htmlViewer:
+                            AutoHeight: =true
+                            Font: =Font.'Segoe UI'
+                            Height: =Parent.Height - Parent.PaddingTop
+                            HtmlText: |-
+                                =Concatenate(
+                                "<div style='line-height: 1.3;'><strong>Member</strong></br>",
+                                If(First(currentUser).isEmployee, "<span style='color: #50C878'>&#11044</span> Role Assigned", "N|A"),
+                                "</div>"
+                                )
+                            PaddingLeft: =0
+                            PaddingRight: =4.54
+                            PaddingTop: =0.00
+                            Size: =9
+                            Width: =136.06
+                            X: =607.72
+                            ZIndex: =8
+
+                    HC_AccountSetings_Props1 As groupContainer.horizontalAutoLayoutContainer:
+                        DropShadow: =DropShadow.None
+                        Height: =HC_UserMenuDetailItems_1.Height
+                        LayoutAlignItems: =LayoutAlignItems.Center
+                        LayoutMode: =LayoutMode.Auto
+                        PaddingRight: =0.00
+                        PaddingTop: =1.81
+                        Width: =770.98
+                        X: =0.00
+                        Y: =HC_AccountSettings_Header.Height + separator_AccountSettings_Header.Height + 2
+                        ZIndex: =4
+
+                        icon_People_2 As icon.Mail:
+                            Color: =RGBA(77, 77, 77, 1)
+                            Height: =50
+                            Icon: =Icon.People
+                            PaddingBottom: =12
+                            PaddingLeft: =12
+                            PaddingRight: =9.07
+                            PaddingTop: =10.88
+                            Width: =45.35
+                            X: =0.00
+                            ZIndex: =1
+
+                        tbl_TotalForceManager As htmlViewer:
+                            AutoHeight: =true
+                            Font: =Font.'Segoe UI'
+                            Height: =Parent.Height - Parent.PaddingTop
+                            HtmlText: |-
+                                =Concatenate(
+                                "<div style='line-height: 1.3;'><strong>Total Force Manager</strong></br>",
+                                If(First(currentUser).isTFManager, "<span style='color: #50C878'>&#11044</span> Role Assigned", "N|A"),
+                                "</div>"
+                                )
+                            PaddingLeft: =0
+                            PaddingRight: =4.54
+                            PaddingTop: =0.00
+                            Size: =9
+                            Width: =235.83
+                            X: =45.35
+                            ZIndex: =2
+
+                        icon_People_3 As icon.Mail:
+                            Color: =RGBA(77, 77, 77, 1)
+                            Height: =50
+                            Icon: =Icon.People
+                            PaddingBottom: =12
+                            PaddingLeft: =12
+                            PaddingRight: =9.07
+                            PaddingTop: =10.88
+                            Width: =45.35
+                            X: =281.18
+                            ZIndex: =5
+
+                        tbl_TotalForceProgramManager As htmlViewer:
+                            AutoHeight: =true
+                            Font: =Font.'Segoe UI'
+                            Height: =Parent.Height - Parent.PaddingTop
+                            HtmlText: |-
+                                =Concatenate(
+                                "<div style='line-height: 1.3;'><strong>Total Force Program Manager</strong></br>",
+                                If(First(currentUser).isTFProgramManager, "<span style='color: #50C878'>&#11044</span> Role Assigned", "N|A"),
+                                "</div>"
+                                )
+                            PaddingLeft: =0
+                            PaddingRight: =4.54
+                            PaddingTop: =0.00
+                            Size: =9
+                            Width: =235.83
+                            X: =326.53
+                            ZIndex: =6
+
+                        icon_Poeple_4 As icon.Mail:
+                            Color: =RGBA(77, 77, 77, 1)
+                            Height: =50
+                            Icon: =Icon.People
+                            PaddingBottom: =12
+                            PaddingLeft: =12
+                            PaddingRight: =9.07
+                            PaddingTop: =10.88
+                            Width: =45.35
+                            X: =562.36
+                            ZIndex: =7
+
+                        tbl_Supervisor As htmlViewer:
+                            AutoHeight: =true
+                            Font: =Font.'Segoe UI'
+                            Height: =Parent.Height - Parent.PaddingTop
+                            HtmlText: |-
+                                =Concatenate(
+                                "<div style='line-height: 1.3;'><strong>Supervisor</strong></br>",
+                                If(First(currentUser).isSupervisor, "<span style='color: #50C878'>&#11044</span> Role Assigned", "N|A"),
+                                "</div>"
+                                )
+                            PaddingLeft: =0
+                            PaddingRight: =4.54
+                            PaddingTop: =0.00
+                            Size: =9
+                            Width: =136.06
+                            X: =607.72
+                            ZIndex: =8
+
+                    separator_AccountSettings_Header As rectangle:
+                        Fill: =RGBA(149, 149, 149, 1)
+                        Height: =1
+                        Width: =749.21
+                        X: =9.07
+                        Y: =HC_AccountSettings_Header.Height
+                        ZIndex: =5
+
+                    HC_AccountSettings_Header As groupContainer.horizontalAutoLayoutContainer:
+                        DropShadow: =DropShadow.None
+                        Height: =HC_OverviewDetails.Height
+                        LayoutAlignItems: =LayoutAlignItems.Center
+                        LayoutMode: =LayoutMode.Auto
+                        PaddingLeft: =10
+                        PaddingRight: =9.07
+                        PaddingTop: =0.00
+                        Width: =770.98
+                        X: =0.00
+                        ZIndex: =6
+
+                        label_OverviewDetails_1 As label:
+                            AlignInContainer: =AlignInContainer.End
+                            Font: =Font.'Segoe UI'
+                            FontWeight: =FontWeight.Semibold
+                            Height: =Parent.Height
+                            PaddingBottom: =0
+                            PaddingLeft: =0
+                            PaddingRight: =0.00
+                            PaddingTop: =0.00
+                            Role: =TextRole.Heading3
+                            Size: =11
+                            Text: ="Account Roles / Details"
+                            VerticalAlign: =VerticalAlign.Bottom
+                            Width: =752.84
+                            X: =9.07
+                            Y: =40
+                            ZIndex: =1
+
+    HC_RegisterPopup As groupContainer.horizontalAutoLayoutContainer:
+        DropShadow: =DropShadow.None
+        Fill: =RGBA(26, 26, 26, 0.2)
+        Height: =Parent.Height
+        LayoutAlignItems: =LayoutAlignItems.Center
+        LayoutJustifyContent: =LayoutJustifyContent.Center
+        LayoutMode: =LayoutMode.Auto
+        PaddingRight: =0.00
+        PaddingTop: =0.00
+        Visible: =isRegisterPopupVisible
+        Width: =Parent.Width
+        X: =
+        ZIndex: =4
+
+        VC_RegisterPopup As groupContainer.verticalAutoLayoutContainer:
+            AlignInContainer: =AlignInContainer.SetByContainer
+            BorderColor: =RGBA(77, 77, 77, 1)
+            BorderThickness: =1
+            DropShadow: =DropShadow.ExtraBold
+            Fill: =RGBA(241, 244, 249, 1)
+            FillPortions: =0
+            Height: =350
+            LayoutAlignItems: =LayoutAlignItems.Center
+            LayoutDirection: =LayoutDirection.Vertical
+            LayoutMinHeight: =Self.Height
+            LayoutMinWidth: =Self.Width
+            LayoutMode: =LayoutMode.Auto
+            PaddingRight: =0.00
+            PaddingTop: =0.00
+            RadiusBottomLeft: =15
+            RadiusBottomRight: =15
+            RadiusTopLeft: =15
+            RadiusTopRight: =15
+            Width: =725.63
+            X: =Parent.Width / 2
+            Y: =Parent.Height / 2
+            ZIndex: =1
+
+            HC_RegisterPopup_Header As groupContainer.horizontalAutoLayoutContainer:
+                AlignInContainer: =AlignInContainer.SetByContainer
+                DropShadow: =DropShadow.None
+                FillPortions: =0
+                Height: =40
+                LayoutAlignItems: =LayoutAlignItems.Center
+                LayoutJustifyContent: =LayoutJustifyContent.End
+                LayoutMinHeight: =40
+                LayoutMinWidth: =Parent.Width
+                LayoutMode: =LayoutMode.Auto
+                PaddingLeft: =10
+                PaddingRight: =9.07
+                PaddingTop: =0.00
+                Width: =725.63
+                X: =0.00
+                ZIndex: =1
+
+                label_ClosePopupLabel As label:
+                    Align: =Align.Right
+                    Font: =Font.'Segoe UI'
+                    Size: =10
+                    TabIndex: =20
+                    Text: ="Close Window"
+                    Visible: =isAccessibilityEnabled
+                    ZIndex: =1
+
+                Icon2 As icon.CancelBadge:
+                    Color: =RGBA(26, 26, 26, 1)
+                    FocusedBorderThickness: =If(isAccessibilityEnabled, 1, 0)
+                    Height: =22
+                    Icon: =Icon.CancelBadge
+                    OnSelect: |-
+                        =Set(popupScope, Blank());
+                        Set(isRegisterPopupVisible, false)
+                    PaddingRight: =0.00
+                    PaddingTop: =0.00
+                    TabIndex: =40
+                    Width: =19.95
+                    X: =0.00
+                    ZIndex: =2
+
+            HC_RegisterPopup_Body As groupContainer.horizontalAutoLayoutContainer:
+                AlignInContainer: =AlignInContainer.SetByContainer
+                DropShadow: =DropShadow.None
+                FillPortions: =0
+                Height: =Parent.Height - (HC_RegisterPopup_Header.Height + HC_RegisterPopup_Footer.Height)
+                LayoutAlignItems: =LayoutAlignItems.Center
+                LayoutJustifyContent: =LayoutJustifyContent.Center
+                LayoutMinHeight: =40
+                LayoutMinWidth: =Parent.Width
+                LayoutMode: =LayoutMode.Auto
+                PaddingBottom: =10
+                PaddingLeft: =10
+                PaddingRight: =10
+                PaddingTop: =10
+                Width: =Parent.Width
+                ZIndex: =2
+
+                HtmlText1 As htmlViewer:
+                    AlignInContainer: =AlignInContainer.Start
+                    AutoHeight: =true
+                    Fill: =RGBA(0, 0, 0, 0)
+                    FillPortions: =1
+                    Font: =Font.'Segoe UI'
+                    Height: =Parent.Height - (Parent.PaddingBottom + Parent.PaddingTop)
+                    HtmlText: |-
+                        =Concatenate(
+                            Substitute(
+                                LookUp(
+                                    appSettings, Scope = popupScope).content_RT, 
+                                    "background-color&#58;rgb(255, 255, 255)", "background-color&#58;rgb(0, 0, 0, 0)"),
+                            "<ul>",
+                            If(IsBlank(combobox_JobSeries.Selected.Label) && popupScope = "popup_register_registerUserErrorPatch", "<li><strong>Job Series</strong> is a required field</li>"),
+                            If(IsBlank(combobox_Organization.Selected.ORG_NAME) && popupScope = "popup_register_registerUserErrorPatch", "<li><strong>Organization</strong> is a required field</li>"),
+                            If(IsBlank(input_OrganizationCode.Text) && popupScope = "popup_register_registerUserErrorPatch", "<li><strong>Organization Code</strong> is a required field</li>"),
+                            If(IsBlank(combobox_Supervisor.Selected.DisplayName) && popupScope = "popup_register_registerUserErrorPatch", "<li><strong>Supervisor</strong> is a required field</li>"),
+                            If(IsBlank(combobox_Service.Selected.Value) && popupScope = "popup_register_registerUserErrorPatch", "<li><strong>Service Type</strong> is a required field</li>"),
+                            If(combobox_Service.Selected.Value = "Military" && IsBlank(combobox_MilitaryServiceBranch.Selected.Value) && popupScope = "popup_register_registerUserErrorPatch", "<li><strong>Military Branch</strong> is a required field</li>"),
+                            If(IsBlank(combobox_PayPlanGrade.Selected.v) && popupScope = "popup_register_registerUserErrorPatch", "<li><strong>Pay Plan / Grade / Rank</strong> is a required field</li>"),
+                            "</ul>"
+                        )
+                    PaddingBottom: =0
+                    PaddingLeft: =0
+                    PaddingRight: =0
+                    PaddingTop: =0
+                    Width: =Parent.Width
+                    ZIndex: =1
+
+            HC_RegisterPopup_Footer As groupContainer.horizontalAutoLayoutContainer:
+                AlignInContainer: =AlignInContainer.SetByContainer
+                DropShadow: =DropShadow.None
+                FillPortions: =0
+                Height: =40
+                LayoutAlignItems: =LayoutAlignItems.Center
+                LayoutJustifyContent: =LayoutJustifyContent.Center
+                LayoutMinHeight: =40
+                LayoutMinWidth: =Parent.Width
+                LayoutMode: =LayoutMode.Auto
+                PaddingTop: =0.00
+                Width: =725.63
+                X: =0.00
+                ZIndex: =3
+
+                label_InfoPopupDialog As label:
+                    Align: =Align.Center
+                    Font: =Font.'Segoe UI'
+                    Height: =Parent.Height
+                    Size: =10
+                    Text: ="Information Dialog Window"
+                    VerticalAlign: =VerticalAlign.Bottom
+                    Visible: =isAccessibilityEnabled
+                    Width: =Parent.Width
+                    ZIndex: =1
+
+    HC_AccessDenied As groupContainer.horizontalAutoLayoutContainer:
+        DropShadow: =DropShadow.None
+        Height: =Parent.Height
+        LayoutAlignItems: =LayoutAlignItems.Stretch
+        LayoutMode: =LayoutMode.Auto
+        PaddingRight: =0.00
+        PaddingTop: =0.00
+        Visible: =If(registerScope = "AccessDenied", true, false)
+        Width: =Parent.Width
+        X: =0.00
+        ZIndex: =5
+
+        CC_AccessDenied As groupContainer.manualLayoutContainer:
+            AlignInContainer: =AlignInContainer.SetByContainer
+            DropShadow: =DropShadow.None
+            Height: =Parent.Height
+            LayoutMinHeight: =100
+            LayoutMinWidth: =250
+            PaddingRight: =0.00
+            PaddingTop: =0.00
+            Width: =0.00
+            X: =0.00
+            ZIndex: =2
+
+            Group1_1 As group:
+                Height: =5
+                Width: =5
+                X: =40
+                Y: =40
+                ZIndex: =5
+
+                Seal_DCMA_1 As image:
+                    Height: =300
+                    Image: =DCMA_Seal_Cropped
+                    PaddingRight: =0.00
+                    PaddingTop: =0.00
+                    Width: =272.11
+                    X: =-136.06
+                    Y: =(Parent.Height - Self.Height)/2
+                    ZIndex: =1
+
+                lable_AccessDeniedMessage As label:
+                    Align: =Align.Center
+                    Font: ="Poppins"
+                    PaddingRight: =4.54
+                    PaddingTop: =4.54
+                    Size: =10.88
+                    Text: =Concatenate(First(currentUser).displayName, " does not have permission to this application.")
+                    Width: =0.00
+                    X: =0.00
+                    Y: =Seal_DCMA_1.Y - Self.Height
+                    ZIndex: =3
+
+    label_DEBUG_VAL_6 As label:
+        Font: =Font.'Segoe UI'
+        Height: =197
+        PaddingRight: =4.54
+        PaddingTop: =4.54
+        Size: =11
+        Text: |-
+            =
+            Concatenate("DEBUG VALIDATOR [pv2/cu] ", debugVar, Char(10),
+            "bool | isCurrentUserRegistered: ", isCurrentUserRegister, Char(10),
+            "bool | isUserAppAssociation: ", isUserAppAssociation, Char(10),
+            "guid | currentUser: ", First(currentUser).uid, Char(10),
+            "guid | userPersistentConfig: ", LookUp('GLBL-DS-userRegistration', uid = Office365Users.MyProfileV2().id).uid, Char(10),
+            "bool | AsyncDataHandler: ", AsyncDataLoader.Start, " - ", AsyncDataLoader.Value, Char(10),
+            "bool | runAsyncDataLoader: ", runAsyncDataLoader, Char(10),
+            "securityId GraphAPI | ", First(Filter(memberOf, id in _Employee.role)).securityIdentifier, Char(10)
+            )
+        VerticalAlign: =VerticalAlign.Top
+        Visible: =false
+        Width: =627
+        ZIndex: =6
+

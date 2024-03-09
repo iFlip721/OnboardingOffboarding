@@ -1,0 +1,18 @@
+<environmentvariabledefinition schemaname="sdg_OBOFDSuserDelegation">
+  <apiid>/providers/microsoft.powerapps/apis/shared_sharepointonline</apiid>
+  <description default="Out-Processing Checklists for Delegated Employees">
+    <label description="Out-Processing Checklists for Delegated Employees" languagecode="1033" />
+  </description>
+  <displayname default="OBOF-DS-userDelegation">
+    <label description="OBOF-DS-userDelegation" languagecode="1033" />
+  </displayname>
+  <introducedversion>1.0.0.0</introducedversion>
+  <iscustomizable>1</iscustomizable>
+  <isrequired>0</isrequired>
+  <parameterkey>table</parameterkey>
+  <parentdefinitionid>
+    <schemaname>sdg_OBOFStorageLocationURL</schemaname>
+  </parentdefinitionid>
+  <secretstore>0</secretstore>
+  <type>100000004</type>
+</environmentvariabledefinition>

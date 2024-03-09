@@ -1,0 +1,116 @@
+LOADING As screen:
+    OnHidden: =
+    OnVisible: =Set(runAsyncDataLoader, true)
+
+    HC_Loader As groupContainer.horizontalAutoLayoutContainer:
+        DropShadow: =DropShadow.None
+        Height: =Parent.Height
+        LayoutJustifyContent: =LayoutJustifyContent.Center
+        LayoutMode: =LayoutMode.Auto
+        PaddingRight: =0.00
+        PaddingTop: =0.00
+        Width: =Parent.Width
+        X: =0.00
+        ZIndex: =1
+
+        CC_Loader As groupContainer.manualLayoutContainer:
+            AlignInContainer: =AlignInContainer.Center
+            DropShadow: =DropShadow.None
+            FillPortions: =0
+            Height: =Parent.Height
+            LayoutMinHeight: =100
+            LayoutMinWidth: =250
+            PaddingRight: =0.00
+            PaddingTop: =0.00
+            Width: =Parent.Width
+            X: =0.00
+            ZIndex: =2
+
+            Group1 As group:
+                Height: =5
+                Width: =5
+                X: =40
+                Y: =40
+                ZIndex: =5
+
+                Seal_DCMA As image:
+                    Height: =Self.Width
+                    Image: ='DCMA_Seal_Cropped-NoBKG'
+                    PaddingRight: =0.00
+                    PaddingTop: =0.00
+                    Width: =200
+                    X: =(Parent.Width - Self.Width) / 2
+                    Y: =(Parent.Height - Self.Height) / 2
+                    ZIndex: =1
+
+                loader As image:
+                    Height: =Seal_DCMA.Height
+                    Image: =puff
+                    PaddingRight: =0.00
+                    PaddingTop: =0.00
+                    Width: =Seal_DCMA.Width
+                    X: =Seal_DCMA.X
+                    Y: =Seal_DCMA.Y
+                    ZIndex: =2
+
+                lable_LoadingApplication As label:
+                    Align: =Align.Center
+                    Font: =Font.'Segoe UI'
+                    PaddingRight: =4.54
+                    PaddingTop: =4.54
+                    Size: =10
+                    Text: =Concatenate("Loading Application")
+                    Width: =Parent.Width
+                    X: =0.00
+                    Y: =loader.Y - Self.Height
+                    ZIndex: =3
+
+    label_DEBUG_VAL_4 As label:
+        Font: =Font.'Segoe UI'
+        Height: =197
+        PaddingRight: =4.54
+        PaddingTop: =4.54
+        Size: =11
+        Text: |-
+            =
+            /*Concatenate("DEBUG VALIDATOR [pv2/cu] ", debugVar, Char(10),
+            "bool | isCurrentUserRegistered: ", isCurrentUserRegister, Char(10),
+            "bool | isUserAppAssociation: ", isUserAppAssociation, Char(10),
+            "guid | currentUser: ", First(currentUser).uid, Char(10),
+            "guid | userPersistentConfig: ", LookUp('GLBL-DS-userRegistration', uid = Office365Users.MyProfileV2().id).uid, Char(10),
+            "bool | AsyncDataHandler: ", AsyncDataLoader.Start, " - ", AsyncDataLoader.Value, Char(10),
+            "bool | runAsyncDataLoader: ", runAsyncDataLoader, Char(10),
+            "securityId GraphAPI | ", First(Filter(memberOf, id in _Employee.role)).securityIdentifier, Char(10)
+            )*/
+        VerticalAlign: =VerticalAlign.Top
+        Visible: =false
+        Width: =627
+        ZIndex: =2
+
+    AsyncDataLoader As timer:
+        Duration: =3000
+        OnTimerEnd: |-
+            =// IDENTIFY USER REGISTRATION STATUS
+            If(!isCurrentUserRegister || !isUserAppAssociation,
+                    Navigate(REGISTER,ScreenTransition.Fade);
+                    Set(runAsyncDataHandler, false)
+            );
+        OnTimerStart: |-
+            =If(isCurrentUserRegister && isUserAppAssociation,
+                If(First(currentUser).isTFManager || First(currentUser).isTFProgramManager || First(currentUser).isEmployee || First(currentUser).isSupervisor || First(currentUser).isMSO || First(currentUser).isClearingOffice,
+                    Navigate(MAIN_OBOF,ScreenTransition.Fade);
+                    Set(isDataLoaderComplete, false)
+                )
+            )
+        PaddingRight: =4.54
+        PaddingTop: =4.54
+        Repeat: =true
+        Size: =11.79
+        Start: =runAsyncDataHandler
+        Text: =Concatenate(Self.Start," ", Self.Value)
+        Visible: =false
+        Width: =145.13
+        X: =0 - Self.Width
+        Y: =276
+        ZIndex: =5
+

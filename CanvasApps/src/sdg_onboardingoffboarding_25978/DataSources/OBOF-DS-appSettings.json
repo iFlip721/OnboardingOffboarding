@@ -1,0 +1,52 @@
+[
+  {
+    "ApiId": "/providers/microsoft.powerapps/apis/shared_sharepointonline",
+    "CdpRevision": {
+      "BaseUrl": "/",
+      "LastChangedTimeString": "2023-11-07T17:21:48.6530000Z",
+      "RevisionNumber": 1
+    },
+    "ConnectedDataSourceInfoNameMapping": {
+      "{Attachments}": "Attachments",
+      "{Attachments}@odata.type": "{Attachments} ({Attachments}@odata.type)",
+      "{ContentType}": "Content type",
+      "{ContentType}#Id": "Content type Id",
+      "{FilenameWithExtension}": "File name with extension",
+      "{FullPath}": "Full Path",
+      "{HasAttachments}": "Has attachments",
+      "{Identifier}": "Identifier",
+      "{IsFolder}": "IsFolder",
+      "{Link}": "Link to item",
+      "{ModerationComment}": "Comments associated with the content approval of this list item",
+      "{ModerationStatus}": "Content approval status",
+      "{Name}": "Name",
+      "{Path}": "Folder path",
+      "{Thumbnail}": "Thumbnail",
+      "{TriggerWindowEndToken}": "Trigger Window End Token",
+      "{TriggerWindowStartToken}": "Trigger Window Start Token",
+      "{VersionNumber}": "Version number",
+      "Author": "Created By",
+      "Author#Claims": "Created By Claims",
+      "ComplianceAssetId": "Compliance Asset Id",
+      "content_PT": "content_PT",
+      "content_RT": "content_RT",
+      "Created": "Created",
+      "Editor": "Modified By",
+      "Editor#Claims": "Modified By Claims",
+      "ID": "ID",
+      "Modified": "Modified",
+      "OData__ColorTag": "Color Tag",
+      "Scope": "Scope",
+      "ScopeID0": "ScopeID",
+      "Title": "Title",
+      "value_PT": "value_PT",
+      "value_RT": "value_RT"
+    },
+    "DatasetName": "https://dod365.sharepoint-mil.us/sites/DCMA-SB-Collaboration",
+    "EncodeDataset": true,
+    "IsSampleData": false,
+    "IsWritable": true,
+    "Name": "OBOF-DS-appSettings",
+    "Type": "ConnectedDataSourceInfo"
+  }
+]

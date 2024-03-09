@@ -1,0 +1,10 @@
+[
+  {
+    "ApiId": "/providers/microsoft.powerapps/apis/shared_logicflows",
+    "FlowNameId": "1f0bade7-1f80-4433-ae1c-54cc82d4b881",
+    "Name": "OBOF-SendNotification",
+    "ServiceKind": "ConnectedWadl",
+    "Type": "ServiceInfo",
+    "WorkflowEntityId": "744a8eb1-b890-ee11-8179-001dd810548e"
+  }
+]

@@ -1,0 +1,215 @@
+"'55932853-013d-4f26-9495-5531888a1262' As TestSuite":
+    Description: =""
+    DisplayName: ="TEST SUITE - 001"
+
+    "'629a9346-dabf-40bd-85fc-bd75acd6c58b' As TestCase":
+        Description: =""
+        DisplayName: ="LOADING"
+
+        Step1 As TestStep:
+            Description: ="Assert(loader.Visible, ""Verify loader is visible"")"
+            Value: =Assert(loader.Visible, "Verify loader is visible")
+
+    "'d6d15f7c-8c37-4efa-9794-232088891692' As TestCase":
+        Description: =""
+        DisplayName: ="COLLECTION"
+
+        Step1 As TestStep:
+            Description: ="StateChoices collection"
+            Screen: =LOADING
+            Value: =Assert(!IsEmpty(stateChoices), "Verify State Choices collection is not empty")
+
+        Step2 As TestStep:
+            Description: ="PayPlanGrades collection"
+            Screen: =REGISTER
+            Value: =Assert(!IsEmpty(PayPlanGrades), "Verify PayPlayGrades Collection isnot empty")
+
+        Step3 As TestStep:
+            Description: ="AppSettings collection"
+            Screen: =REGISTER
+            Value: =Assert(!IsEmpty(appSettings), "Verify AppSettings Collection is not empty")
+
+        Step4 As TestStep:
+            Description: ="MemberOf collection"
+            Screen: =REGISTER
+            Value: =Assert(!IsEmpty(memberOf), "Verify MemberOf Collection is not empty")
+
+        Step5 As TestStep:
+            Description: ="PositionService collection"
+            Screen: =REGISTER
+            Value: =Assert(!IsEmpty(positionSeries), "Verify PositionSeries Colleciton is not empty")
+
+        Step6 As TestStep:
+            Description: ="Organizations collection"
+            Screen: =REGISTER
+            Value: =Assert(!IsEmpty(col_organizations), "Verify Organizations collection is not empty")
+
+        Step7 As TestStep:
+            Description: ="IWAM Query response (email)"
+            Screen: =REGISTER
+            Value: =Assert(!IsEmpty(_responseIWAMQueryEmail), "Verify IWAM Query Email response is not empty")
+
+        Step8 As TestStep:
+            Description: ="IWAM Query response (Organization)"
+            Screen: =REGISTER
+            Value: =Assert(!IsEmpty(_responseIWAMQueryOrganization), "Verify IWAM Query Organization respons eis not empty")
+
+        Step9 As TestStep:
+            Description: ="IWAM Supervisor collection"
+            Screen: =REGISTER
+            Value: =Assert(!IsEmpty(col_IWAMSupervisor), "Verify IWAM Supervisor collection is not empty")
+
+        Step10 As TestStep:
+            Description: ="IWAM UserInfo.DCMA_EMAIL"
+            Screen: =REGISTER
+            Value: |-
+                =Assert(!IsBlank(First(col_IWAMUserInfo).DCMA_EMAIL), "Verify IWAM User Info: DCMA_EMAIL")
+
+        Step11 As TestStep:
+            Description: ="IWAM UserInfo.DCMA_EMPLOYEE_TYPE"
+            Screen: =REGISTER
+            Value: |-
+                =Assert(!IsBlank(First(col_IWAMUserInfo).DCMA_EMPLOYEE_TYPE), "Verify IWAM User Info: DCMA_EMPLOYEE_TYPE")
+
+        Step12 As TestStep:
+            Description: ="IWAM UserInfo.DCMA_JOB_SERIES"
+            Screen: =REGISTER
+            Value: |-
+                =Assert(!IsBlank(First(col_IWAMUserInfo).DCMA_JOB_SERIES), "Verify IWAM User Info: DCMA_JOB_SERIES")
+
+        Step13 As TestStep:
+            Description: ="IWAM UserInfo.DCMA_ORGANIZATION"
+            Screen: =REGISTER
+            Value: |-
+                =Assert(!IsBlank(First(col_IWAMUserInfo).DCMA_ORGANIZATION_LEVEL), "Verify IWAM User Info: DCMA_ORGANIZATION_LEVEL")
+
+        Step14 As TestStep:
+            Description: ="IWAM UserInfo.DCMA_SITE_ID"
+            Screen: =REGISTER
+            Value: |-
+                =Assert(!IsBlank(First(col_IWAMUserInfo).DCMA_SITE_ID), "Verify IWAM User Info: DCMA_SITE_ID")
+
+        Step15 As TestStep:
+            Description: ="IWAM UserInfo.DIRECT_SUPERVISOR"
+            Screen: =REGISTER
+            Value: |-
+                =Assert(!IsBlank(First(col_IWAMUserInfo).DIRECT_SUPERVISOR), "Verify IWAM User Info: DIRECT_SUPERVISOR")
+
+        Step16 As TestStep:
+            Description: ="IWAM UserInfo.USERID"
+            Screen: =REGISTER
+            Value: |-
+                =Assert(!IsBlank(First(col_IWAMUserInfo).USERID), "Verify IWAM User Info: USERID")
+
+        Step17 As TestStep:
+            Description: ="IWAM UserInfo.USR_FIRST_NAME"
+            Screen: =REGISTER
+            Value: |-
+                =Assert(!IsBlank(First(col_IWAMUserInfo).USR_FIRST_NAME), "Verify IWAM User Info: USR_FIRST_NAME")
+
+        Step18 As TestStep:
+            Description: ="IWAM UserInfo.USR_LAST_NAME"
+            Screen: =REGISTER
+            Value: |-
+                =Assert(!IsBlank(First(col_IWAMUserInfo).USR_LAST_NAME), "Verify IWAM User Info: USR_LAST_NAME")
+
+        Step19 As TestStep:
+            Description: ="IWAM UserInfo.USR_FULLNAME"
+            Screen: =REGISTER
+            Value: |-
+                =Assert(!IsBlank(First(col_IWAMUserInfo).USR_FULLNAME), "Verify IWAM User Info: USR_FULLNAME")
+
+        Step20 As TestStep:
+            Description: ="currentUser collection"
+            Screen: =REGISTER
+            Value: =Assert(!IsEmpty(currentUser), "Verify CurrentUser is not blank")
+
+    "'b2148455-7182-4458-b109-d2530fe08e29' As TestCase":
+        Description: =""
+        DisplayName: ="REGISTER - UI"
+
+        Step1 As TestStep:
+            Description: ="ServiceType clear slection"
+            Screen: =REGISTER
+            Value: =SetProperty(combobox_Service.SelectedItems, Table())
+
+        Step3 As TestStep:
+            Description: ="ServiceType select Civilian"
+            Screen: =REGISTER
+            Value: |-
+                =SetProperty(combobox_Service.SelectedItems, Table({Value:"Civilian"}))
+
+        Step4 As TestStep:
+            Description: ="MilitaryBranch disabled"
+            Value: =Assert(combobox_MilitaryServiceBranch.DisplayMode = DisplayMode.Disabled, "Verify military branch is disabled when civilian service type is slected.")
+
+        Step5 As TestStep:
+            Description: ="ServiceType select Military"
+            Screen: =REGISTER
+            Value: |-
+                =SetProperty(combobox_Service.SelectedItems, Table({Value:"Military"}))
+
+        Step6 As TestStep:
+            Description: ="MilitaryBranch enabled"
+            Value: =Assert(combobox_MilitaryServiceBranch.DisplayMode = DisplayMode.Edit, "Verify military branch is enabled when military service type is slected.")
+
+        Step7 As TestStep:
+            Description: ="ServiceType select Contractor"
+            Screen: =REGISTER
+            Value: |-
+                =SetProperty(combobox_Service.SelectedItems, Table({Value:"Contractor"}))
+
+        Step8 As TestStep:
+            Description: ="MilitaryBranch disabled"
+            Value: =Assert(combobox_MilitaryServiceBranch.DisplayMode = DisplayMode.Disabled, "Verify military branch is disabled when contractor service type is slected.")
+
+        Step2 As TestStep:
+            Description: ="ServiceType select CurrentUser.service"
+            Screen: =REGISTER
+            Value: =SetProperty(combobox_Service.SelectedItems, Table(First(currentUser).service))
+
+        Step10 As TestStep:
+            Description: ="PayPlayGrade is blank"
+            Value: =Assert(IsBlank(combobox_PayPlanGrade.Selected), "Verify PayPlanGrade is blank after changing ServiceType")
+
+        Step11 As TestStep:
+            Description: ="SetProperty"
+            Value: |-
+                =SetProperty(combobox_PayPlanGrade.SelectedItems, {v: First(currentUser).payPlan_Grade})
+
+        Step9 As TestStep:
+            Description: ="Navigate MAIN_OBOF"
+            Value: =Select(button_RegisterAccount)
+
+    "'13009b85-ff15-4a7c-9631-5a596db35313' As TestCase":
+        Description: =""
+        DisplayName: ="REGISTER - Field Values"
+
+        Step1 As TestStep:
+            Description: ="Organization pre-selected"
+            Value: =Assert(!IsBlank(combobox_Organization.Selected), "Verify Organization field auto populates. User conducting test must already be registered for this test to pass.")
+
+        Step2 As TestStep:
+            Description: ="Supervisor pre-selected"
+            Value: =Assert(!IsBlank(combobox_Supervisor.Selected), "Verify Supervisor field auto populates. User conducting test must already be registered for this test to pass.")
+
+        Step3 As TestStep:
+            Description: ="Job Series pre-selected"
+            Value: =Assert(!IsBlank(combobox_JobSeries.Selected), "Verify JobSeries field auto populates. User conducting test must already be registered for this test to pass.")
+
+        Step4 As TestStep:
+            Description: ="Service pre-selected"
+            Value: =Assert(!IsBlank(combobox_Service.Selected), "Verify Service field auto populates. User conducting test must already be registered for this test to pass.")
+
+        Step5 As TestStep:
+            Description: ="Organization Code pre-selected"
+            Value: =Assert(!IsBlank(input_OrganizationCode.Text), "Verify OrganizationCode field auto populates. User conducting test must already be registered for this test to pass.")
+
+        Step6 As TestStep:
+            Description: ="Pay Plan/Grade pre-selected"
+            Value: =Assert(!IsBlank(combobox_PayPlanGrade.Selected), "Verify PayPlanGrade field auto populates. User conducting test must already be registered for this test to pass.")
+
+        Step7 As TestStep:
+            Description: ="Security Role Member"
+            Value: =Assert(First(currentUser).isEmployee, "Verify user has minimum security role Member.")
+

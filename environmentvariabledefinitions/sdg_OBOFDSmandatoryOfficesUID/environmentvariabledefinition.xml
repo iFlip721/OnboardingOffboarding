@@ -1,0 +1,15 @@
+<environmentvariabledefinition schemaname="sdg_OBOFDSmandatoryOfficesUID">
+  <apiid>/providers/microsoft.powerapps/apis/shared_sharepointonline</apiid>
+  <displayname default="OBOF-DS-mandatoryOfficesUID">
+    <label description="OBOF-DS-mandatoryOfficesUID" languagecode="1033" />
+  </displayname>
+  <introducedversion>1.0.2.0</introducedversion>
+  <iscustomizable>1</iscustomizable>
+  <isrequired>0</isrequired>
+  <parameterkey>table</parameterkey>
+  <parentdefinitionid>
+    <schemaname>sdg_OBOFStorageLocationURL</schemaname>
+  </parentdefinitionid>
+  <secretstore>0</secretstore>
+  <type>100000004</type>
+</environmentvariabledefinition>
