@@ -5,8 +5,6 @@
 
 Clone repository to your local computer.
 
-`git clone git@gitlab.dcma.mil:sdg/powerapp/BuildScripts.git`
-
 Copy the `Build` folder into the root of your Power Platform project.
 
 > Update the `config.json` file to match the values of your current Power Platform project.
